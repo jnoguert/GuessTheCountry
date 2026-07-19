@@ -61,7 +61,9 @@ export default function App() {
         const countriesData = await fetchCountries(lang)
         setCountries(countriesData)
       } catch (err) {
-        setError(t.error)
+        const errorMsg = err instanceof Error ? err.message : 'Unknown error'
+        console.error('Failed to load puzzle:', errorMsg)
+        setError(`${t.error} (${errorMsg})`)
       } finally {
         setLoading(false)
       }

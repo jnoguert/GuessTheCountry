@@ -1,4 +1,7 @@
-const API_BASE = '/api'
+// Determine API base URL based on environment
+const API_BASE = import.meta.env.VITE_API_BASE
+  ? import.meta.env.VITE_API_BASE
+  : `${window.location.origin}/api`
 
 export interface PuzzleData {
   puzzle_id: string
