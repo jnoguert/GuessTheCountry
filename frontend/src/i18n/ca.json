@@ -27,5 +27,15 @@
   "switch_lang_body": "Llegir les pistes en {lang} revela informació extra, així que canviar costa 1 pista. Vols continuar?",
   "switch_lang_blocked": "No et queden pistes, així que no pots canviar d'idioma fins que acabi la partida d'avui.",
   "switch_lang_confirm": "Canvia (-1 pista)",
-  "switch_lang_cancel": "Queda't"
+  "switch_lang_cancel": "Queda't",
+  "leaderboard": "Classificació",
+  "today": "Avui",
+  "all_time": "Històric",
+  "choose_username": "Tria un nom d'usuari per entrar a la classificació",
+  "username_placeholder": "El teu nom d'usuari...",
+  "username_rules": "De 3 a 20 caràcters: lletres, dígits, _ o -",
+  "save": "Desa",
+  "username_taken": "Aquest nom d'usuari és d'una altra persona. Tria'n un altre.",
+  "leaderboard_empty": "Encara no hi ha puntuacions. Sigues el primer!",
+  "points_abbr": "pts"
 }

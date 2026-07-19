@@ -27,5 +27,15 @@
   "switch_lang_body": "Leer las pistas en {lang} revela información extra, así que cambiar cuesta 1 pista. ¿Continuar?",
   "switch_lang_blocked": "No te quedan pistas, así que no puedes cambiar de idioma hasta que termine la partida de hoy.",
   "switch_lang_confirm": "Cambiar (-1 pista)",
-  "switch_lang_cancel": "Quedarme"
+  "switch_lang_cancel": "Quedarme",
+  "leaderboard": "Clasificación",
+  "today": "Hoy",
+  "all_time": "Histórico",
+  "choose_username": "Elige un nombre de usuario para entrar en la clasificación",
+  "username_placeholder": "Tu nombre de usuario...",
+  "username_rules": "De 3 a 20 caracteres: letras, dígitos, _ o -",
+  "save": "Guardar",
+  "username_taken": "Ese nombre de usuario es de otra persona. Elige otro.",
+  "leaderboard_empty": "Aún no hay puntuaciones. ¡Sé el primero!",
+  "points_abbr": "pts"
 }

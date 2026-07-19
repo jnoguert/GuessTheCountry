@@ -16,6 +16,8 @@ import { GuessInput } from './components/GuessInput'
 import { GuessHistory } from './components/GuessHistory'
 import { HintPanel } from './components/HintPanel'
 import { ResultModal } from './components/ResultModal'
+import { LeaderboardModal } from './components/LeaderboardModal'
+import { isLeaderboardAvailable, getIdentity, submitScore, Identity } from './lib/leaderboard'
 
 export default function App() {
   const [lang, setLang] = useState<string | null>(getLanguage())
@@ -36,6 +38,9 @@ export default function App() {
   const [showResult, setShowResult] = useState(false)
   const [pendingLang, setPendingLang] = useState<string | null>(null)
   const [unlockPending, setUnlockPending] = useState(false)
+  const [lbAvailable, setLbAvailable] = useState(false)
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
 
   const t = useI18n(lang ?? 'en')
   const gameOver = isWon || isLost
@@ -53,6 +58,32 @@ export default function App() {
   useEffect(() => {
     if (isWon || isLost) setShowResult(true)
   }, [isWon, isLost])
+
+  useEffect(() => {
+    isLeaderboardAvailable().then(setLbAvailable)
+  }, [])
+
+  const trySubmitScore = async (
+    finalScore: number, guessCount: number, unlocks: number, won: boolean
+  ) => {
+    const identity = getIdentity()
+    if (!lbAvailable || !identity) return
+    const result = await submitScore(identity, puzzleId, finalScore, guessCount, unlocks, won)
+    if (result === 'ok') {
+      persist({ submitted: true })
+    } else if (result === 'username_taken') {
+      setUsernameError(true)
+    }
+  }
+
+  const handleIdentityCreated = (_identity: Identity) => {
+    setUsernameError(false)
+    // If today's game already ended, submit the result right away
+    const saved = getGameState()
+    if (saved && saved.puzzleId === puzzleId && (saved.isWon || saved.isLost) && !saved.submitted) {
+      trySubmitScore(saved.score ?? 0, saved.guesses.length, saved.unlocksUsed ?? 0, saved.isWon)
+    }
+  }
 
   useEffect(() => {
     if (!lang) return
@@ -147,6 +178,7 @@ export default function App() {
         setAnswer(result.answer ?? null)
         setStats(recordGameEnd(puzzleId, true, wonScore))
         persist({ guesses: newGuesses, isWon: true, score: wonScore, answer: result.answer })
+        trySubmitScore(wonScore, newGuesses.length, unlocksUsed, true)
         return
       }
 
@@ -156,6 +188,7 @@ export default function App() {
         setAnswer(result.answer ?? null)
         setStats(recordGameEnd(puzzleId, false, 0))
         persist({ guesses: newGuesses, isLost: true, score: 0, answer: result.answer })
+        trySubmitScore(0, newGuesses.length, unlocksUsed, false)
       } else {
         persist({ guesses: newGuesses })
       }
@@ -239,6 +272,15 @@ export default function App() {
                 🔥 {stats.currentStreak}
               </span>
             )}
+            {lbAvailable && (
+              <button
+                onClick={() => setShowLeaderboard(true)}
+                className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+                title={t.leaderboard}
+              >
+                🏆
+              </button>
+            )}
             <ThemeToggle theme={theme} onThemeChange={handleThemeChange} />
             <LanguageSwitcher currentLang={lang} onLangChange={handleLangRequest} />
           </div>
@@ -292,6 +334,14 @@ export default function App() {
           canSwitch={unlocksUsed < MAX_UNLOCKS}
           onConfirm={confirmLangSwitch}
           onCancel={() => setPendingLang(null)}
+          t={t}
+        />
+
+        <LeaderboardModal
+          isOpen={showLeaderboard}
+          onClose={() => setShowLeaderboard(false)}
+          onIdentityCreated={handleIdentityCreated}
+          usernameError={usernameError}
           t={t}
         />
 

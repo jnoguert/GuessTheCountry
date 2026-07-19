@@ -3,20 +3,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from .routers import puzzle
+from .routers import puzzle, leaderboard
 
 app = FastAPI(title="Guess the Country")
 
 # CORS middleware for dev setups where the frontend runs on its own port
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://jnoguert.github.io",  # Pages frontend calling a hosted API
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 app.include_router(puzzle.router)
+app.include_router(leaderboard.router)
 
 
 @app.get('/health')
