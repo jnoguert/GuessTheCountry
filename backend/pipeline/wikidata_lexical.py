@@ -29,6 +29,7 @@ def collect_qids(countries: Dict) -> Set[str]:
         if data.get('currency'):
             qids.add(data['currency'])
         qids.update(data.get('borders', []))
+        qids.update(data.get('languages', []))
     return qids
 
 

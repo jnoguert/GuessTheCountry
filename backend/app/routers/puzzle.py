@@ -37,7 +37,7 @@ async def get_puzzle(lang: str, day: Optional[int] = Query(default=None)):
 async def submit_guess(request: GuessRequest):
     day_index = _day_index_from_puzzle_id(request.puzzle_id)
 
-    country = puzzle_service.get_daily_country(day_index, request.lang)
+    country = puzzle_service.get_daily_country(day_index)
     if not country or request.lang not in country.get('i18n', {}):
         raise HTTPException(status_code=404, detail='Puzzle not found')
 

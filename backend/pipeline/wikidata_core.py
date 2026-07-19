@@ -11,6 +11,7 @@ SPARQL_ENDPOINT = 'https://query.wikidata.org/sparql'
 COUNTRY_QUERY = """
 SELECT ?country ?countryLabel ?capital ?highestPoint ?iso2 ?iso3 ?cctld ?currency
        (GROUP_CONCAT(DISTINCT ?border; separator="|") AS ?borders)
+       (GROUP_CONCAT(DISTINCT ?language; separator="|") AS ?languages)
 WHERE {
   ?country wdt:P31/wdt:P279* wd:Q3624078 .
   ?country p:P463 ?memberStmt .
@@ -23,6 +24,7 @@ WHERE {
   OPTIONAL { ?country wdt:P78 ?cctld }
   OPTIONAL { ?country wdt:P38 ?currency }
   OPTIONAL { ?country wdt:P47 ?border }
+  OPTIONAL { ?country (wdt:P37|wdt:P2936) ?language }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
 }
 GROUP BY ?country ?countryLabel ?capital ?highestPoint ?iso2 ?iso3 ?cctld ?currency
@@ -57,6 +59,7 @@ def fetch_wikidata_core(force: bool = False) -> Dict:
     for binding in data.get('results', {}).get('bindings', []):
         qid = binding['country']['value'].split('/')[-1]
         borders = binding.get('borders', {}).get('value', '').split('|') if binding.get('borders', {}).get('value') else []
+        languages = binding.get('languages', {}).get('value', '').split('|') if binding.get('languages', {}).get('value') else []
 
         countries[qid] = {
             'label': binding.get('countryLabel', {}).get('value', ''),
@@ -66,7 +69,8 @@ def fetch_wikidata_core(force: bool = False) -> Dict:
             'iso3': binding.get('iso3', {}).get('value', ''),
             'cctld': binding.get('cctld', {}).get('value', ''),
             'currency': binding.get('currency', {}).get('value', '').split('/')[-1] if binding.get('currency') else None,
-            'borders': [b.split('/')[-1] for b in borders if b]
+            'borders': [b.split('/')[-1] for b in borders if b],
+            'languages': [l.split('/')[-1] for l in languages if l]
         }
 
     output_file = os.path.join(RAW_DATA_DIR, 'wikidata_stage_a.json')

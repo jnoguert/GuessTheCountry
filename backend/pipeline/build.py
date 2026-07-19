@@ -99,6 +99,25 @@ def build_countries_json():
     return countries
 
 
+def build_frontend_game_json(countries: Dict, daily_order: List[str]):
+    """Export the dataset for the fully client-side build (GitHub Pages)."""
+    frontend_public = os.path.join(os.path.dirname(__file__), '../../frontend/public')
+    os.makedirs(frontend_public, exist_ok=True)
+
+    game = {
+        'epoch': '2026-01-01',
+        'dailyOrder': daily_order,
+        'countries': countries,
+    }
+
+    game_file = os.path.join(frontend_public, 'game.json')
+    with open(game_file, 'w', encoding='utf-8') as f:
+        json.dump(game, f, ensure_ascii=False, separators=(',', ':'))
+
+    size_kb = os.path.getsize(game_file) // 1024
+    print(f"Saved frontend game.json ({size_kb} KB)")
+
+
 def build_daily_order():
     print("Building daily order...")
 
@@ -138,6 +157,9 @@ def build_all():
 
     print("\nStage 6: Writing SQLite database...")
     write_database(countries, daily_order)
+
+    print("\nStage 7: Exporting frontend game.json...")
+    build_frontend_game_json(countries, daily_order)
 
     print("\n=== Build complete! ===\n")
 

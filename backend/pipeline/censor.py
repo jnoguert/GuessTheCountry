@@ -112,6 +112,28 @@ def build_censor_terms(qid: str, lang: str, core: Dict, lexical: Dict) -> Set[st
         for dem in entity.get('demonyms', {}).get(lang, []):
             terms.update(expand_demonym(dem, lang))
 
+        # Languages spoken there: names are lowercase in es/ca ("catalán",
+        # "euskera") so the proper-noun pass misses them; they also inflect
+        # like demonyms ("catalanes"), hence the expansion.
+        for lang_qid in country.get('languages', []):
+            lang_entity = lexical.get(lang_qid, {})
+            label = lang_entity.get('labels', {}).get(lang, {}).get('value', '')
+            if label:
+                terms.update(expand_demonym(label, lang))
+            for alias in lang_entity.get('aliases', {}).get(lang, []):
+                val = alias.get('value', '')
+                if val and '(' not in val:
+                    terms.update(expand_demonym(val, lang))
+
+        # Currency ("peseta", "danish krone" -> already partly covered by
+        # demonyms, but the noun itself can be a giveaway too)
+        currency_qid = country.get('currency')
+        if currency_qid and currency_qid in lexical:
+            cur_entity = lexical[currency_qid]
+            label = cur_entity.get('labels', {}).get(lang, {}).get('value', '')
+            if label:
+                terms.add(label)
+
     return terms
 
 

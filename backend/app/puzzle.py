@@ -33,17 +33,12 @@ def _has_language(country: Dict[str, Any], lang: str) -> bool:
     return bool(country.get('i18n', {}).get(lang, {}).get('paragraphs'))
 
 
-def get_daily_country(day_index: Optional[int] = None,
-                      lang: Optional[str] = None) -> Optional[Dict[str, Any]]:
+def get_daily_country(day_index: Optional[int] = None) -> Optional[Dict[str, Any]]:
     """Deterministically pick the country for a given day (default: today).
 
-    Preference order, walking forward from the day's slot so every player
-    gets the same answer:
-      1. First country with content in ALL languages (consistent puzzle
-         across languages).
-      2. If none exists (partial dataset), first country with content in
-         the requested language.
-    """
+    Walks forward from the day's slot to the first country with content in
+    ALL languages, so every player gets the exact same answer regardless of
+    the language they play in."""
     loader = get_loader()
     if not loader.daily_order:
         return None
@@ -59,13 +54,6 @@ def get_daily_country(day_index: Optional[int] = None,
         if country and _has_all_languages(country):
             return {'qid': qid, **country}
 
-    if lang:
-        for offset in range(n):
-            qid = loader.daily_order[(day_index + offset) % n]
-            country = loader.get_country(qid)
-            if country and _has_language(country, lang):
-                return {'qid': qid, **country}
-
     return None
 
 
@@ -73,7 +61,7 @@ def get_todays_puzzle(lang: str, day_index: Optional[int] = None) -> Optional[Di
     if day_index is None:
         day_index = today_day_index()
 
-    country = get_daily_country(day_index, lang)
+    country = get_daily_country(day_index)
     if not country or not _has_language(country, lang):
         return None
 
@@ -90,7 +78,7 @@ def get_todays_puzzle(lang: str, day_index: Optional[int] = None) -> Optional[Di
 
 def check_guess(lang: str, guess_text: str,
                 day_index: Optional[int] = None) -> Dict[str, Any]:
-    country = get_daily_country(day_index, lang)
+    country = get_daily_country(day_index)
     if not country:
         return {'correct': False, 'error': 'No puzzle today'}
 

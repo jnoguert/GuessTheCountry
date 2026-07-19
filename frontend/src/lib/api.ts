@@ -1,7 +1,12 @@
-// Same-origin relative URL: works in dev (Vite proxy), Docker, Codespaces
-// and any deployment, since FastAPI serves both the app and the API.
-// VITE_API_BASE remains as an override for split deployments.
-const API_BASE = import.meta.env.VITE_API_BASE || '/api'
+// Game "API": everything is computed client-side from static game.json
+// (see engine.ts), so the app runs on GitHub Pages or any static host.
+// The function shapes mirror the old HTTP API so the rest of the app
+// doesn't care where answers come from.
+
+import {
+  loadGameData, getDailyCountry, checkGuess as engineCheckGuess,
+  listCountries, todayDayIndex, puzzleIdForDay,
+} from './engine'
 
 export interface PuzzleData {
   puzzle_id: string
@@ -27,9 +32,19 @@ export interface CountryOption {
 }
 
 export async function fetchPuzzle(lang: string): Promise<PuzzleData> {
-  const res = await fetch(`${API_BASE}/puzzle/${lang}`)
-  if (!res.ok) throw new Error('Failed to fetch puzzle')
-  return res.json()
+  const data = await loadGameData()
+  const dayIndex = todayDayIndex(data.epoch)
+  const daily = getDailyCountry(data, dayIndex)
+  if (!daily) throw new Error('No puzzle available')
+
+  const paragraphs = daily.country.i18n[lang]?.paragraphs ?? []
+  if (!paragraphs.length) throw new Error('No puzzle available in this language')
+
+  return {
+    puzzle_id: puzzleIdForDay(data.epoch, dayIndex),
+    max_guesses: paragraphs.length,
+    paragraphs: [paragraphs[0]],
+  }
 }
 
 export async function submitGuess(
@@ -38,17 +53,37 @@ export async function submitGuess(
   guessNumber: number,
   guessText: string
 ): Promise<GuessResponse> {
-  const res = await fetch(`${API_BASE}/guess`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ lang, puzzle_id: puzzleId, guess_number: guessNumber, guess_text: guessText }),
-  })
-  if (!res.ok) throw new Error('Failed to submit guess')
-  return res.json()
+  const data = await loadGameData()
+  const epochMs = new Date(data.epoch + 'T00:00:00Z').getTime()
+  const puzzleMs = new Date(puzzleId + 'T00:00:00Z').getTime()
+  const dayIndex = Math.round((puzzleMs - epochMs) / 86400000)
+
+  const daily = getDailyCountry(data, dayIndex)
+  if (!daily) throw new Error('No puzzle available')
+
+  const i18n = daily.country.i18n[lang]
+  const paragraphs = i18n?.paragraphs ?? []
+  const answer = {
+    name: i18n?.name ?? '',
+    capital: i18n?.capital ?? '',
+    iso2: daily.country.iso2,
+  }
+
+  if (engineCheckGuess(daily.country, lang, guessText)) {
+    return { correct: true, game_over: true, answer }
+  }
+
+  const nextParaIdx = guessNumber
+  const gameOver = nextParaIdx >= paragraphs.length
+  return {
+    correct: false,
+    game_over: gameOver,
+    next_paragraph: gameOver ? undefined : paragraphs[nextParaIdx],
+    answer: gameOver ? answer : undefined,
+  }
 }
 
 export async function fetchCountries(lang: string): Promise<CountryOption[]> {
-  const res = await fetch(`${API_BASE}/countries/${lang}`)
-  if (!res.ok) throw new Error('Failed to fetch countries')
-  return res.json()
+  const data = await loadGameData()
+  return listCountries(data, lang)
 }

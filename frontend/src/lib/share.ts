@@ -1,7 +1,7 @@
 export function generateShareText(guessCount: number, isWon: boolean, puzzleId: string): string {
   const emoji = isWon ? '🟩' : '🟥'
   const result = emoji.repeat(guessCount)
-  return `Guess the Country #${puzzleId}\n${result}\n\nhttps://guessthecountry.example.com`
+  return `Guess the Country #${puzzleId}\n${result}\n\nhttps://jnoguert.github.io/GuessTheCountry/`
 }
 
 export function copyToClipboard(text: string): Promise<void> {
