@@ -74,6 +74,40 @@ def test_own_name_is_censored_in_paragraphs(dataset):
     assert not leaks, 'Name leaks found:\n' + '\n'.join(leaks[:20])
 
 
+def test_daily_order_is_shuffled(dataset):
+    """The rotation must not be alphabetical/insertion order."""
+    countries, daily_order = dataset
+    assert daily_order != sorted(daily_order)
+    assert daily_order != sorted(daily_order, key=lambda q: int(q[1:]))
+    insertion_order = list(countries.keys())
+    assert daily_order != insertion_order
+
+
+def test_consecutive_days_are_varied(dataset, monkeypatch):
+    """A window of consecutive days must yield distinct, non-alphabetical
+    countries once the dataset is complete."""
+    import app.data_loader as dl
+    from app import puzzle
+
+    countries, daily_order = dataset
+    loader = dl.DataLoader.__new__(dl.DataLoader)
+    loader.countries = countries
+    loader.daily_order = daily_order
+    monkeypatch.setattr(dl, '_loader', loader)
+
+    start = puzzle.today_day_index()
+    names = []
+    for day in range(start, start + 30):
+        country = puzzle.get_daily_country(day_index=day)
+        assert country is not None
+        names.append(country['i18n']['en']['name'])
+
+    # 30 consecutive days: mostly distinct answers...
+    assert len(set(names)) >= 25, f'answers repeat too much: {names}'
+    # ...and not served in alphabetical order
+    assert names != sorted(names)
+
+
 def test_simulate_a_year_of_puzzles(dataset, monkeypatch):
     """Every day for the next 365 days must produce a playable puzzle."""
     import app.data_loader as dl
