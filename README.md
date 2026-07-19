@@ -43,24 +43,6 @@ make rebuild       # Rebuild and restart
 make clean         # Clean everything
 ```
 
-### Android APK (offline play)
-
-The game is fully client-side, so the Android app bundles everything
-(including the puzzle data) and works with no internet connection.
-
-**Easiest — download from CI:** every push to `main` runs the
-"Build Android APK" workflow. Open the run in the Actions tab and grab the
-`GuessTheCountry-apk` artifact, then sideload it on your phone.
-
-**Locally (requires Android Studio / SDK):**
-```bash
-cd frontend
-npm run build
-npx cap sync android
-cd android && ./gradlew assembleDebug
-# APK at android/app/build/outputs/apk/debug/app-debug.apk
-```
-
 ### Manual Development Setup
 
 If you prefer to run without Docker:
