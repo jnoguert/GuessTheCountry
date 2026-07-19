@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { fetchPuzzle, fetchCountries, submitGuess, fetchPuzzleState, CountryOption } from './lib/api'
+import { normalizeText } from './lib/engine'
 import {
   getGameState, saveGameState, clearGameState, getLanguage, setLanguage,
   getTheme, setTheme, getStats, recordGameEnd, GameState, Stats,
@@ -37,6 +38,12 @@ export default function App() {
 
   const t = useI18n(lang ?? 'en')
   const gameOver = isWon || isLost
+
+  // Countries already tried disappear from the autocomplete list
+  const availableCountries = useMemo(() => {
+    const tried = new Set(guesses.map((g) => normalizeText(g)))
+    return countries.filter((c) => !tried.has(normalizeText(c.name)))
+  }, [countries, guesses])
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -117,6 +124,14 @@ export default function App() {
 
   const handleGuess = async (guessText: string) => {
     if (!lang || !puzzleId || gameOver) return
+
+    // Repeating an already-tried country must not waste an attempt
+    if (guesses.some((g) => normalizeText(g) === normalizeText(guessText))) {
+      setIsShaking(false)
+      await new Promise((r) => setTimeout(r, 10))
+      setIsShaking(true)
+      return
+    }
 
     try {
       setIsShaking(false)
@@ -242,7 +257,7 @@ export default function App() {
                 <HintPanel unlocksUsed={unlocksUsed} onUnlock={handleUnlock} disabled={gameOver} t={t} />
                 <GuessHistory guesses={guesses} maxGuesses={MAX_GUESSES} label={t.guesses_remaining} />
                 <GuessInput
-                  countries={countries}
+                  countries={availableCountries}
                   onSubmit={handleGuess}
                   disabled={gameOver}
                   isShaking={isShaking}
