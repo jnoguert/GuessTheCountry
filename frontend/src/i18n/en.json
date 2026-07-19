@@ -1,0 +1,24 @@
+{
+  "title": "Guess the Country",
+  "subtitle": "Read censored Wikipedia excerpts and guess the country",
+  "language": "Language",
+  "guess": "Guess",
+  "guesses_remaining": "Guesses remaining",
+  "submit": "Submit",
+  "you_won": "You won!",
+  "you_lost": "You lost!",
+  "the_answer_was": "The answer was",
+  "capital": "Capital",
+  "try_again": "Try Again",
+  "share": "Share",
+  "loading": "Loading...",
+  "error": "Error loading puzzle. Please try again.",
+  "new_game": "New Game",
+  "placements": {
+    "guess1": "1st guess: Correct!",
+    "guess2": "2nd guess: Correct!",
+    "guess3": "3rd guess: Correct!",
+    "guess4": "4th guess: Correct!",
+    "guess5": "5th guess: Correct!"
+  }
+}

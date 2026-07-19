@@ -1,0 +1,33 @@
+{
+  "Q29": {
+    "iso2": "ES",
+    "iso3": "ESP",
+    "cctld": ".es",
+    "i18n": {
+      "en": {
+        "name": "Spain",
+        "aliases": [],
+        "capital": "Madrid",
+        "paragraphs": [
+          "███████ is a country located on the ██████ Peninsula in southwestern ███████. It is bordered to the northwest by ███████, to the northeast by ███████, to the east by the ███████████████ Sea, and to the south by ████████ (which is an overseas territory of the ███████ Kingdom). The country covers an area of about 505,600 square kilometers (195,300 sq mi)."
+        ]
+      },
+      "ca": {
+        "name": "Espanya",
+        "aliases": [],
+        "capital": "Madrid",
+        "paragraphs": [
+          "███████ és un país situat a la ███████ Ibèrica al sud-oest d'Europa. Limita al nord-oest amb ███████, al nord-est amb ███████, a l'est amb la ███████████████, i al sud amb ███████. El país té una extensió d'aproximadament 505.600 quilòmetres quadrats."
+        ]
+      },
+      "es": {
+        "name": "España",
+        "aliases": [],
+        "capital": "Madrid",
+        "paragraphs": [
+          "███████ es un país situado en la Península Ibérica al suroeste de Europa. Limita al noroeste con ███████, al noreste con ███████, al este con el ███████████████, y al sur con ███████. El país cubre un área de aproximadamente 505.600 kilómetros cuadrados."
+        ]
+      }
+    }
+  }
+}

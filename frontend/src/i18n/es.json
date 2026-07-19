@@ -1,0 +1,24 @@
+{
+  "title": "Adivina el país",
+  "subtitle": "Lee extractos censurados de Wikipedia y adivina el país",
+  "language": "Idioma",
+  "guess": "Adivina",
+  "guesses_remaining": "Adivinanzas restantes",
+  "submit": "Enviar",
+  "you_won": "¡Has ganado!",
+  "you_lost": "¡Has perdido!",
+  "the_answer_was": "La respuesta era",
+  "capital": "Capital",
+  "try_again": "Intentar de nuevo",
+  "share": "Compartir",
+  "loading": "Cargando...",
+  "error": "Error al cargar el rompecabezas. Por favor, intenta de nuevo.",
+  "new_game": "Nuevo juego",
+  "placements": {
+    "guess1": "1ª adivinanza: ¡Correcto!",
+    "guess2": "2ª adivinanza: ¡Correcto!",
+    "guess3": "3ª adivinanza: ¡Correcto!",
+    "guess4": "4ª adivinanza: ¡Correcto!",
+    "guess5": "5ª adivinanza: ¡Correcto!"
+  }
+}
