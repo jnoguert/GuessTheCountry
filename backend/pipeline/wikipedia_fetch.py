@@ -55,7 +55,7 @@ def get_wikipedia_title(lang: str, qid: str, lexical: Dict) -> str:
     return None
 
 
-def fetch_wikipedia_extract(lang: str, title: str) -> Tuple[str, str]:
+def fetch_wikipedia_extract(lang: str, title: str, max_retries: int = 3) -> Tuple[str, str]:
     lang_code = LANG_CODES[lang]
     url = f'https://{lang_code}.wikipedia.org/w/api.php'
 
@@ -73,20 +73,32 @@ def fetch_wikipedia_extract(lang: str, title: str) -> Tuple[str, str]:
 
     headers = {'User-Agent': 'GuessTheCountry/1.0'}
 
-    response = requests.get(url, params=params, headers=headers, timeout=15)
-    response.raise_for_status()
+    # Exponential backoff with retries
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, params=params, headers=headers, timeout=15)
+            response.raise_for_status()
 
-    data = response.json()
-    pages = data.get('query', {}).get('pages', [])
+            data = response.json()
+            pages = data.get('query', {}).get('pages', [])
 
-    if not pages:
-        return None, None
+            if not pages:
+                return None, None
 
-    page = pages[0]
-    extract = page.get('extract', '')
-    revid = page.get('lastrevid', '')
+            page = pages[0]
+            extract = page.get('extract', '')
+            revid = page.get('lastrevid', '')
 
-    return extract, revid
+            return extract, revid
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 429:  # Too Many Requests
+                wait_time = (2 ** attempt) * 5  # 5s, 10s, 20s
+                print(f"    Rate limited. Waiting {wait_time}s before retry...")
+                time.sleep(wait_time)
+            else:
+                raise
+
+    return None, None
 
 
 def split_into_paragraphs(text: str) -> List[Tuple[str, str]]:
@@ -146,9 +158,9 @@ def fetch_all_wikipedia_articles():
         os.makedirs(lang_dir, exist_ok=True)
 
         for idx, (qid, country_data) in enumerate(core.items()):
-            # Rate limiting: 0.5s delay between requests to respect Wikipedia's terms
+            # Rate limiting: 2s delay between requests to respect Wikipedia's terms
             if idx > 0:
-                time.sleep(0.5)
+                time.sleep(2)
 
             title = get_wikipedia_title(lang, qid, lexical)
             if not title:
