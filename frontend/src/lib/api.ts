@@ -1,7 +1,7 @@
-// Determine API base URL based on environment
-const API_BASE = import.meta.env.VITE_API_BASE
-  ? import.meta.env.VITE_API_BASE
-  : `${window.location.origin}/api`
+// Same-origin relative URL: works in dev (Vite proxy), Docker, Codespaces
+// and any deployment, since FastAPI serves both the app and the API.
+// VITE_API_BASE remains as an override for split deployments.
+const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 export interface PuzzleData {
   puzzle_id: string

@@ -1,0 +1,12 @@
+.git
+.gitignore
+**/node_modules
+**/dist
+**/venv
+**/__pycache__
+**/.pytest_cache
+backend/data/raw
+*.md
+Makefile
+RUN_LOCAL.ps1
+start-codespace.sh

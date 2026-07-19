@@ -23,12 +23,14 @@ git clone https://github.com/jnoguert/GuessTheCountry.git
 cd GuessTheCountry
 
 # Start everything
-docker-compose up
+docker-compose up --build
 ```
 
-Then open:
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8000
+Then open **http://localhost:8000** — the whole game (frontend + API) is served
+from that single port, so it works identically on your machine, in GitHub
+Codespaces (just open the forwarded port 8000), or on any cloud host.
+
+- **Game**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
 
 **Useful commands:**
@@ -63,7 +65,7 @@ If you prefer to run without Docker:
    ```bash
    cd backend
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
 

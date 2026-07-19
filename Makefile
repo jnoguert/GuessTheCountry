@@ -1,29 +1,26 @@
-.PHONY: up down logs build rebuild clean help ps
+.PHONY: up down logs build rebuild clean help ps test shell
 
 help:
 	@echo "Guess the Country - Docker Commands"
 	@echo "===================================="
 	@echo ""
-	@echo "make up          - Start the full stack (backend + frontend)"
-	@echo "make down        - Stop the full stack"
-	@echo "make rebuild     - Rebuild images and start"
-	@echo "make logs        - Show logs from both services"
-	@echo "make logs-backend - Show backend logs only"
-	@echo "make logs-frontend - Show frontend logs only"
-	@echo "make ps          - Show running containers"
-	@echo "make clean       - Stop and remove containers, volumes, images"
+	@echo "make up       - Build and start the app"
+	@echo "make down     - Stop the app"
+	@echo "make rebuild  - Rebuild image and start fresh"
+	@echo "make logs     - Follow logs"
+	@echo "make ps       - Show container status"
+	@echo "make test     - Run backend tests inside the container"
+	@echo "make shell    - Shell into the container"
+	@echo "make clean    - Stop and remove containers and images"
 	@echo ""
-	@echo "Once running:"
-	@echo "  - Frontend: http://localhost:5173"
-	@echo "  - Backend:  http://localhost:8000"
+	@echo "Once running, everything is on ONE port:"
+	@echo "  - Game:     http://localhost:8000"
 	@echo "  - API Docs: http://localhost:8000/docs"
 	@echo ""
 
 up:
-	docker-compose up -d
-	@echo "✓ Services starting..."
-	@echo "  Frontend: http://localhost:5173"
-	@echo "  Backend:  http://localhost:8000"
+	docker-compose up -d --build
+	@echo "Game running at http://localhost:8000"
 
 down:
 	docker-compose down
@@ -31,30 +28,23 @@ down:
 logs:
 	docker-compose logs -f
 
-logs-backend:
-	docker-compose logs -f backend
-
-logs-frontend:
-	docker-compose logs -f frontend
-
 build:
 	docker-compose build
 
-rebuild: clean build up
+rebuild:
+	docker-compose down
+	docker-compose build --no-cache
+	docker-compose up -d
 
 ps:
 	docker-compose ps
 
+test:
+	docker-compose exec app python -m pytest tests/ -v
+
+shell:
+	docker-compose exec app /bin/bash
+
 clean:
-	docker-compose down -v
-	docker image rm guess-the-country-backend guess-the-country-frontend 2>/dev/null || true
-	@echo "✓ Cleaned up"
-
-test-backend:
-	docker-compose exec backend pytest tests/
-
-shell-backend:
-	docker-compose exec backend /bin/bash
-
-shell-frontend:
-	docker-compose exec frontend /bin/sh
+	docker-compose down -v --rmi local
+	@echo "Cleaned up"

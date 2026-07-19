@@ -15,7 +15,7 @@ Write-Host "STEP 1: Backend Setup" -ForegroundColor Cyan
 Write-Host "=====================" -ForegroundColor Cyan
 Write-Host "Run this in Terminal 1:" -ForegroundColor White
 Write-Host "cd c:\Users\JosepNoguer\Desktop\guess_the_country\backend" -ForegroundColor Gray
-Write-Host ".\venv\Scripts\Activate.ps1" -ForegroundColor Gray
+Write-Host ".\.venv\Scripts\Activate.ps1" -ForegroundColor Gray
 Write-Host "python -m uvicorn app.main:app --reload" -ForegroundColor Gray
 Write-Host ""
 
@@ -36,7 +36,7 @@ Write-Host "OPTIONAL: Generate Full Game Data" -ForegroundColor Magenta
 Write-Host "=================================" -ForegroundColor Magenta
 Write-Host "To generate all ~195 countries (takes ~5 minutes):" -ForegroundColor White
 Write-Host "cd c:\Users\JosepNoguer\Desktop\guess_the_country\backend" -ForegroundColor Gray
-Write-Host ".\venv\Scripts\Activate.ps1" -ForegroundColor Gray
+Write-Host ".\.venv\Scripts\Activate.ps1" -ForegroundColor Gray
 Write-Host "python -m pipeline.build" -ForegroundColor Gray
 Write-Host ""
 
