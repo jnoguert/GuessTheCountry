@@ -14,6 +14,9 @@
   "loading": "Loading...",
   "error": "Error loading puzzle. Please try again.",
   "new_game": "New Game",
+  "close": "Close",
+  "copied": "Copied to clipboard!",
+  "come_back": "Come back tomorrow for a new country!",
   "placements": {
     "guess1": "1st guess: Correct!",
     "guess2": "2nd guess: Correct!",

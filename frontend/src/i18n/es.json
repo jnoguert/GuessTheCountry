@@ -14,6 +14,9 @@
   "loading": "Cargando...",
   "error": "Error al cargar el rompecabezas. Por favor, intenta de nuevo.",
   "new_game": "Nuevo juego",
+  "close": "Cerrar",
+  "copied": "¡Copiado al portapapeles!",
+  "come_back": "¡Vuelve mañana para un nuevo país!",
   "placements": {
     "guess1": "1ª adivinanza: ¡Correcto!",
     "guess2": "2ª adivinanza: ¡Correcto!",

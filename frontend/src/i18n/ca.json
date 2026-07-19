@@ -14,6 +14,9 @@
   "loading": "Carregant...",
   "error": "Error en carregar el trencaclosques. Si us plau, torna a provar.",
   "new_game": "Nou joc",
+  "close": "Tanca",
+  "copied": "Copiat al porta-retalls!",
+  "come_back": "Torna demà per un nou país!",
   "placements": {
     "guess1": "1a endevina: Correcte!",
     "guess2": "2a endevina: Correcte!",

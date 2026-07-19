@@ -2,7 +2,9 @@ const STORAGE_PREFIX = 'gtc_'
 
 export interface GameState {
   puzzleId: string
+  lang: string
   guesses: string[]
+  paragraphs: string[]
   isWon: boolean
   isLost: boolean
   answer?: {

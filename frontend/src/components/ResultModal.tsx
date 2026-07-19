@@ -10,19 +10,23 @@ interface ResultModalProps {
   } | null
   guessCount: number
   puzzleId: string
-  onNewGame: () => void
+  onClose: () => void
   t: Record<string, any>
 }
 
-export function ResultModal({ isOpen, isWon, answer, guessCount, puzzleId, onNewGame, t }: ResultModalProps) {
+export function ResultModal({ isOpen, isWon, answer, guessCount, puzzleId, onClose, t }: ResultModalProps) {
   if (!isOpen || !answer) return null
 
   const handleShare = () => {
     const shareText = generateShareText(guessCount, isWon, puzzleId)
     copyToClipboard(shareText).then(() => {
-      alert('Copied to clipboard!')
+      alert(t.copied)
     })
   }
+
+  const resultRow = isWon
+    ? '🟥'.repeat(Math.max(0, guessCount - 1)) + '🟩'
+    : '🟥'.repeat(guessCount)
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -43,17 +47,16 @@ export function ResultModal({ isOpen, isWon, answer, guessCount, puzzleId, onNew
         </div>
 
         <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            {isWon ? `${t.placements[`guess${guessCount}`]}` : `0/${5} 🟥🟥🟥🟥🟥`}
-          </p>
+          <p className="text-xl tracking-widest mb-1">{resultRow}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{t.come_back}</p>
         </div>
 
         <div className="flex gap-2">
-          <button onClick={handleShare} className="btn-secondary flex-1">
+          <button onClick={handleShare} className="btn-primary flex-1">
             {t.share}
           </button>
-          <button onClick={onNewGame} className="btn-primary flex-1">
-            {t.new_game}
+          <button onClick={onClose} className="btn-secondary flex-1">
+            {t.close}
           </button>
         </div>
       </div>
