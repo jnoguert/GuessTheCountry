@@ -100,14 +100,35 @@ def build_countries_json():
 
 
 def build_frontend_game_json(countries: Dict, daily_order: List[str]):
-    """Export the dataset for the fully client-side build (GitHub Pages)."""
+    """Export the dataset for the fully client-side build (GitHub Pages).
+
+    Slimmed: unplayable countries keep only their names/aliases (needed
+    for the autocomplete) since they can never be the daily answer, and
+    fields the frontend never reads are dropped.
+    """
     frontend_public = os.path.join(os.path.dirname(__file__), '../../frontend/public')
     os.makedirs(frontend_public, exist_ok=True)
+
+    slim = {}
+    for qid, country in countries.items():
+        playable = _is_playable(country)
+        slim[qid] = {
+            'iso2': country.get('iso2', ''),
+            'i18n': {
+                lang: {
+                    'name': i18n.get('name', ''),
+                    'capital': i18n.get('capital', ''),
+                    'aliases': i18n.get('aliases', []),
+                    'paragraphs': i18n.get('paragraphs', []) if playable else [],
+                }
+                for lang, i18n in country.get('i18n', {}).items()
+            },
+        }
 
     game = {
         'epoch': '2026-01-01',
         'dailyOrder': daily_order,
-        'countries': countries,
+        'countries': slim,
     }
 
     game_file = os.path.join(frontend_public, 'game.json')
@@ -118,6 +139,11 @@ def build_frontend_game_json(countries: Dict, daily_order: List[str]):
     print(f"Saved frontend game.json ({size_kb} KB)")
 
 
+def _is_playable(country: Dict) -> bool:
+    return all(country.get('i18n', {}).get(lang, {}).get('paragraphs')
+               for lang in ('en', 'ca', 'es'))
+
+
 def build_daily_order():
     print("Building daily order...")
 
@@ -125,7 +151,12 @@ def build_daily_order():
     with open(countries_file, 'r', encoding='utf-8') as f:
         countries = json.load(f)
 
-    qids = list(countries.keys())
+    # Only fully playable countries enter the rotation; otherwise the
+    # runtime skip-forward makes consecutive days repeat the same answer.
+    qids = [qid for qid, c in countries.items() if _is_playable(c)]
+    skipped = len(countries) - len(qids)
+    if skipped:
+        print(f"  {skipped} countries lack full content and are excluded from the rotation")
     random.seed(42)
     random.shuffle(qids)
 

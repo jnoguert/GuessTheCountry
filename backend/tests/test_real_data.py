@@ -22,9 +22,14 @@ def test_has_most_un_countries(dataset):
     assert len(countries) >= 180
 
 
-def test_daily_order_covers_all_countries(dataset):
+def test_daily_order_contains_exactly_the_playable_countries(dataset):
     countries, daily_order = dataset
-    assert sorted(daily_order) == sorted(countries.keys())
+    playable = {
+        qid for qid, c in countries.items()
+        if all(c['i18n'].get(lang, {}).get('paragraphs')
+               for lang in ('en', 'ca', 'es'))
+    }
+    assert sorted(daily_order) == sorted(playable)
 
 
 def test_enough_playable_countries(dataset):
@@ -102,8 +107,9 @@ def test_consecutive_days_are_varied(dataset, monkeypatch):
         assert country is not None
         names.append(country['i18n']['en']['name'])
 
-    # 30 consecutive days: mostly distinct answers...
-    assert len(set(names)) >= 25, f'answers repeat too much: {names}'
+    # 30 consecutive days: all distinct (rotation only holds playable
+    # countries, so the skip-forward never causes back-to-back repeats)
+    assert len(set(names)) == 30, f'answers repeat: {names}'
     # ...and not served in alphabetical order
     assert names != sorted(names)
 

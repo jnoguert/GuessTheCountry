@@ -35,6 +35,7 @@ export default function App() {
   const [answer, setAnswer] = useState<GameState['answer'] | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [pendingLang, setPendingLang] = useState<string | null>(null)
+  const [unlockPending, setUnlockPending] = useState(false)
 
   const t = useI18n(lang ?? 'en')
   const gameOver = isWon || isLost
@@ -165,7 +166,9 @@ export default function App() {
   }
 
   const handleUnlock = async () => {
-    if (!lang || gameOver || unlocksUsed >= MAX_UNLOCKS) return
+    // unlockPending guards against double-clicks racing the state update
+    if (!lang || gameOver || unlocksUsed >= MAX_UNLOCKS || unlockPending) return
+    setUnlockPending(true)
     try {
       const newUnlocks = unlocksUsed + 1
       const state = await fetchPuzzleState(lang, puzzleId, paragraphs.length + 1)
@@ -174,17 +177,20 @@ export default function App() {
       persist({ paragraphs: state.paragraphs, unlocksUsed: newUnlocks })
     } catch (err) {
       console.error('Failed to unlock hint:', err)
+    } finally {
+      setUnlockPending(false)
     }
   }
 
   const handleLangRequest = (newLang: string) => {
     if (!lang || newLang === lang) return
-    if (gameOver || guesses.length + unlocksUsed === 0 && paragraphs.length === 0) {
-      // Free switch when nothing has been seen or the game is over
+    if (gameOver) {
+      // Free switch once the game is over: nothing left to leak
       setLanguage(newLang)
       setLang(newLang)
       return
     }
+    // Mid-game the clues are already visible, so switching always costs
     setPendingLang(newLang)
   }
 
@@ -254,7 +260,7 @@ export default function App() {
 
             {!gameOver && (
               <>
-                <HintPanel unlocksUsed={unlocksUsed} onUnlock={handleUnlock} disabled={gameOver} t={t} />
+                <HintPanel unlocksUsed={unlocksUsed} onUnlock={handleUnlock} disabled={gameOver || unlockPending} t={t} />
                 <GuessHistory guesses={guesses} maxGuesses={MAX_GUESSES} label={t.guesses_remaining} />
                 <GuessInput
                   countries={availableCountries}
