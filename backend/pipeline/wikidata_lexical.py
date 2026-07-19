@@ -31,7 +31,7 @@ def collect_qids(countries: Dict) -> Set[str]:
     return qids
 
 
-def batch_fetch_entities(qids: List[str], languages: List[str] = ['en', 'ca', 'es']) -> Dict:
+def batch_fetch_entities(qids: List[str], country_qids: List[str], languages: List[str] = ['en', 'ca', 'es']) -> Dict:
     print(f"Fetching lexical data for {len(qids)} entities...")
     headers = {
         'User-Agent': 'GuessTheCountry/1.0 (https://github.com/yourusername/guess-the-country)'
@@ -59,7 +59,7 @@ def batch_fetch_entities(qids: List[str], languages: List[str] = ['en', 'ca', 'e
 
     # Also fetch demonyms per language (P1549)
     for lang in languages:
-        demonyms = fetch_demonyms_for_countries(list(countries.keys()), lang)
+        demonyms = fetch_demonyms_for_countries(country_qids, lang)
         for qid, dem_list in demonyms.items():
             if qid in entities:
                 if 'demonyms' not in entities[qid]:
@@ -121,8 +121,9 @@ def has_non_latin(text: str) -> bool:
 def fetch_wikidata_lexical():
     countries = load_or_fetch_core()
     all_qids = list(collect_qids(countries))
+    country_qids = list(countries.keys())
 
-    entities = batch_fetch_entities(all_qids)
+    entities = batch_fetch_entities(all_qids, country_qids)
 
     output_file = os.path.join(RAW_DATA_DIR, 'wikidata_lexical.json')
     with open(output_file, 'w', encoding='utf-8') as f:
