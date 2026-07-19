@@ -34,9 +34,6 @@ frontend/.vite/
 !backend/data/daily_order.json
 !backend/data/countries.db
 
-# Runtime player data - never commit
-backend/data/leaderboard.db
-
 # IDE
 .vscode/
 .idea/

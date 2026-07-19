@@ -9,7 +9,6 @@ export interface GameState {
   isWon: boolean
   isLost: boolean
   score?: number
-  submitted?: boolean
   answer?: {
     name: string
     capital: string
