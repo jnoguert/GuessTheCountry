@@ -9,6 +9,10 @@ RUN npm ci --no-audit
 # Copy source
 COPY . .
 
+# API base URL must be baked in at build time (Vite static build)
+ARG VITE_API_BASE=http://localhost:8000/api
+ENV VITE_API_BASE=$VITE_API_BASE
+
 # Build
 RUN npm run build
 

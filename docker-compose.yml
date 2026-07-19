@@ -14,10 +14,10 @@ services:
       - ./backend/data:/app/data
       - ./backend/pipeline:/app/pipeline
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 5s
     networks:
       - guess-network
@@ -26,14 +26,15 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # URL the BROWSER uses to reach the backend (baked in at build time)
+        - VITE_API_BASE=http://localhost:8000/api
     container_name: guess-the-country-frontend
     ports:
       - "5173:5173"
     depends_on:
       backend:
         condition: service_healthy
-    environment:
-      - VITE_API_BASE=http://backend:8000/api
     networks:
       - guess-network
 
