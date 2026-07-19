@@ -1,84 +1,91 @@
-import pytest
-from pipeline.censor import build_censor_terms, create_censor_regex, censor_paragraph
+"""Tests for the censorship engine (pipeline/censor.py)."""
+from pipeline.censor import create_censor_regex, censor_paragraph, expand_demonym
 
 
-class TestCensorEdgeCases:
-    """Test edge cases in the censorship algorithm"""
+def censor(terms, text):
+    pattern = create_censor_regex(set(terms), 'en')
+    return censor_paragraph(text, pattern)
 
-    def test_niger_nigeria_substring_safety(self):
-        """Niger and Nigeria should censor independently without collision"""
-        niger_regex = r'\bNiger\b'
-        nigeria_regex = r'\bNigeria\b'
 
-        text = "Nigeria and Niger are neighboring countries."
+class TestWordBoundaries:
+    def test_niger_does_not_censor_inside_nigeria(self):
+        result = censor(['Niger'], 'Nigeria and Niger are neighbours.')
+        assert 'Nigeria' in result
+        assert ' Niger ' not in result
+        assert '█████' in result
 
-        # Niger regex should match only Niger
-        import re
-        niger_matches = len(re.findall(niger_regex, text, re.IGNORECASE))
-        nigeria_matches = len(re.findall(nigeria_regex, text, re.IGNORECASE))
+    def test_nigeria_does_not_censor_niger(self):
+        result = censor(['Nigeria'], 'Nigeria and Niger are neighbours.')
+        assert 'Niger are' in result
+        assert 'Nigeria' not in result
 
-        assert niger_matches == 1
-        assert nigeria_matches == 1
-
-    def test_guinea_family_distinctness(self):
-        """Guinea, Guinea-Bissau, Equatorial Guinea, and Papua New Guinea should not collide"""
-        patterns = [
-            r'\bGuinea\b',
-            r'\bGuinea-Bissau\b',
-            r'\bEquatorial Guinea\b',
-            r'\bPapua New Guinea\b',
-        ]
-
-        text = "Guinea, Guinea-Bissau, Equatorial Guinea, and Papua New Guinea are different."
-
-        import re
-        for pattern in patterns:
-            matches = re.findall(pattern, text, re.IGNORECASE)
-            assert len(matches) == 1, f"Pattern {pattern} should match exactly once"
+    def test_possessive_form(self):
+        result = censor(['France'], "France's economy is large.")
+        assert 'France' not in result
+        assert "'s economy" in result
 
     def test_catalan_elision(self):
-        """Catalan elision (l'Índia) should still match Índia"""
-        text = "L'Índia és una nació gran."
+        pattern = create_censor_regex({'Índia'}, 'ca')
+        result = censor_paragraph("L'Índia és un país gran.", pattern)
+        assert 'Índia' not in result
+        assert "L'" in result
 
-        import re
-        pattern = r'\bÍndia\b'
-        matches = re.findall(pattern, text, re.IGNORECASE | re.UNICODE)
-        assert len(matches) == 1
 
-    def test_self_referential_capitals(self):
-        """Vatican, Monaco, Singapore where capital == country should not double-list"""
-        # This is more of a data-structure test, ensuring term dedup works
-        terms = {'Vatican', 'Vatican', 'Singapore', 'Singapore City'}
-        unique_terms = len(terms)
-        assert unique_terms <= 4
+class TestLongestFirstOrdering:
+    def test_multiword_term_censored_fully(self):
+        # "United States of America" must not leave "of America" behind
+        result = censor(['United States', 'United States of America'],
+                        'The United States of America is large.')
+        assert 'of America' not in result
+        assert result.count('█') > 0
 
-    def test_spanish_demonym_expansion(self):
-        """Spanish demonym variants should be censored"""
-        from pipeline.censor import expand_demonym
+    def test_guinea_family(self):
+        result = censor(['Guinea', 'Guinea-Bissau'],
+                        'Guinea-Bissau borders Guinea.')
+        # Both fully censored, nothing left over
+        assert 'Guinea' not in result
+        assert 'Bissau' not in result
 
-        base = "español"
-        expanded = expand_demonym(base, "es")
 
-        # Should include Spanish, Spanish
-        assert any('español' in form.lower() for form in expanded)
+class TestCensorShape:
+    def test_per_word_blocks_preserved(self):
+        result = censor(['United States'], 'The United States is big.')
+        # Two words -> two blocks separated by a space
+        assert '█' in result
+        blocks = [t for t in result.split() if set(t) <= {'█'} or t.rstrip('.,') and set(t.rstrip('.,')) <= {'█'}]
+        assert len(blocks) == 2
 
-    def test_word_boundary_with_punctuation(self):
-        """Word boundaries should work with punctuation"""
-        text = "The United States' economy is large (USA)."
+    def test_case_insensitive(self):
+        result = censor(['France'], 'FRANCE, france and France.')
+        assert 'france' not in result.lower()
 
-        import re
-        pattern = r'\b(United States|USA)\b'
-        matches = re.findall(pattern, text, re.IGNORECASE)
-        assert len(matches) == 2
+    def test_no_terms_returns_text_unchanged(self):
+        text = 'Nothing to censor here.'
+        assert censor_paragraph(text, None) == text
 
-    def test_censor_paragraph_preserves_spacing(self):
-        """Censored text should preserve word spacing"""
-        text = "The capital of France is Paris."
 
-        import re
-        pattern = r'\b(France|Paris)\b'
-        censored = censor_paragraph(text, pattern)
+class TestAccents:
+    def test_accented_terms_censored(self):
+        pattern = create_censor_regex({'España', 'Perú'}, 'es')
+        result = censor_paragraph('España limita con Perú.', pattern)
+        assert 'España' not in result
+        assert 'Perú' not in result
 
-        # Should have roughly the same structure
-        assert '█' in censored
-        assert len(censored.split()) == len(text.split())  # Same number of tokens
+
+class TestDemonymExpansion:
+    def test_spanish_gender_and_plural(self):
+        forms = expand_demonym('español', 'es')
+        assert 'español' in forms
+
+    def test_english_plural(self):
+        forms = expand_demonym('German', 'en')
+        assert 'German' in forms
+        assert 'Germans' in forms
+
+    def test_expanded_forms_are_censored(self):
+        terms = set()
+        for f in expand_demonym('español', 'es'):
+            terms.add(f)
+        pattern = create_censor_regex(terms, 'es')
+        result = censor_paragraph('El pueblo español habla.', pattern)
+        assert 'español' not in result
