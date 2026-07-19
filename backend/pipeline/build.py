@@ -5,9 +5,10 @@ from datetime import datetime, timezone
 from typing import Dict, List
 
 from .wikidata_core import fetch_wikidata_core
-from .wikidata_lexical import fetch_wikidata_lexical
+from .wikidata_lexical import fetch_wikidata_lexical, clean_aliases
 from .wikipedia_fetch import fetch_all_wikipedia_articles
 from .censor import censor_all_articles
+from .db_store import write_database
 
 RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
 DATA_DIR = os.path.join(os.path.dirname(__file__), '../data')
@@ -63,25 +64,25 @@ def build_countries_json():
 
         i18n = {}
         for lang in ['en', 'ca', 'es']:
-            lang_label = lexical.get(qid, {}).get('labels', {}).get(lang, {}).get('value', country_data.get('label', ''))
+            entity = lexical.get(qid, {})
+            lang_label = entity.get('labels', {}).get(lang, {}).get('value', country_data.get('label', ''))
             capital_qid = country_data.get('capital')
             capital_label = ''
             if capital_qid and capital_qid in lexical:
                 capital_label = lexical[capital_qid].get('labels', {}).get(lang, {}).get('value', '')
 
-            wiki_key = f'{qid}_{lang}'
-            paragraphs = articles.get(wiki_key, [])
+            # Aliases let guesses like "USA" or "Estats Units" match
+            aliases = clean_aliases(entity.get('aliases', {}).get(lang, []))
 
-            if paragraphs or True:
-                censored_data = censored.get(qid, {}).get(lang, {})
-                censored_paragraphs = censored_data.get('paragraphs', [])
+            censored_data = censored.get(qid, {}).get(lang, {})
+            censored_paragraphs = censored_data.get('paragraphs', [])
 
-                i18n[lang] = {
-                    'name': lang_label,
-                    'capital': capital_label,
-                    'paragraphs': censored_paragraphs[:5] if censored_paragraphs else [],
-                    'aliases': []
-                }
+            i18n[lang] = {
+                'name': lang_label,
+                'capital': capital_label,
+                'paragraphs': censored_paragraphs[:5] if censored_paragraphs else [],
+                'aliases': aliases
+            }
 
         countries[qid] = {
             'iso2': iso2,
@@ -130,10 +131,13 @@ def build_all():
     fetch_all_wikipedia_articles()
 
     print("\nStage 4: Building countries.json...")
-    build_countries_json()
+    countries = build_countries_json()
 
     print("\nStage 5: Building daily rotation order...")
-    build_daily_order()
+    daily_order = build_daily_order()
+
+    print("\nStage 6: Writing SQLite database...")
+    write_database(countries, daily_order)
 
     print("\n=== Build complete! ===\n")
 

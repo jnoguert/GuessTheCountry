@@ -69,18 +69,17 @@ def load_data():
 
 def build_censor_terms(qid: str, lang: str, core: Dict, lexical: Dict) -> Set[str]:
     terms = set()
+    entity = lexical.get(qid, {})
 
     # Self name + aliases
-    if qid in lexical:
-        entity = lexical[qid]
-        if lang in entity.get('labels', {}):
-            terms.add(entity['labels'][lang].get('value', ''))
+    if lang in entity.get('labels', {}):
+        terms.add(entity['labels'][lang].get('value', ''))
 
-        if lang in entity.get('aliases', {}):
-            for alias in entity['aliases'][lang]:
-                val = alias.get('value', '')
-                if '(' not in val:
-                    terms.add(val)
+    if lang in entity.get('aliases', {}):
+        for alias in entity['aliases'][lang]:
+            val = alias.get('value', '')
+            if '(' not in val:
+                terms.add(val)
 
     # Capital
     if qid in core:
@@ -105,15 +104,13 @@ def build_censor_terms(qid: str, lang: str, core: Dict, lexical: Dict) -> Set[st
                 if lang in border_entity.get('labels', {}):
                     terms.add(border_entity['labels'][lang].get('value', ''))
 
-                # Add demonyms of border countries
-                if 'demonyms' in border_entity and lang in border_entity.get('demonyms', {}):
-                    for dem in border_entity['demonyms'][lang]:
-                        terms.add(dem)
+                # Add demonyms of border countries (with inflected forms)
+                for dem in border_entity.get('demonyms', {}).get(lang, []):
+                    terms.update(expand_demonym(dem, lang))
 
-        # Own demonyms
-        if 'demonyms' in entity and lang in entity.get('demonyms', {}):
-            for dem in entity['demonyms'][lang]:
-                terms.add(dem)
+        # Own demonyms (with inflected forms)
+        for dem in entity.get('demonyms', {}).get(lang, []):
+            terms.update(expand_demonym(dem, lang))
 
     return terms
 
@@ -122,13 +119,11 @@ def create_censor_regex(terms: Set[str], lang: str) -> str:
     if not terms:
         return None
 
-    terms_list = list(terms)
-    terms_list = [normalize_text(t) for t in terms_list]
-    terms_list = [t for t in terms_list if t]
-    terms_list = sorted(terms_list, key=lambda x: (-len(x.split()), -len(x)))
+    normalized = {normalize_text(t) for t in terms if normalize_text(t)}
+    # Longest-first so multi-word terms match before their substrings
+    terms_list = sorted(normalized, key=lambda x: (-len(x.split()), -len(x)))
 
     escaped = [re.escape(t) for t in terms_list]
-    escaped = list(set(escaped))
 
     if not escaped:
         return None

@@ -157,15 +157,23 @@ def fetch_all_wikipedia_articles():
         lang_dir = os.path.join(RAW_DATA_DIR, f'wikipedia_{lang}')
         os.makedirs(lang_dir, exist_ok=True)
 
-        for idx, (qid, country_data) in enumerate(core.items()):
-            # Rate limiting: 2s delay between requests to respect Wikipedia's terms
-            if idx > 0:
-                time.sleep(2)
+        for qid, country_data in core.items():
+            # Skip if already cached from a previous run with usable content
+            cache_file = os.path.join(lang_dir, f'{qid}.json')
+            if os.path.exists(cache_file):
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    cached = json.load(f)
+                if cached.get('paragraphs'):
+                    articles[f'{qid}_{lang}'] = cached['paragraphs']
+                    continue
 
             title = get_wikipedia_title(lang, qid, lexical)
             if not title:
                 print(f"  No title found for {qid} in {lang}")
                 continue
+
+            # Rate limiting: pace requests to respect Wikipedia's limits
+            time.sleep(1.5)
 
             try:
                 extract, revid = fetch_wikipedia_extract(lang, title)
