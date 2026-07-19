@@ -30,7 +30,13 @@ ORDER BY ?countryLabel
 """
 
 
-def fetch_wikidata_core() -> Dict:
+def fetch_wikidata_core(force: bool = False) -> Dict:
+    output_file = os.path.join(RAW_DATA_DIR, 'wikidata_stage_a.json')
+    if not force and os.path.exists(output_file):
+        print("Core country data already cached, skipping fetch.")
+        with open(output_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+
     print("Fetching core country data from Wikidata...")
     headers = {
         'User-Agent': 'GuessTheCountry/1.0 (https://github.com/yourusername/guess-the-country)',

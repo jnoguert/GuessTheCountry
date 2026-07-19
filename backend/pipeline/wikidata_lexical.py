@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import re
+import time
 from typing import Dict, List, Set
 from .wikidata_core import fetch_wikidata_core
 
@@ -69,14 +70,17 @@ def batch_fetch_entities(qids: List[str], country_qids: List[str], languages: Li
     return entities
 
 
-def fetch_demonyms_for_countries(country_qids: List[str], lang: str) -> Dict[str, List[str]]:
+def fetch_demonyms_for_countries(country_qids: List[str], lang: str,
+                                 max_retries: int = 3) -> Dict[str, List[str]]:
+    # VALUES with an explicit QID list is far cheaper than re-walking the
+    # sovereign-state class tree, which caused query timeouts.
+    values = ' '.join('wd:' + qid for qid in country_qids)
     sparql_query = f"""
     SELECT ?country ?demonym
     WHERE {{
-      ?country wdt:P31/wdt:P279* wd:Q3624078 ;
-               wdt:P1549 ?demonym .
+      VALUES ?country {{ {values} }}
+      ?country wdt:P1549 ?demonym .
       FILTER(LANG(?demonym) = "{lang}")
-      FILTER(?country IN ({','.join(['wd:' + qid for qid in country_qids])}))
     }}
     """
 
@@ -85,13 +89,23 @@ def fetch_demonyms_for_countries(country_qids: List[str], lang: str) -> Dict[str
         'Accept': 'application/sparql-results+json'
     }
 
-    response = requests.get(
-        'https://query.wikidata.org/sparql',
-        params={'query': sparql_query},
-        headers=headers,
-        timeout=30
-    )
-    response.raise_for_status()
+    response = None
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(
+                'https://query.wikidata.org/sparql',
+                params={'query': sparql_query},
+                headers=headers,
+                timeout=60
+            )
+            response.raise_for_status()
+            break
+        except (requests.exceptions.Timeout, requests.exceptions.HTTPError):
+            if attempt == max_retries - 1:
+                raise
+            wait = (2 ** attempt) * 5
+            print(f"    Wikidata query failed, retrying in {wait}s...")
+            time.sleep(wait)
 
     result = {}
     for binding in response.json().get('results', {}).get('bindings', []):
@@ -118,7 +132,13 @@ def has_non_latin(text: str) -> bool:
     return bool(re.search(r'[^\w\s\-\'À-ÿ]', text, re.UNICODE))
 
 
-def fetch_wikidata_lexical():
+def fetch_wikidata_lexical(force: bool = False):
+    output_file = os.path.join(RAW_DATA_DIR, 'wikidata_lexical.json')
+    if not force and os.path.exists(output_file):
+        print("Lexical data already cached, skipping fetch.")
+        with open(output_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+
     countries = load_or_fetch_core()
     all_qids = list(collect_qids(countries))
     country_qids = list(countries.keys())
