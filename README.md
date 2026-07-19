@@ -11,9 +11,41 @@ A daily word-puzzle game where you guess countries based on censored Wikipedia e
 - 🎯 **Smart Censorship**: Automatically redacts country names, capitals, bordering countries, demonyms, and famous mountains
 - 💾 **Persistent State**: Your progress is saved in localStorage
 
-## Getting Started
+## Getting Started (Quickest Way - Docker!)
 
-### Prerequisites
+### Docker Setup (Recommended)
+
+The easiest way to run the entire app with one command:
+
+```bash
+# Clone the repo
+git clone https://github.com/jnoguert/GuessTheCountry.git
+cd GuessTheCountry
+
+# Start everything
+docker-compose up
+```
+
+Then open:
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+
+**Useful commands:**
+```bash
+make help          # See all available commands
+make up            # Start services
+make down          # Stop services
+make logs          # View logs
+make rebuild       # Rebuild and restart
+make clean         # Clean everything
+```
+
+### Manual Development Setup
+
+If you prefer to run without Docker:
+
+#### Prerequisites
 
 - Python 3.8+
 - Node.js 16+
