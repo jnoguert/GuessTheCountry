@@ -6,9 +6,11 @@ interface GuessInputProps {
   onSubmit: (guess: string) => void
   disabled: boolean
   isShaking: boolean
+  placeholder: string
+  submitLabel: string
 }
 
-export function GuessInput({ countries, onSubmit, disabled, isShaking }: GuessInputProps) {
+export function GuessInput({ countries, onSubmit, disabled, isShaking, placeholder, submitLabel }: GuessInputProps) {
   const [input, setInput] = useState('')
   const [open, setOpen] = useState(false)
 
@@ -41,7 +43,7 @@ export function GuessInput({ countries, onSubmit, disabled, isShaking }: GuessIn
               handleSubmit(input)
             }
           }}
-          placeholder="Guess a country..."
+          placeholder={placeholder}
           disabled={disabled}
           className="input-base mb-2"
         />
@@ -66,7 +68,7 @@ export function GuessInput({ countries, onSubmit, disabled, isShaking }: GuessIn
         disabled={disabled || !input.trim()}
         className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Submit
+        {submitLabel}
       </button>
     </div>
   )

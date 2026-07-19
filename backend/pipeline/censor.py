@@ -183,7 +183,10 @@ PROPER_NOUN_WHITELIST = {
 # Harmless all-caps abbreviations that carry no geographic clue.
 ACRONYM_WHITELIST = {'GDP', 'PPP', 'HDI', 'GNI', 'UTC', 'TV', 'DNA', 'AD', 'BC', 'CE', 'BCE'}
 
-_WORD_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿĀ-ſ]+", re.UNICODE)
+# Letters incl. Latin Extended Additional (ṭ, ā... used in transliterations);
+# hyphenated compounds ("sud-africà") are one token so name stems match them.
+_LETTERS = r"A-Za-zÀ-ÖØ-öø-ÿĀ-ſḀ-ỿ"
+_WORD_RE = re.compile(rf"[{_LETTERS}]+(?:-[{_LETTERS}]+)*", re.UNICODE)
 
 
 def _is_capitalized(word: str) -> bool:
@@ -196,11 +199,13 @@ def _is_acronym(word: str) -> bool:
 
 def _sentence_starts(text: str) -> Set[int]:
     """Offsets of words that begin a sentence (capitalization there is
-    not evidence of a proper noun)."""
+    not evidence of a proper noun). Only true sentence enders count:
+    an opening parenthesis or quote is NOT a sentence start, otherwise
+    '(Afghānistān, ...)' style variants would escape censorship."""
     starts = set()
     for m in _WORD_RE.finditer(text):
         prefix = text[:m.start()].rstrip()
-        if not prefix or prefix[-1] in '.!?«"\'()[]':
+        if not prefix or prefix[-1] in '.!?':
             starts.add(m.start())
     return starts
 
@@ -219,6 +224,62 @@ def collect_proper_nouns(paragraphs, lang: str) -> Set[str]:
             if _is_capitalized(word) and word not in whitelist:
                 known.add(word)
     return known
+
+
+def _strip_accents(text: str) -> str:
+    decomposed = unicodedata.normalize('NFD', text)
+    return ''.join(c for c in decomposed if unicodedata.category(c) != 'Mn')
+
+
+def build_name_stems(qid: str, lang: str, core: Dict, lexical: Dict) -> Set[str]:
+    """Normalized prefixes of the country's own single-word names/aliases.
+
+    Languages derive lowercase adjectives from country names ('Austràlia'
+    -> 'australià', 'Austria' -> 'austríaco'); when Wikidata lacks that
+    demonym, exact term matching misses them. Any word starting with one
+    of these stems is a giveaway inside the country's own article, so
+    over-matching here is safe by design.
+    """
+    entity = lexical.get(qid, {})
+    words = set()
+
+    label = entity.get('labels', {}).get(lang, {}).get('value', '')
+    if label:
+        words.add(label)
+    for alias in entity.get('aliases', {}).get(lang, []):
+        val = alias.get('value', '')
+        if val and '(' not in val:
+            words.add(val)
+
+    stems = set()
+    for word in words:
+        # Single-word names only: components of multi-word names
+        # ("United", "States") are common words and would over-censor.
+        if ' ' in word.strip() or len(word) < 4:
+            continue
+        normalized = _strip_accents(word).casefold()
+        stems.add(normalized[:max(4, len(normalized) - 3)])
+    return stems
+
+
+def censor_name_stems(text: str, stems: Set[str]) -> str:
+    """Black out any word derived from the country's own name.
+
+    Substring (not prefix) matching so compounds are caught too:
+    'afrobolivians', 'lusobrasilera'. Over-censoring an occasional
+    unrelated word inside the country's own article is acceptable.
+    """
+    if not stems:
+        return text
+
+    def replace(m):
+        word = m.group(0)
+        normalized = _strip_accents(word).casefold()
+        if any(stem in normalized for stem in stems):
+            return '█' * len(word)
+        return word
+
+    return _WORD_RE.sub(replace, text)
 
 
 def censor_proper_nouns(text: str, lang: str, known: Set[str]) -> str:
@@ -265,6 +326,10 @@ def censor_all_articles():
                 # Pass 2: censor every remaining proper noun / toponym
                 known_proper = collect_proper_nouns(censored, lang)
                 censored = [censor_proper_nouns(p, lang, known_proper) for p in censored]
+                # Pass 3: censor lowercase words derived from the name
+                # ('australià', 'austríaco') that passes 1-2 can miss
+                stems = build_name_stems(qid, lang, core, lexical)
+                censored = [censor_name_stems(p, stems) for p in censored]
 
                 censored_articles[qid][lang] = {
                     'paragraphs': censored,

@@ -1,7 +1,18 @@
-export function generateShareText(guessCount: number, isWon: boolean, puzzleId: string): string {
-  const emoji = isWon ? '🟩' : '🟥'
-  const result = emoji.repeat(guessCount)
-  return `Guess the Country #${puzzleId}\n${result}\n\nhttps://jnoguert.github.io/GuessTheCountry/`
+export interface ShareParams {
+  puzzleId: string
+  isWon: boolean
+  guessCount: number
+  unlocksUsed: number
+  score: number
+  streak: number
+}
+
+export function generateShareText(p: ShareParams): string {
+  const outcome = p.isWon ? `✅ ${p.guessCount}/5` : '❌ X/5'
+  const hints = `💡 ${p.unlocksUsed}/3`
+  const scoreLine = p.isWon ? ` · 🏆 ${p.score} pts` : ''
+  const streakLine = p.streak > 0 ? ` · 🔥 ${p.streak}` : ''
+  return `Guess the Country #${p.puzzleId}\n${outcome} · ${hints}${scoreLine}${streakLine}\n\nhttps://jnoguert.github.io/GuessTheCountry/`
 }
 
 export function copyToClipboard(text: string): Promise<void> {

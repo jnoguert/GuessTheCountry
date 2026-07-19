@@ -1,15 +1,16 @@
 interface GuessHistoryProps {
   guesses: string[]
   maxGuesses: number
+  label: string
 }
 
-export function GuessHistory({ guesses, maxGuesses }: GuessHistoryProps) {
+export function GuessHistory({ guesses, maxGuesses, label }: GuessHistoryProps) {
   const remaining = maxGuesses - guesses.length
 
   return (
     <div className="mb-6">
       <div className="mb-3 text-sm text-gray-600 dark:text-gray-400">
-        <span className="font-semibold text-lg text-gray-900 dark:text-white">{remaining}</span> guesses remaining
+        <span className="font-semibold text-lg text-gray-900 dark:text-white">{remaining}</span> {label}
       </div>
 
       {guesses.length > 0 && (

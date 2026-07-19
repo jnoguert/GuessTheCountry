@@ -5,13 +5,35 @@ export interface GameState {
   lang: string
   guesses: string[]
   paragraphs: string[]
+  unlocksUsed: number
   isWon: boolean
   isLost: boolean
+  score?: number
   answer?: {
     name: string
     capital: string
     iso2: string
   }
+}
+
+export interface Stats {
+  currentStreak: number
+  maxStreak: number
+  totalPlayed: number
+  totalWon: number
+  totalScore: number
+  lastPlayedId: string | null
+  lastWonId: string | null
+}
+
+const EMPTY_STATS: Stats = {
+  currentStreak: 0,
+  maxStreak: 0,
+  totalPlayed: 0,
+  totalWon: 0,
+  totalScore: 0,
+  lastPlayedId: null,
+  lastWonId: null,
 }
 
 export function getGameState(): GameState | null {
@@ -27,8 +49,9 @@ export function clearGameState(): void {
   localStorage.removeItem(STORAGE_PREFIX + 'game')
 }
 
-export function getLanguage(): string {
-  return localStorage.getItem(STORAGE_PREFIX + 'lang') || 'en'
+/** null until the player explicitly picks a language (first-visit screen). */
+export function getLanguage(): string | null {
+  return localStorage.getItem(STORAGE_PREFIX + 'lang')
 }
 
 export function setLanguage(lang: string): void {
@@ -43,4 +66,44 @@ export function getTheme(): 'light' | 'dark' {
 
 export function setTheme(theme: 'light' | 'dark'): void {
   localStorage.setItem(STORAGE_PREFIX + 'theme', theme)
+}
+
+export function getStats(): Stats {
+  const data = localStorage.getItem(STORAGE_PREFIX + 'stats')
+  return data ? { ...EMPTY_STATS, ...JSON.parse(data) } : { ...EMPTY_STATS }
+}
+
+function saveStats(stats: Stats): void {
+  localStorage.setItem(STORAGE_PREFIX + 'stats', JSON.stringify(stats))
+}
+
+function previousDay(isoDate: string): string {
+  const d = new Date(isoDate + 'T00:00:00Z')
+  d.setUTCDate(d.getUTCDate() - 1)
+  return d.toISOString().split('T')[0]
+}
+
+/** Update play/win counters, score and the day streak. Idempotent per puzzle. */
+export function recordGameEnd(puzzleId: string, won: boolean, score: number = 0): Stats {
+  const stats = getStats()
+  if (stats.lastPlayedId === puzzleId) return stats
+
+  stats.totalPlayed += 1
+  stats.lastPlayedId = puzzleId
+  stats.totalScore += score
+
+  if (won) {
+    stats.totalWon += 1
+    // Streak continues only if the previous win was yesterday's puzzle
+    stats.currentStreak = stats.lastWonId === previousDay(puzzleId)
+      ? stats.currentStreak + 1
+      : 1
+    stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak)
+    stats.lastWonId = puzzleId
+  } else {
+    stats.currentStreak = 0
+  }
+
+  saveStats(stats)
+  return stats
 }

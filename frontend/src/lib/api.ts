@@ -17,7 +17,6 @@ export interface PuzzleData {
 export interface GuessResponse {
   correct: boolean
   game_over: boolean
-  next_paragraph?: string
   answer?: {
     name: string
     capital: string
@@ -62,7 +61,6 @@ export async function submitGuess(
   if (!daily) throw new Error('No puzzle available')
 
   const i18n = daily.country.i18n[lang]
-  const paragraphs = i18n?.paragraphs ?? []
   const answer = {
     name: i18n?.name ?? '',
     capital: i18n?.capital ?? '',
@@ -73,12 +71,12 @@ export async function submitGuess(
     return { correct: true, game_over: true, answer }
   }
 
-  const nextParaIdx = guessNumber
-  const gameOver = nextParaIdx >= paragraphs.length
+  // Wrong guess: paragraphs are only revealed via hint unlocks now,
+  // so a wrong guess just consumes one of the MAX_GUESSES attempts.
+  const gameOver = guessNumber >= 5
   return {
     correct: false,
     game_over: gameOver,
-    next_paragraph: gameOver ? undefined : paragraphs[nextParaIdx],
     answer: gameOver ? answer : undefined,
   }
 }
@@ -86,4 +84,33 @@ export async function submitGuess(
 export async function fetchCountries(lang: string): Promise<CountryOption[]> {
   const data = await loadGameData()
   return listCountries(data, lang)
+}
+
+/** Puzzle state for a given day in a given language: the first
+ * `revealedCount` paragraphs plus the answer. Used when the player
+ * switches language mid-game (reveal parity in the new language). */
+export async function fetchPuzzleState(
+  lang: string,
+  puzzleId: string,
+  revealedCount: number
+): Promise<{ paragraphs: string[]; maxGuesses: number; answer: NonNullable<GuessResponse['answer']> }> {
+  const data = await loadGameData()
+  const epochMs = new Date(data.epoch + 'T00:00:00Z').getTime()
+  const puzzleMs = new Date(puzzleId + 'T00:00:00Z').getTime()
+  const dayIndex = Math.round((puzzleMs - epochMs) / 86400000)
+
+  const daily = getDailyCountry(data, dayIndex)
+  if (!daily) throw new Error('No puzzle available')
+
+  const i18n = daily.country.i18n[lang]
+  const paragraphs = i18n?.paragraphs ?? []
+  return {
+    paragraphs: paragraphs.slice(0, revealedCount),
+    maxGuesses: paragraphs.length,
+    answer: {
+      name: i18n?.name ?? '',
+      capital: i18n?.capital ?? '',
+      iso2: daily.country.iso2,
+    },
+  }
 }

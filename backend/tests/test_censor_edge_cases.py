@@ -1,7 +1,7 @@
 """Tests for the censorship engine (pipeline/censor.py)."""
 from pipeline.censor import (
     create_censor_regex, censor_paragraph, expand_demonym,
-    collect_proper_nouns, censor_proper_nouns,
+    collect_proper_nouns, censor_proper_nouns, censor_name_stems,
 )
 
 
@@ -138,6 +138,62 @@ class TestProperNounCensor:
     def test_block_length_matches_word(self):
         [result] = censor_all(['They travelled to Catalonia quickly.'])
         assert '█' * len('Catalonia') in result
+
+
+class TestParenthesizedVariants:
+    def test_word_after_open_paren_is_censored(self):
+        # '(Afghānistān, ...)' must not escape as "sentence-initial"
+        [result] = censor_all(['The name comes from (Afghānistān, land of hills).'])
+        assert 'Afghānistān' not in result
+
+    def test_transliterated_variant_censored(self):
+        [result] = censor_all(['It was called (Espāña) in old records.'])
+        assert 'Espāña' not in result
+
+
+class TestNameStems:
+    def test_catalan_derived_adjective(self):
+        result = censor_name_stems("l'estat australià és gran", {'austra'})
+        assert 'australià' not in result
+
+    def test_spanish_derived_adjective(self):
+        result = censor_name_stems('el estado austríaco moderno', {'austri'})
+        assert 'austríaco' not in result
+
+    def test_accent_insensitive_stem_match(self):
+        result = censor_name_stems('la cultura búlgara', {'bulga'})
+        assert 'búlgara' not in result
+
+    def test_unrelated_words_survive(self):
+        text = 'the australopithecus fossils were found'
+        # stem from "Austria" must not censor unrelated science words
+        result = censor_name_stems(text, {'austri'})
+        assert result == text
+
+    def test_no_stems_returns_unchanged(self):
+        text = 'nothing here'
+        assert censor_name_stems(text, set()) == text
+
+    def test_compound_words_censored(self):
+        result = censor_name_stems('els afrobolivians i la revolta lusobrasilera',
+                                   {'boliv', 'brasi'})
+        assert 'afrobolivians' not in result
+        assert 'lusobrasilera' not in result
+
+    def test_short_name_derivatives_censored(self):
+        result = censor_name_stems('el territorio chadiano antiguo', {'chad'})
+        assert 'chadiano' not in result
+
+    def test_transliteration_with_extended_latin(self):
+        # 'muqāṭarah' contains the stem 'qata' once accents are stripped;
+        # the ṭ must not split the token
+        result = censor_name_stems('a transaction known as muqāṭarah in markets', {'qata'})
+        assert 'muqāṭarah' not in result
+
+    def test_hyphenated_name_derivatives(self):
+        result = censor_name_stems('el territori sud-africà i els sud-africans', {'sud-afr'})
+        assert 'sud-africà' not in result
+        assert 'sud-africans' not in result
 
 
 class TestDemonymExpansion:
