@@ -1,5 +1,8 @@
 """Tests for the censorship engine (pipeline/censor.py)."""
-from pipeline.censor import create_censor_regex, censor_paragraph, expand_demonym
+from pipeline.censor import (
+    create_censor_regex, censor_paragraph, expand_demonym,
+    collect_proper_nouns, censor_proper_nouns,
+)
 
 
 def censor(terms, text):
@@ -70,6 +73,71 @@ class TestAccents:
         result = censor_paragraph('España limita con Perú.', pattern)
         assert 'España' not in result
         assert 'Perú' not in result
+
+
+def censor_all(paragraphs, lang='en'):
+    known = collect_proper_nouns(paragraphs, lang)
+    return [censor_proper_nouns(p, lang, known) for p in paragraphs]
+
+
+class TestProperNounCensor:
+    def test_region_names_censored(self):
+        [result] = censor_all(['The region of Catalonia lies in the northeast.'])
+        assert 'Catalonia' not in result
+        assert 'region of' in result
+
+    def test_historical_entities_censored(self):
+        [result] = censor_all(['It was ruled by the count of Urgell for centuries.'])
+        assert 'Urgell' not in result
+        assert 'count of' in result
+
+    def test_multiword_toponym(self):
+        [result] = censor_all(['They crossed the Iberian Peninsula together.'])
+        assert 'Iberian' not in result
+        assert 'Peninsula' not in result
+
+    def test_sentence_start_plain_words_survive(self):
+        [result] = censor_all(['The kingdom grew. It became rich.'])
+        assert 'The kingdom grew' in result
+        assert 'It became rich' in result
+
+    def test_sentence_start_known_proper_noun_censored(self):
+        # "Catalonia" seen mid-sentence -> also censored at sentence start
+        results = censor_all([
+            'The area includes Catalonia and more.',
+            'Catalonia is in the northeast.',
+        ])
+        assert all('Catalonia' not in r for r in results)
+
+    def test_months_survive_in_english(self):
+        [result] = censor_all(['The war ended in April after a long siege.'])
+        assert 'April' in result
+
+    def test_harmless_acronyms_survive(self):
+        [result] = censor_all(['Its GDP per capita is high.'])
+        assert 'GDP' in result
+
+    def test_clueful_acronyms_censored(self):
+        [result] = censor_all(['The country joined NATO and the EU together.'])
+        assert 'NATO' not in result
+        assert 'EU' not in result
+
+    def test_people_names_censored(self):
+        [result] = censor_all(['The dictatorship of Franco ended in 1975.'])
+        assert 'Franco' not in result
+        assert '1975' in result
+
+    def test_spanish_toponyms(self):
+        [result] = censor_all(
+            ['El río Ebro pasa por Zaragoza y llega al Mediterráneo.'], lang='es')
+        assert 'Ebro' not in result
+        assert 'Zaragoza' not in result
+        assert 'Mediterráneo' not in result
+        assert 'río' in result
+
+    def test_block_length_matches_word(self):
+        [result] = censor_all(['They travelled to Catalonia quickly.'])
+        assert '█' * len('Catalonia') in result
 
 
 class TestDemonymExpansion:

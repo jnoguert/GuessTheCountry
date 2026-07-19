@@ -143,6 +143,81 @@ def censor_paragraph(text: str, pattern: str) -> str:
     return re.sub(pattern, replace_match, text, flags=re.IGNORECASE | re.UNICODE)
 
 
+# ---------------------------------------------------------------------------
+# Proper-noun censorship: black out every toponym / proper name
+# ---------------------------------------------------------------------------
+# Capitalized words that are NOT proper nouns and must survive (per language).
+PROPER_NOUN_WHITELIST = {
+    'en': {
+        'January', 'February', 'March', 'April', 'May', 'June', 'July',
+        'August', 'September', 'October', 'November', 'December',
+        'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+        'Saturday', 'Sunday',
+    },
+    'ca': set(),   # months/days are lowercase in Catalan
+    'es': set(),   # months/days are lowercase in Spanish
+}
+
+# Harmless all-caps abbreviations that carry no geographic clue.
+ACRONYM_WHITELIST = {'GDP', 'PPP', 'HDI', 'GNI', 'UTC', 'TV', 'DNA', 'AD', 'BC', 'CE', 'BCE'}
+
+_WORD_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿĀ-ſ]+", re.UNICODE)
+
+
+def _is_capitalized(word: str) -> bool:
+    return word[0].isupper() and not word.isupper()
+
+
+def _is_acronym(word: str) -> bool:
+    return len(word) >= 2 and word.isupper()
+
+
+def _sentence_starts(text: str) -> Set[int]:
+    """Offsets of words that begin a sentence (capitalization there is
+    not evidence of a proper noun)."""
+    starts = set()
+    for m in _WORD_RE.finditer(text):
+        prefix = text[:m.start()].rstrip()
+        if not prefix or prefix[-1] in '.!?«"\'()[]':
+            starts.add(m.start())
+    return starts
+
+
+def collect_proper_nouns(paragraphs, lang: str) -> Set[str]:
+    """Words seen capitalized mid-sentence anywhere in the article are
+    proper nouns; this also lets us censor them at sentence starts."""
+    whitelist = PROPER_NOUN_WHITELIST.get(lang, set())
+    known: Set[str] = set()
+    for text in paragraphs:
+        starts = _sentence_starts(text)
+        for m in _WORD_RE.finditer(text):
+            word = m.group(0)
+            if m.start() in starts:
+                continue
+            if _is_capitalized(word) and word not in whitelist:
+                known.add(word)
+    return known
+
+
+def censor_proper_nouns(text: str, lang: str, known: Set[str]) -> str:
+    """Black out every capitalized mid-sentence word, every known proper
+    noun (even sentence-initial), and non-whitelisted acronyms."""
+    whitelist = PROPER_NOUN_WHITELIST.get(lang, set())
+    starts = _sentence_starts(text)
+
+    def replace(m):
+        word = m.group(0)
+        if _is_acronym(word):
+            return word if word in ACRONYM_WHITELIST else '█' * len(word)
+        if not _is_capitalized(word) or word in whitelist:
+            return word
+        if m.start() in starts and word not in known:
+            return word  # plain sentence-initial capitalization
+        return '█' * len(word)
+
+    return _WORD_RE.sub(replace, text)
+
+
 def censor_all_articles():
     print("Building censorship regexes and censoring articles...")
     core, lexical = load_data()
@@ -163,7 +238,11 @@ def censor_all_articles():
                     wiki_data = json.load(f)
 
                 paragraphs = wiki_data.get('paragraphs', [])
+                # Pass 1: censor known terms (names, borders, demonyms...)
                 censored = [censor_paragraph(p, pattern) for p in paragraphs]
+                # Pass 2: censor every remaining proper noun / toponym
+                known_proper = collect_proper_nouns(censored, lang)
+                censored = [censor_proper_nouns(p, lang, known_proper) for p in censored]
 
                 censored_articles[qid][lang] = {
                     'paragraphs': censored,
