@@ -1,0 +1,2992 @@
+{
+  "Q889": {
+    "label": "Afghanistan",
+    "capital": "Q5838",
+    "highest_point": "Q271700",
+    "iso2": "AF",
+    "iso3": "AFG",
+    "cctld": "http://www.wikidata.org/entity/Q37407",
+    "currency": "Q199471",
+    "borders": [
+      "Q148",
+      "Q265",
+      "Q794",
+      "Q843",
+      "Q863",
+      "Q874"
+    ]
+  },
+  "Q222": {
+    "label": "Albania",
+    "capital": "Q19689",
+    "highest_point": "Q912579",
+    "iso2": "AL",
+    "iso3": "ALB",
+    "cctld": "http://www.wikidata.org/entity/Q38291",
+    "currency": "Q125999",
+    "borders": [
+      "Q41",
+      "Q221",
+      "Q236",
+      "Q403",
+      "Q458",
+      "Q1246"
+    ]
+  },
+  "Q262": {
+    "label": "Algeria",
+    "capital": "Q3561",
+    "highest_point": "Q822326",
+    "iso2": "DZ",
+    "iso3": "DZA",
+    "cctld": "http://www.wikidata.org/entity/Q41039",
+    "currency": "Q199674",
+    "borders": [
+      "Q29",
+      "Q38",
+      "Q912",
+      "Q948",
+      "Q1016",
+      "Q1025",
+      "Q1028",
+      "Q1032",
+      "Q6250"
+    ]
+  },
+  "Q228": {
+    "label": "Andorra",
+    "capital": "Q1863",
+    "highest_point": "Q62467",
+    "iso2": "AD",
+    "iso3": "AND",
+    "cctld": "http://www.wikidata.org/entity/Q36552",
+    "currency": "Q4916",
+    "borders": [
+      "Q29",
+      "Q142",
+      "Q458"
+    ]
+  },
+  "Q916": {
+    "label": "Angola",
+    "capital": "Q3897",
+    "highest_point": "Q1348116",
+    "iso2": "AO",
+    "iso3": "AGO",
+    "cctld": "http://www.wikidata.org/entity/Q39006",
+    "currency": "Q200337",
+    "borders": [
+      "Q953",
+      "Q971",
+      "Q974",
+      "Q1000",
+      "Q1030"
+    ]
+  },
+  "Q781": {
+    "label": "Antigua and Barbuda",
+    "capital": "Q36262",
+    "highest_point": "Q1718336",
+    "iso2": "AG",
+    "iso3": "ATG",
+    "cctld": "http://www.wikidata.org/entity/Q37539",
+    "currency": "Q26365",
+    "borders": [
+      "Q145",
+      "Q124653007"
+    ]
+  },
+  "Q414": {
+    "label": "Argentina",
+    "capital": "Q1486",
+    "highest_point": "Q39739",
+    "iso2": "AR",
+    "iso3": "ARG",
+    "cctld": "http://www.wikidata.org/entity/Q38300",
+    "currency": "Q199578",
+    "borders": [
+      "Q77",
+      "Q145",
+      "Q155",
+      "Q298",
+      "Q733",
+      "Q750"
+    ]
+  },
+  "Q399": {
+    "label": "Armenia",
+    "capital": "Q1953",
+    "highest_point": "Q203568",
+    "iso2": "AM",
+    "iso3": "ARM",
+    "cctld": "http://www.wikidata.org/entity/Q18578153",
+    "currency": "Q130498",
+    "borders": [
+      "Q43",
+      "Q227",
+      "Q230",
+      "Q794"
+    ]
+  },
+  "Q408": {
+    "label": "Australia",
+    "capital": "Q3114",
+    "highest_point": "Q2114101",
+    "iso2": "AU",
+    "iso3": "AUS",
+    "cctld": "http://www.wikidata.org/entity/Q37420",
+    "currency": "Q259502",
+    "borders": [
+      "Q252",
+      "Q574",
+      "Q664",
+      "Q685",
+      "Q686",
+      "Q691",
+      "Q33788"
+    ]
+  },
+  "Q40": {
+    "label": "Austria",
+    "capital": "Q1741",
+    "highest_point": "Q3388",
+    "iso2": "AT",
+    "iso3": "AUT",
+    "cctld": "http://www.wikidata.org/entity/Q37715",
+    "currency": "Q4916",
+    "borders": [
+      "Q28",
+      "Q38",
+      "Q39",
+      "Q183",
+      "Q213",
+      "Q214",
+      "Q215",
+      "Q347"
+    ]
+  },
+  "Q227": {
+    "label": "Azerbaijan",
+    "capital": "Q9248",
+    "highest_point": "Q725591",
+    "iso2": "AZ",
+    "iso3": "AZE",
+    "cctld": "http://www.wikidata.org/entity/Q38414",
+    "currency": "Q483725",
+    "borders": [
+      "Q43",
+      "Q159",
+      "Q230",
+      "Q399",
+      "Q794"
+    ]
+  },
+  "Q398": {
+    "label": "Bahrain",
+    "capital": "Q3882",
+    "highest_point": "Q1032812",
+    "iso2": "BH",
+    "iso3": "BHR",
+    "cctld": "http://www.wikidata.org/entity/Q39993",
+    "currency": "Q201871",
+    "borders": [
+      "Q794",
+      "Q851"
+    ]
+  },
+  "Q902": {
+    "label": "Bangladesh",
+    "capital": "Q1354",
+    "highest_point": "Q2696459",
+    "iso2": "BD",
+    "iso3": "BGD",
+    "cctld": "http://www.wikidata.org/entity/Q4545424",
+    "currency": "Q194453",
+    "borders": [
+      "Q668",
+      "Q836"
+    ]
+  },
+  "Q244": {
+    "label": "Barbados",
+    "capital": "Q36168",
+    "highest_point": "Q1854502",
+    "iso2": "BB",
+    "iso3": "BRB",
+    "cctld": "http://www.wikidata.org/entity/Q39539",
+    "currency": "Q194351",
+    "borders": []
+  },
+  "Q184": {
+    "label": "Belarus",
+    "capital": "Q2280",
+    "highest_point": "Q921447",
+    "iso2": "BY",
+    "iso3": "BLR",
+    "cctld": "http://www.wikidata.org/entity/Q18109066",
+    "currency": "Q21531507",
+    "borders": [
+      "Q36",
+      "Q37",
+      "Q159",
+      "Q211",
+      "Q212",
+      "Q458"
+    ]
+  },
+  "Q31": {
+    "label": "Belgium",
+    "capital": "Q239",
+    "highest_point": "Q322824",
+    "iso2": "BE",
+    "iso3": "BEL",
+    "cctld": "http://www.wikidata.org/entity/Q39773",
+    "currency": "Q4916",
+    "borders": [
+      "Q32",
+      "Q55",
+      "Q142",
+      "Q183"
+    ]
+  },
+  "Q242": {
+    "label": "Belize",
+    "capital": "Q3043",
+    "highest_point": "Q47490",
+    "iso2": "BZ",
+    "iso3": "BLZ",
+    "cctld": "http://www.wikidata.org/entity/Q39903",
+    "currency": "Q275112",
+    "borders": [
+      "Q96",
+      "Q774",
+      "Q599455"
+    ]
+  },
+  "Q962": {
+    "label": "Benin",
+    "capital": "Q3799",
+    "highest_point": "Q923330",
+    "iso2": "BJ",
+    "iso3": "BEN",
+    "cctld": "http://www.wikidata.org/entity/Q41100",
+    "currency": "Q861690",
+    "borders": [
+      "Q945",
+      "Q965",
+      "Q1032",
+      "Q1033"
+    ]
+  },
+  "Q917": {
+    "label": "Bhutan",
+    "capital": "Q9270",
+    "highest_point": "Q219986",
+    "iso2": "BT",
+    "iso3": "BTN",
+    "cctld": "http://www.wikidata.org/entity/Q40001",
+    "currency": "Q201799",
+    "borders": [
+      "Q148",
+      "Q668"
+    ]
+  },
+  "Q750": {
+    "label": "Bolivia",
+    "capital": "Q2907",
+    "highest_point": "Q272593",
+    "iso2": "BO",
+    "iso3": "BOL",
+    "cctld": "http://www.wikidata.org/entity/Q40510",
+    "currency": "Q200737",
+    "borders": [
+      "Q155",
+      "Q298",
+      "Q414",
+      "Q419",
+      "Q733"
+    ]
+  },
+  "Q225": {
+    "label": "Bosnia and Herzegovina",
+    "capital": "Q11194",
+    "highest_point": "Q837723",
+    "iso2": "BA",
+    "iso3": "BIH",
+    "cctld": "http://www.wikidata.org/entity/Q39661",
+    "currency": "Q179620",
+    "borders": [
+      "Q224",
+      "Q236",
+      "Q403",
+      "Q458"
+    ]
+  },
+  "Q963": {
+    "label": "Botswana",
+    "capital": "Q3919",
+    "highest_point": "Q3491942",
+    "iso2": "BW",
+    "iso3": "BWA",
+    "cctld": "http://www.wikidata.org/entity/Q40989",
+    "currency": "Q186794",
+    "borders": [
+      "Q258",
+      "Q953",
+      "Q954",
+      "Q1030"
+    ]
+  },
+  "Q155": {
+    "label": "Brazil",
+    "capital": "Q2844",
+    "highest_point": "Q739484",
+    "iso2": "BR",
+    "iso3": "BRA",
+    "cctld": "http://www.wikidata.org/entity/Q39889",
+    "currency": "Q173117",
+    "borders": [
+      "Q77",
+      "Q142",
+      "Q414",
+      "Q419",
+      "Q717",
+      "Q730",
+      "Q733",
+      "Q734",
+      "Q739",
+      "Q750",
+      "Q3769"
+    ]
+  },
+  "Q921": {
+    "label": "Brunei",
+    "capital": "Q9279",
+    "highest_point": "Q1003282",
+    "iso2": "BN",
+    "iso3": "BRN",
+    "cctld": "http://www.wikidata.org/entity/Q41199",
+    "currency": "Q206319",
+    "borders": [
+      "Q833"
+    ]
+  },
+  "Q219": {
+    "label": "Bulgaria",
+    "capital": "Q472",
+    "highest_point": "Q209341",
+    "iso2": "BG",
+    "iso3": "BGR",
+    "cctld": "http://www.wikidata.org/entity/Q140775",
+    "currency": "Q4916",
+    "borders": [
+      "Q41",
+      "Q43",
+      "Q166",
+      "Q218",
+      "Q221",
+      "Q403"
+    ]
+  },
+  "Q965": {
+    "label": "Burkina Faso",
+    "capital": "Q3777",
+    "highest_point": "Q116675",
+    "iso2": "BF",
+    "iso3": "BFA",
+    "cctld": "http://www.wikidata.org/entity/Q41195",
+    "currency": "Q861690",
+    "borders": [
+      "Q117",
+      "Q912",
+      "Q945",
+      "Q962",
+      "Q1008",
+      "Q1032"
+    ]
+  },
+  "Q967": {
+    "label": "Burundi",
+    "capital": "Q167551",
+    "highest_point": "Q1649074",
+    "iso2": "BI",
+    "iso3": "BDI",
+    "cctld": "http://www.wikidata.org/entity/Q41988",
+    "currency": "Q238007",
+    "borders": [
+      "Q924",
+      "Q974",
+      "Q1037"
+    ]
+  },
+  "Q424": {
+    "label": "Cambodia",
+    "capital": "Q1850",
+    "highest_point": "Q539772",
+    "iso2": "KH",
+    "iso3": "KHM",
+    "cctld": "http://www.wikidata.org/entity/Q41047",
+    "currency": "Q204737",
+    "borders": [
+      "Q819",
+      "Q869",
+      "Q881",
+      "Q1052867"
+    ]
+  },
+  "Q1009": {
+    "label": "Cameroon",
+    "capital": "Q3808",
+    "highest_point": "Q190562",
+    "iso2": "CM",
+    "iso3": "CMR",
+    "cctld": "http://www.wikidata.org/entity/Q40698",
+    "currency": "Q847739",
+    "borders": [
+      "Q657",
+      "Q929",
+      "Q971",
+      "Q983",
+      "Q1000",
+      "Q1033"
+    ]
+  },
+  "Q16": {
+    "label": "Canada",
+    "capital": "Q1930",
+    "highest_point": "Q120306",
+    "iso2": "CA",
+    "iso3": "CAN",
+    "cctld": "http://www.wikidata.org/entity/Q39582",
+    "currency": "Q1104069",
+    "borders": [
+      "Q30",
+      "Q756617"
+    ]
+  },
+  "Q1011": {
+    "label": "Cape Verde",
+    "capital": "Q3751",
+    "highest_point": "Q499108",
+    "iso2": "CV",
+    "iso3": "CPV",
+    "cctld": "http://www.wikidata.org/entity/Q41022",
+    "currency": "Q4591",
+    "borders": []
+  },
+  "Q929": {
+    "label": "Central African Republic",
+    "capital": "Q3832",
+    "highest_point": "Q2422162",
+    "iso2": "CF",
+    "iso3": "CAF",
+    "cctld": "http://www.wikidata.org/entity/Q41191",
+    "currency": "Q847739",
+    "borders": [
+      "Q657",
+      "Q958",
+      "Q971",
+      "Q974",
+      "Q1009",
+      "Q1049",
+      "Q7172"
+    ]
+  },
+  "Q657": {
+    "label": "Chad",
+    "capital": "Q3659",
+    "highest_point": "Q257441",
+    "iso2": "TD",
+    "iso3": "TCD",
+    "cctld": "http://www.wikidata.org/entity/Q43081",
+    "currency": "Q847739",
+    "borders": [
+      "Q929",
+      "Q1009",
+      "Q1016",
+      "Q1032",
+      "Q1033",
+      "Q1049",
+      "Q7172"
+    ]
+  },
+  "Q298": {
+    "label": "Chile",
+    "capital": "Q2887",
+    "highest_point": "Q233836",
+    "iso2": "CL",
+    "iso3": "CHL",
+    "cctld": "http://www.wikidata.org/entity/Q39885",
+    "currency": "Q200050",
+    "borders": [
+      "Q414",
+      "Q419",
+      "Q750"
+    ]
+  },
+  "Q739": {
+    "label": "Colombia",
+    "capital": "Q2841",
+    "highest_point": "Q578862",
+    "iso2": "CO",
+    "iso3": "COL",
+    "cctld": "http://www.wikidata.org/entity/Q39657",
+    "currency": "Q244819",
+    "borders": [
+      "Q155",
+      "Q419",
+      "Q717",
+      "Q736",
+      "Q804",
+      "Q811"
+    ]
+  },
+  "Q970": {
+    "label": "Comoros",
+    "capital": "Q3901",
+    "highest_point": "Q527548",
+    "iso2": "KM",
+    "iso3": "COM",
+    "cctld": "http://www.wikidata.org/entity/Q42843",
+    "currency": "Q267264",
+    "borders": [
+      "Q142",
+      "Q924",
+      "Q1019",
+      "Q1029",
+      "Q1042"
+    ]
+  },
+  "Q800": {
+    "label": "Costa Rica",
+    "capital": "Q3070",
+    "highest_point": "Q252362",
+    "iso2": "CR",
+    "iso3": "CRI",
+    "cctld": "http://www.wikidata.org/entity/Q40973",
+    "currency": "Q242915",
+    "borders": [
+      "Q804",
+      "Q811"
+    ]
+  },
+  "Q224": {
+    "label": "Croatia",
+    "capital": "Q1435",
+    "highest_point": "Q3183447",
+    "iso2": "HR",
+    "iso3": "HRV",
+    "cctld": "http://www.wikidata.org/entity/Q41008",
+    "currency": "Q4916",
+    "borders": [
+      "Q28",
+      "Q215",
+      "Q225",
+      "Q236",
+      "Q403",
+      "Q19801186"
+    ]
+  },
+  "Q241": {
+    "label": "Cuba",
+    "capital": "Q1563",
+    "highest_point": "Q1145743",
+    "iso2": "CU",
+    "iso3": "CUB",
+    "cctld": "http://www.wikidata.org/entity/Q41006",
+    "currency": "Q201505",
+    "borders": [
+      "Q30",
+      "Q145"
+    ]
+  },
+  "Q229": {
+    "label": "Cyprus",
+    "capital": "Q3856",
+    "highest_point": "Q819979",
+    "iso2": "CY",
+    "iso3": "CYP",
+    "cctld": "http://www.wikidata.org/entity/Q40459",
+    "currency": "Q4916",
+    "borders": [
+      "Q43",
+      "Q145",
+      "Q801",
+      "Q23681",
+      "Q37362",
+      "Q124653007"
+    ]
+  },
+  "Q213": {
+    "label": "Czech Republic",
+    "capital": "Q1085",
+    "highest_point": "Q617511",
+    "iso2": "CZ",
+    "iso3": "CZE",
+    "cctld": "http://www.wikidata.org/entity/Q37531",
+    "currency": "Q131016",
+    "borders": [
+      "Q36",
+      "Q40",
+      "Q183",
+      "Q214"
+    ]
+  },
+  "Q974": {
+    "label": "Democratic Republic of the Congo",
+    "capital": "Q3838",
+    "highest_point": "Q221666",
+    "iso2": "CD",
+    "iso3": "COD",
+    "cctld": "http://www.wikidata.org/entity/Q40673",
+    "currency": "Q4734",
+    "borders": [
+      "Q916",
+      "Q924",
+      "Q929",
+      "Q953",
+      "Q958",
+      "Q967",
+      "Q971",
+      "Q1009",
+      "Q1036",
+      "Q1037",
+      "Q1049"
+    ]
+  },
+  "Q977": {
+    "label": "Djibouti",
+    "capital": "Q3604",
+    "highest_point": "Q1951029",
+    "iso2": "DJ",
+    "iso3": "DJI",
+    "cctld": "http://www.wikidata.org/entity/Q41012",
+    "currency": "Q4594",
+    "borders": [
+      "Q115",
+      "Q986",
+      "Q1045"
+    ]
+  },
+  "Q784": {
+    "label": "Dominica",
+    "capital": "Q36281",
+    "highest_point": "Q1638549",
+    "iso2": "DM",
+    "iso3": "DMA",
+    "cctld": "http://www.wikidata.org/entity/Q41032",
+    "currency": "Q26365",
+    "borders": [
+      "Q717"
+    ]
+  },
+  "Q786": {
+    "label": "Dominican Republic",
+    "capital": "Q34820",
+    "highest_point": "Q783742",
+    "iso2": "DO",
+    "iso3": "DOM",
+    "cctld": "http://www.wikidata.org/entity/Q41002",
+    "currency": "Q242922",
+    "borders": [
+      "Q30",
+      "Q717",
+      "Q790",
+      "Q18221"
+    ]
+  },
+  "Q736": {
+    "label": "Ecuador",
+    "capital": "Q2900",
+    "highest_point": "Q14081",
+    "iso2": "EC",
+    "iso3": "ECU",
+    "cctld": "http://www.wikidata.org/entity/Q41113",
+    "currency": "Q4917",
+    "borders": [
+      "Q419",
+      "Q739"
+    ]
+  },
+  "Q79": {
+    "label": "Egypt",
+    "capital": "Q85",
+    "highest_point": "Q1140642",
+    "iso2": "EG",
+    "iso3": "EGY",
+    "cctld": "http://www.wikidata.org/entity/Q914712",
+    "currency": "Q199462",
+    "borders": [
+      "Q801",
+      "Q1016",
+      "Q1049",
+      "Q81483",
+      "Q219060",
+      "Q620634"
+    ]
+  },
+  "Q792": {
+    "label": "El Salvador",
+    "capital": "Q3110",
+    "highest_point": "Q74214",
+    "iso2": "SV",
+    "iso3": "SLV",
+    "cctld": "http://www.wikidata.org/entity/Q42665",
+    "currency": "Q131723",
+    "borders": [
+      "Q774",
+      "Q783"
+    ]
+  },
+  "Q983": {
+    "label": "Equatorial Guinea",
+    "capital": "Q1140136",
+    "highest_point": "Q1518286",
+    "iso2": "GQ",
+    "iso3": "GNQ",
+    "cctld": "http://www.wikidata.org/entity/Q41460",
+    "currency": "Q847739",
+    "borders": [
+      "Q1000",
+      "Q1009",
+      "Q1039"
+    ]
+  },
+  "Q986": {
+    "label": "Eritrea",
+    "capital": "Q3642",
+    "highest_point": "Q1753730",
+    "iso2": "ER",
+    "iso3": "ERI",
+    "cctld": "http://www.wikidata.org/entity/Q41019",
+    "currency": "Q171503",
+    "borders": [
+      "Q115",
+      "Q977",
+      "Q1049",
+      "Q7172"
+    ]
+  },
+  "Q191": {
+    "label": "Estonia",
+    "capital": "Q1770",
+    "highest_point": "Q504991",
+    "iso2": "EE",
+    "iso3": "EST",
+    "cctld": "http://www.wikidata.org/entity/Q38908",
+    "currency": "Q4916",
+    "borders": [
+      "Q159",
+      "Q211"
+    ]
+  },
+  "Q1050": {
+    "label": "Eswatini",
+    "capital": "Q101418",
+    "highest_point": "Q1337951",
+    "iso2": "SZ",
+    "iso3": "SWZ",
+    "cctld": "http://www.wikidata.org/entity/Q43149",
+    "currency": "Q4823",
+    "borders": [
+      "Q258",
+      "Q1029"
+    ]
+  },
+  "Q115": {
+    "label": "Ethiopia",
+    "capital": "Q3624",
+    "highest_point": "Q275435",
+    "iso2": "ET",
+    "iso3": "ETH",
+    "cctld": "http://www.wikidata.org/entity/Q40363",
+    "currency": "Q206243",
+    "borders": [
+      "Q114",
+      "Q958",
+      "Q977",
+      "Q986",
+      "Q1045",
+      "Q1049",
+      "Q7172",
+      "Q34754"
+    ]
+  },
+  "Q702": {
+    "label": "Federated States of Micronesia",
+    "capital": "Q42751",
+    "highest_point": "Q1236265",
+    "iso2": "FM",
+    "iso3": "FSM",
+    "cctld": "http://www.wikidata.org/entity/Q40423",
+    "currency": "Q4917",
+    "borders": [
+      "Q30",
+      "Q691",
+      "Q695"
+    ]
+  },
+  "Q712": {
+    "label": "Fiji",
+    "capital": "Q38807",
+    "highest_point": "Q1513944",
+    "iso2": "FJ",
+    "iso3": "FJI",
+    "cctld": "http://www.wikidata.org/entity/Q39878",
+    "currency": "Q4592",
+    "borders": [
+      "Q685"
+    ]
+  },
+  "Q33": {
+    "label": "Finland",
+    "capital": "Q1757",
+    "highest_point": "Q216035",
+    "iso2": "FI",
+    "iso3": "FIN",
+    "cctld": "http://www.wikidata.org/entity/Q37164",
+    "currency": "Q4916",
+    "borders": [
+      "Q20",
+      "Q34",
+      "Q159"
+    ]
+  },
+  "Q142": {
+    "label": "France",
+    "capital": "Q90",
+    "highest_point": "Q583",
+    "iso2": "FR",
+    "iso3": "FRA",
+    "cctld": "http://www.wikidata.org/entity/Q37271",
+    "currency": "Q214393",
+    "borders": [
+      "Q29",
+      "Q31",
+      "Q32",
+      "Q38",
+      "Q39",
+      "Q155",
+      "Q183",
+      "Q228",
+      "Q235",
+      "Q730",
+      "Q29999"
+    ]
+  },
+  "Q1000": {
+    "label": "Gabon",
+    "capital": "Q3825",
+    "highest_point": "Q3210770",
+    "iso2": "GA",
+    "iso3": "GAB",
+    "cctld": "http://www.wikidata.org/entity/Q41784",
+    "currency": "Q847739",
+    "borders": [
+      "Q916",
+      "Q971",
+      "Q983",
+      "Q1009",
+      "Q1039"
+    ]
+  },
+  "Q230": {
+    "label": "Georgia",
+    "capital": "Q994",
+    "highest_point": "Q217457",
+    "iso2": "GE",
+    "iso3": "GEO",
+    "cctld": "http://www.wikidata.org/entity/Q40683",
+    "currency": "Q4608",
+    "borders": [
+      "Q43",
+      "Q159",
+      "Q227",
+      "Q399"
+    ]
+  },
+  "Q183": {
+    "label": "Germany",
+    "capital": "Q64",
+    "highest_point": "Q3375",
+    "iso2": "DE",
+    "iso3": "DEU",
+    "cctld": "http://www.wikidata.org/entity/Q37251",
+    "currency": "Q4916",
+    "borders": [
+      "Q31",
+      "Q32",
+      "Q35",
+      "Q36",
+      "Q39",
+      "Q40",
+      "Q55",
+      "Q142",
+      "Q213"
+    ]
+  },
+  "Q117": {
+    "label": "Ghana",
+    "capital": "Q3761",
+    "highest_point": "Q635179",
+    "iso2": "GH",
+    "iso3": "GHA",
+    "cctld": "http://www.wikidata.org/entity/Q41634",
+    "currency": "Q183530",
+    "borders": [
+      "Q945",
+      "Q965",
+      "Q1008"
+    ]
+  },
+  "Q41": {
+    "label": "Greece",
+    "capital": "Q1524",
+    "highest_point": "Q80344",
+    "iso2": "GR",
+    "iso3": "GRC",
+    "cctld": "http://www.wikidata.org/entity/Q60679306",
+    "currency": "Q4916",
+    "borders": [
+      "Q43",
+      "Q219",
+      "Q221",
+      "Q222"
+    ]
+  },
+  "Q769": {
+    "label": "Grenada",
+    "capital": "Q41547",
+    "highest_point": "Q525281",
+    "iso2": "GD",
+    "iso3": "GRD",
+    "cctld": "http://www.wikidata.org/entity/Q41435",
+    "currency": "Q26365",
+    "borders": [
+      "Q717"
+    ]
+  },
+  "Q774": {
+    "label": "Guatemala",
+    "capital": "Q1555",
+    "highest_point": "Q818467",
+    "iso2": "GT",
+    "iso3": "GTM",
+    "cctld": "http://www.wikidata.org/entity/Q41781",
+    "currency": "Q207396",
+    "borders": [
+      "Q96",
+      "Q242",
+      "Q783",
+      "Q792"
+    ]
+  },
+  "Q1006": {
+    "label": "Guinea",
+    "capital": "Q3733",
+    "highest_point": "Q849129",
+    "iso2": "GN",
+    "iso3": "GIN",
+    "cctld": "http://www.wikidata.org/entity/Q41761",
+    "currency": "Q213311",
+    "borders": [
+      "Q912",
+      "Q1007",
+      "Q1008",
+      "Q1014",
+      "Q1041",
+      "Q1044"
+    ]
+  },
+  "Q1007": {
+    "label": "Guinea-Bissau",
+    "capital": "Q3739",
+    "highest_point": "Q109837809",
+    "iso2": "GW",
+    "iso3": "GNB",
+    "cctld": "http://www.wikidata.org/entity/Q41450",
+    "currency": "Q861690",
+    "borders": [
+      "Q1006",
+      "Q1041"
+    ]
+  },
+  "Q734": {
+    "label": "Guyana",
+    "capital": "Q10717",
+    "highest_point": "Q4777",
+    "iso2": "GY",
+    "iso3": "GUY",
+    "cctld": "http://www.wikidata.org/entity/Q41448",
+    "currency": "Q213005",
+    "borders": [
+      "Q155",
+      "Q717",
+      "Q730"
+    ]
+  },
+  "Q790": {
+    "label": "Haiti",
+    "capital": "Q34261",
+    "highest_point": "Q1971319",
+    "iso2": "HT",
+    "iso3": "HTI",
+    "cctld": "http://www.wikidata.org/entity/Q41110",
+    "currency": "Q203955",
+    "borders": [
+      "Q30",
+      "Q786",
+      "Q18221"
+    ]
+  },
+  "Q783": {
+    "label": "Honduras",
+    "capital": "Q3238",
+    "highest_point": "Q1055875",
+    "iso2": "HN",
+    "iso3": "HND",
+    "cctld": "http://www.wikidata.org/entity/Q41025",
+    "currency": "Q4719",
+    "borders": [
+      "Q774",
+      "Q792",
+      "Q811"
+    ]
+  },
+  "Q28": {
+    "label": "Hungary",
+    "capital": "Q1781",
+    "highest_point": "Q747618",
+    "iso2": "HU",
+    "iso3": "HUN",
+    "cctld": "http://www.wikidata.org/entity/Q40622",
+    "currency": "Q47190",
+    "borders": [
+      "Q40",
+      "Q212",
+      "Q214",
+      "Q215",
+      "Q218",
+      "Q224",
+      "Q403"
+    ]
+  },
+  "Q189": {
+    "label": "Iceland",
+    "capital": "Q1764",
+    "highest_point": "Q140084",
+    "iso2": "IS",
+    "iso3": "ISL",
+    "cctld": "http://www.wikidata.org/entity/Q39896",
+    "currency": "Q131473",
+    "borders": [
+      "Q223",
+      "Q4628",
+      "Q25231"
+    ]
+  },
+  "Q668": {
+    "label": "India",
+    "capital": "Q987",
+    "highest_point": "Q82019",
+    "iso2": "IN",
+    "iso3": "IND",
+    "cctld": "http://www.wikidata.org/entity/Q31362427",
+    "currency": "Q80524",
+    "borders": [
+      "Q148",
+      "Q252",
+      "Q836",
+      "Q837",
+      "Q843",
+      "Q854",
+      "Q889",
+      "Q902",
+      "Q917"
+    ]
+  },
+  "Q252": {
+    "label": "Indonesia",
+    "capital": "Q3630",
+    "highest_point": "Q1045888",
+    "iso2": "ID",
+    "iso3": "IDN",
+    "cctld": "http://www.wikidata.org/entity/Q41102",
+    "currency": "Q41588",
+    "borders": [
+      "Q334",
+      "Q408",
+      "Q574",
+      "Q668",
+      "Q691",
+      "Q695",
+      "Q833",
+      "Q869",
+      "Q881",
+      "Q928"
+    ]
+  },
+  "Q794": {
+    "label": "Iran",
+    "capital": "Q3616",
+    "highest_point": "Q40758",
+    "iso2": "IR",
+    "iso3": "IRN",
+    "cctld": "http://www.wikidata.org/entity/Q12950808",
+    "currency": "Q188608",
+    "borders": [
+      "Q43",
+      "Q227",
+      "Q398",
+      "Q399",
+      "Q796",
+      "Q817",
+      "Q842",
+      "Q843",
+      "Q846",
+      "Q851",
+      "Q874",
+      "Q878",
+      "Q889",
+      "Q131083"
+    ]
+  },
+  "Q796": {
+    "label": "Iraq",
+    "capital": "Q1530",
+    "highest_point": "Q1068860",
+    "iso2": "IQ",
+    "iso3": "IRQ",
+    "cctld": "http://www.wikidata.org/entity/Q41768",
+    "currency": "Q193094",
+    "borders": [
+      "Q43",
+      "Q794",
+      "Q810",
+      "Q817",
+      "Q851",
+      "Q858"
+    ]
+  },
+  "Q27": {
+    "label": "Ireland",
+    "capital": "Q1761",
+    "highest_point": "Q503368",
+    "iso2": "IE",
+    "iso3": "IRL",
+    "cctld": "http://www.wikidata.org/entity/Q39382",
+    "currency": "Q4916",
+    "borders": [
+      "Q26",
+      "Q145"
+    ]
+  },
+  "Q801": {
+    "label": "Israel",
+    "capital": "Q1218",
+    "highest_point": "Q540520",
+    "iso2": "IL",
+    "iso3": "ISR",
+    "cctld": "http://www.wikidata.org/entity/Q1833465",
+    "currency": "Q131309",
+    "borders": [
+      "Q79",
+      "Q810",
+      "Q822",
+      "Q858"
+    ]
+  },
+  "Q38": {
+    "label": "Italy",
+    "capital": "Q220",
+    "highest_point": "Q583",
+    "iso2": "IT",
+    "iso3": "ITA",
+    "cctld": "http://www.wikidata.org/entity/Q39155",
+    "currency": "Q4916",
+    "borders": [
+      "Q39",
+      "Q40",
+      "Q142",
+      "Q215",
+      "Q233",
+      "Q237",
+      "Q238"
+    ]
+  },
+  "Q1008": {
+    "label": "Ivory Coast",
+    "capital": "Q3768",
+    "highest_point": "Q849129",
+    "iso2": "CI",
+    "iso3": "CIV",
+    "cctld": "http://www.wikidata.org/entity/Q40333",
+    "currency": "Q861690",
+    "borders": [
+      "Q117",
+      "Q912",
+      "Q965",
+      "Q1006",
+      "Q1014"
+    ]
+  },
+  "Q766": {
+    "label": "Jamaica",
+    "capital": "Q34692",
+    "highest_point": "Q885798",
+    "iso2": "JM",
+    "iso3": "JAM",
+    "cctld": "http://www.wikidata.org/entity/Q41943",
+    "currency": "Q209792",
+    "borders": [
+      "Q145"
+    ]
+  },
+  "Q17": {
+    "label": "Japan",
+    "capital": "Q1490",
+    "highest_point": "Q39231",
+    "iso2": "JP",
+    "iso3": "JPN",
+    "cctld": "http://www.wikidata.org/entity/Q39132",
+    "currency": "Q8146",
+    "borders": [
+      "Q30",
+      "Q148",
+      "Q159",
+      "Q865",
+      "Q884",
+      "Q928"
+    ]
+  },
+  "Q810": {
+    "label": "Jordan",
+    "capital": "Q3805",
+    "highest_point": "Q1261902",
+    "iso2": "JO",
+    "iso3": "JOR",
+    "cctld": "http://www.wikidata.org/entity/Q12950805",
+    "currency": "Q203722",
+    "borders": [
+      "Q796",
+      "Q801",
+      "Q851",
+      "Q858",
+      "Q36678",
+      "Q219060"
+    ]
+  },
+  "Q232": {
+    "label": "Kazakhstan",
+    "capital": "Q1520",
+    "highest_point": "Q211529",
+    "iso2": "KZ",
+    "iso3": "KAZ",
+    "cctld": "http://www.wikidata.org/entity/Q48137",
+    "currency": "Q173751",
+    "borders": [
+      "Q148",
+      "Q159",
+      "Q265",
+      "Q813",
+      "Q874"
+    ]
+  },
+  "Q114": {
+    "label": "Kenya",
+    "capital": "Q3870",
+    "highest_point": "Q172070",
+    "iso2": "KE",
+    "iso3": "KEN",
+    "cctld": "http://www.wikidata.org/entity/Q42695",
+    "currency": "Q202882",
+    "borders": [
+      "Q115",
+      "Q924",
+      "Q958",
+      "Q1036",
+      "Q1045",
+      "Q1049",
+      "Q5505",
+      "Q7172"
+    ]
+  },
+  "Q756617": {
+    "label": "Kingdom of Denmark",
+    "capital": "Q1748",
+    "highest_point": "Q825709",
+    "iso2": "",
+    "iso3": "",
+    "cctld": "http://www.wikidata.org/entity/Q39509",
+    "currency": "Q191068",
+    "borders": [
+      "Q16",
+      "Q20",
+      "Q34",
+      "Q36",
+      "Q145",
+      "Q183",
+      "Q189",
+      "Q458",
+      "Q713750"
+    ]
+  },
+  "Q29999": {
+    "label": "Kingdom of the Netherlands",
+    "capital": "Q727",
+    "highest_point": "Q1301834",
+    "iso2": "NL",
+    "iso3": "NLD",
+    "cctld": "http://www.wikidata.org/entity/Q493202",
+    "currency": "Q737779",
+    "borders": [
+      "Q31",
+      "Q142",
+      "Q183",
+      "Q717",
+      "Q151938"
+    ]
+  },
+  "Q710": {
+    "label": "Kiribati",
+    "capital": "Q131233",
+    "highest_point": "Q271901",
+    "iso2": "KI",
+    "iso3": "KIR",
+    "cctld": "http://www.wikidata.org/entity/Q42030",
+    "currency": "Q1049963",
+    "borders": [
+      "Q30",
+      "Q142"
+    ]
+  },
+  "Q817": {
+    "label": "Kuwait",
+    "capital": "Q35178",
+    "highest_point": "Q4116111",
+    "iso2": "KW",
+    "iso3": "KWT",
+    "cctld": "http://www.wikidata.org/entity/Q42672",
+    "currency": "Q193098",
+    "borders": [
+      "Q794",
+      "Q796",
+      "Q851",
+      "Q74091"
+    ]
+  },
+  "Q813": {
+    "label": "Kyrgyzstan",
+    "capital": "Q9361",
+    "highest_point": "Q332762",
+    "iso2": "KG",
+    "iso3": "KGZ",
+    "cctld": "http://www.wikidata.org/entity/Q41723",
+    "currency": "Q35881",
+    "borders": [
+      "Q148",
+      "Q232",
+      "Q265",
+      "Q863"
+    ]
+  },
+  "Q819": {
+    "label": "Laos",
+    "capital": "Q9326",
+    "highest_point": "Q239485",
+    "iso2": "LA",
+    "iso3": "LAO",
+    "cctld": "http://www.wikidata.org/entity/Q41926",
+    "currency": "Q200055",
+    "borders": [
+      "Q148",
+      "Q424",
+      "Q836",
+      "Q869",
+      "Q881"
+    ]
+  },
+  "Q211": {
+    "label": "Latvia",
+    "capital": "Q1773",
+    "highest_point": "Q1122342",
+    "iso2": "LV",
+    "iso3": "LVA",
+    "cctld": "http://www.wikidata.org/entity/Q41629",
+    "currency": "Q4916",
+    "borders": [
+      "Q34",
+      "Q37",
+      "Q159",
+      "Q184",
+      "Q191"
+    ]
+  },
+  "Q822": {
+    "label": "Lebanon",
+    "capital": "Q3820",
+    "highest_point": "Q311330",
+    "iso2": "LB",
+    "iso3": "LBN",
+    "cctld": "http://www.wikidata.org/entity/Q41835",
+    "currency": "Q201880",
+    "borders": [
+      "Q801",
+      "Q858"
+    ]
+  },
+  "Q1013": {
+    "label": "Lesotho",
+    "capital": "Q3909",
+    "highest_point": "Q733132",
+    "iso2": "LS",
+    "iso3": "LSO",
+    "cctld": "http://www.wikidata.org/entity/Q41794",
+    "currency": "Q208039",
+    "borders": [
+      "Q258"
+    ]
+  },
+  "Q1014": {
+    "label": "Liberia",
+    "capital": "Q3748",
+    "highest_point": "Q1950836",
+    "iso2": "LR",
+    "iso3": "LBR",
+    "cctld": "http://www.wikidata.org/entity/Q42847",
+    "currency": "Q242988",
+    "borders": [
+      "Q1006",
+      "Q1008",
+      "Q1044"
+    ]
+  },
+  "Q1016": {
+    "label": "Libya",
+    "capital": "Q3579",
+    "highest_point": "Q860146",
+    "iso2": "LY",
+    "iso3": "LBY",
+    "cctld": "http://www.wikidata.org/entity/Q42035",
+    "currency": "Q190699",
+    "borders": [
+      "Q79",
+      "Q262",
+      "Q657",
+      "Q948",
+      "Q1032",
+      "Q1049",
+      "Q7204"
+    ]
+  },
+  "Q347": {
+    "label": "Liechtenstein",
+    "capital": "Q1844",
+    "highest_point": "Q665000",
+    "iso2": "LI",
+    "iso3": "LIE",
+    "cctld": "http://www.wikidata.org/entity/Q42641",
+    "currency": "Q25344",
+    "borders": [
+      "Q39",
+      "Q40",
+      "Q458"
+    ]
+  },
+  "Q37": {
+    "label": "Lithuania",
+    "capital": "Q216",
+    "highest_point": "Q771431",
+    "iso2": "LT",
+    "iso3": "LTU",
+    "cctld": "http://www.wikidata.org/entity/Q39900",
+    "currency": "Q4916",
+    "borders": [
+      "Q34",
+      "Q36",
+      "Q159",
+      "Q184",
+      "Q211"
+    ]
+  },
+  "Q32": {
+    "label": "Luxembourg",
+    "capital": "Q1842",
+    "highest_point": "Q24457",
+    "iso2": "LU",
+    "iso3": "LUX",
+    "cctld": "http://www.wikidata.org/entity/Q41795",
+    "currency": "Q4916",
+    "borders": [
+      "Q31",
+      "Q142",
+      "Q183"
+    ]
+  },
+  "Q1019": {
+    "label": "Madagascar",
+    "capital": "Q3915",
+    "highest_point": "Q1147144",
+    "iso2": "MG",
+    "iso3": "MDG",
+    "cctld": "http://www.wikidata.org/entity/Q42781",
+    "currency": "Q4584",
+    "borders": [
+      "Q142",
+      "Q970",
+      "Q1029",
+      "Q1042"
+    ]
+  },
+  "Q1020": {
+    "label": "Malawi",
+    "capital": "Q3876",
+    "highest_point": "Q1510436",
+    "iso2": "MW",
+    "iso3": "MWI",
+    "cctld": "http://www.wikidata.org/entity/Q43073",
+    "currency": "Q211694",
+    "borders": [
+      "Q924",
+      "Q953",
+      "Q1029"
+    ]
+  },
+  "Q833": {
+    "label": "Malaysia",
+    "capital": "Q1865",
+    "highest_point": "Q60967",
+    "iso2": "MY",
+    "iso3": "MYS",
+    "cctld": "http://www.wikidata.org/entity/Q43127",
+    "currency": "Q163712",
+    "borders": [
+      "Q252",
+      "Q334",
+      "Q869",
+      "Q921",
+      "Q928"
+    ]
+  },
+  "Q826": {
+    "label": "Maldives",
+    "capital": "Q9347",
+    "highest_point": "Q4681407",
+    "iso2": "MV",
+    "iso3": "MDV",
+    "cctld": "http://www.wikidata.org/entity/Q43753",
+    "currency": "Q206600",
+    "borders": [
+      "Q145"
+    ]
+  },
+  "Q912": {
+    "label": "Mali",
+    "capital": "Q3703",
+    "highest_point": "Q1454300",
+    "iso2": "ML",
+    "iso3": "MLI",
+    "cctld": "http://www.wikidata.org/entity/Q42026",
+    "currency": "Q861690",
+    "borders": [
+      "Q262",
+      "Q965",
+      "Q1006",
+      "Q1008",
+      "Q1025",
+      "Q1032",
+      "Q1041"
+    ]
+  },
+  "Q233": {
+    "label": "Malta",
+    "capital": "Q23800",
+    "highest_point": "Q1850604",
+    "iso2": "MT",
+    "iso3": "MLT",
+    "cctld": "http://www.wikidata.org/entity/Q41856",
+    "currency": "Q4916",
+    "borders": [
+      "Q38"
+    ]
+  },
+  "Q709": {
+    "label": "Marshall Islands",
+    "capital": "Q12919",
+    "highest_point": "Q518353",
+    "iso2": "MH",
+    "iso3": "MHL",
+    "cctld": "http://www.wikidata.org/entity/Q41789",
+    "currency": "Q96051466",
+    "borders": [
+      "Q30",
+      "Q697",
+      "Q702",
+      "Q710"
+    ]
+  },
+  "Q1025": {
+    "label": "Mauritania",
+    "capital": "Q3688",
+    "highest_point": "Q2595789",
+    "iso2": "MR",
+    "iso3": "MRT",
+    "cctld": "http://www.wikidata.org/entity/Q42653",
+    "currency": "Q207024",
+    "borders": [
+      "Q262",
+      "Q912",
+      "Q1041",
+      "Q6250"
+    ]
+  },
+  "Q1027": {
+    "label": "Mauritius",
+    "capital": "Q3929",
+    "highest_point": "Q1760978",
+    "iso2": "MU",
+    "iso3": "MUS",
+    "cctld": "http://www.wikidata.org/entity/Q43076",
+    "currency": "Q212967",
+    "borders": [
+      "Q142",
+      "Q826",
+      "Q1042"
+    ]
+  },
+  "Q96": {
+    "label": "Mexico",
+    "capital": "Q1489",
+    "highest_point": "Q238147",
+    "iso2": "MX",
+    "iso3": "MEX",
+    "cctld": "http://www.wikidata.org/entity/Q40979",
+    "currency": "Q4730",
+    "borders": [
+      "Q30",
+      "Q242",
+      "Q774"
+    ]
+  },
+  "Q217": {
+    "label": "Moldova",
+    "capital": "Q21197",
+    "highest_point": "Q47940",
+    "iso2": "MD",
+    "iso3": "MDA",
+    "cctld": "http://www.wikidata.org/entity/Q40324",
+    "currency": "Q181129",
+    "borders": [
+      "Q212",
+      "Q218"
+    ]
+  },
+  "Q235": {
+    "label": "Monaco",
+    "capital": "Q235",
+    "highest_point": "Q1069352",
+    "iso2": "MC",
+    "iso3": "MCO",
+    "cctld": "http://www.wikidata.org/entity/Q42020",
+    "currency": "Q4916",
+    "borders": [
+      "Q142"
+    ]
+  },
+  "Q711": {
+    "label": "Mongolia",
+    "capital": "Q23430",
+    "highest_point": "Q1091113",
+    "iso2": "MN",
+    "iso3": "MNG",
+    "cctld": "http://www.wikidata.org/entity/Q42873",
+    "currency": "Q183435",
+    "borders": [
+      "Q148",
+      "Q159"
+    ]
+  },
+  "Q236": {
+    "label": "Montenegro",
+    "capital": "Q23564",
+    "highest_point": "Q2720697",
+    "iso2": "ME",
+    "iso3": "MNE",
+    "cctld": "http://www.wikidata.org/entity/Q43673",
+    "currency": "Q4916",
+    "borders": [
+      "Q222",
+      "Q224",
+      "Q225",
+      "Q403",
+      "Q458",
+      "Q1246"
+    ]
+  },
+  "Q1028": {
+    "label": "Morocco",
+    "capital": "Q3551",
+    "highest_point": "Q503433",
+    "iso2": "MA",
+    "iso3": "MAR",
+    "cctld": "http://www.wikidata.org/entity/Q41439",
+    "currency": "Q200192",
+    "borders": [
+      "Q29",
+      "Q262",
+      "Q458",
+      "Q6250"
+    ]
+  },
+  "Q1029": {
+    "label": "Mozambique",
+    "capital": "Q3889",
+    "highest_point": "Q1353678",
+    "iso2": "MZ",
+    "iso3": "MOZ",
+    "cctld": "http://www.wikidata.org/entity/Q43131",
+    "currency": "Q200753",
+    "borders": [
+      "Q258",
+      "Q924",
+      "Q953",
+      "Q954",
+      "Q970",
+      "Q1020",
+      "Q1050"
+    ]
+  },
+  "Q836": {
+    "label": "Myanmar",
+    "capital": "Q37400",
+    "highest_point": "Q870063",
+    "iso2": "MM",
+    "iso3": "MMR",
+    "cctld": "http://www.wikidata.org/entity/Q41636",
+    "currency": "Q201875",
+    "borders": [
+      "Q148",
+      "Q668",
+      "Q819",
+      "Q869",
+      "Q902"
+    ]
+  },
+  "Q1030": {
+    "label": "Namibia",
+    "capital": "Q3935",
+    "highest_point": "Q897834",
+    "iso2": "NA",
+    "iso3": "NAM",
+    "cctld": "http://www.wikidata.org/entity/Q42758",
+    "currency": "Q202462",
+    "borders": [
+      "Q258",
+      "Q916",
+      "Q953",
+      "Q963"
+    ]
+  },
+  "Q697": {
+    "label": "Nauru",
+    "capital": "Q31026",
+    "highest_point": "Q2667931",
+    "iso2": "NR",
+    "iso3": "NRU",
+    "cctld": "http://www.wikidata.org/entity/Q42689",
+    "currency": "Q259502",
+    "borders": []
+  },
+  "Q837": {
+    "label": "Nepal",
+    "capital": "Q3037",
+    "highest_point": "Q513",
+    "iso2": "NP",
+    "iso3": "NPL",
+    "cctld": "http://www.wikidata.org/entity/Q43582",
+    "currency": "Q202895",
+    "borders": [
+      "Q148",
+      "Q668"
+    ]
+  },
+  "Q664": {
+    "label": "New Zealand",
+    "capital": "Q23661",
+    "highest_point": "Q5059",
+    "iso2": "NZ",
+    "iso3": "NZL",
+    "cctld": "http://www.wikidata.org/entity/Q42019",
+    "currency": "Q1472704",
+    "borders": [
+      "Q408"
+    ]
+  },
+  "Q811": {
+    "label": "Nicaragua",
+    "capital": "Q3274",
+    "highest_point": "Q2092378",
+    "iso2": "NI",
+    "iso3": "NIC",
+    "cctld": "http://www.wikidata.org/entity/Q487644",
+    "currency": "Q207312",
+    "borders": [
+      "Q739",
+      "Q783",
+      "Q800"
+    ]
+  },
+  "Q1032": {
+    "label": "Niger",
+    "capital": "Q3674",
+    "highest_point": "Q3042286",
+    "iso2": "NE",
+    "iso3": "NER",
+    "cctld": "http://www.wikidata.org/entity/Q43158",
+    "currency": "Q861690",
+    "borders": [
+      "Q262",
+      "Q657",
+      "Q912",
+      "Q962",
+      "Q965",
+      "Q1016",
+      "Q1033",
+      "Q7172"
+    ]
+  },
+  "Q1033": {
+    "label": "Nigeria",
+    "capital": "Q3787",
+    "highest_point": "Q976055",
+    "iso2": "NG",
+    "iso3": "NGA",
+    "cctld": "http://www.wikidata.org/entity/Q43151",
+    "currency": "Q203567",
+    "borders": [
+      "Q657",
+      "Q962",
+      "Q1009",
+      "Q1032",
+      "Q1039"
+    ]
+  },
+  "Q423": {
+    "label": "North Korea",
+    "capital": "Q18808",
+    "highest_point": "Q107635",
+    "iso2": "KP",
+    "iso3": "PRK",
+    "cctld": "http://www.wikidata.org/entity/Q42172",
+    "currency": "Q106720",
+    "borders": [
+      "Q148",
+      "Q159",
+      "Q884"
+    ]
+  },
+  "Q221": {
+    "label": "North Macedonia",
+    "capital": "Q384",
+    "highest_point": "Q912579",
+    "iso2": "MK",
+    "iso3": "MKD",
+    "cctld": "http://www.wikidata.org/entity/Q41319",
+    "currency": "Q177875",
+    "borders": [
+      "Q41",
+      "Q219",
+      "Q222",
+      "Q403",
+      "Q458",
+      "Q1246"
+    ]
+  },
+  "Q20": {
+    "label": "Norway",
+    "capital": "Q585",
+    "highest_point": "Q203942",
+    "iso2": "NO",
+    "iso3": "NOR",
+    "cctld": "http://www.wikidata.org/entity/Q41060",
+    "currency": "Q132643",
+    "borders": [
+      "Q33",
+      "Q34",
+      "Q159",
+      "Q458"
+    ]
+  },
+  "Q842": {
+    "label": "Oman",
+    "capital": "Q3826",
+    "highest_point": "Q1261915",
+    "iso2": "OM",
+    "iso3": "OMN",
+    "cctld": "http://www.wikidata.org/entity/Q43132",
+    "currency": "Q272290",
+    "borders": [
+      "Q794",
+      "Q805",
+      "Q851",
+      "Q878"
+    ]
+  },
+  "Q843": {
+    "label": "Pakistan",
+    "capital": "Q1362",
+    "highest_point": "Q43512",
+    "iso2": "PK",
+    "iso3": "PAK",
+    "cctld": "http://www.wikidata.org/entity/Q43150",
+    "currency": "Q188289",
+    "borders": [
+      "Q148",
+      "Q668",
+      "Q794",
+      "Q889"
+    ]
+  },
+  "Q695": {
+    "label": "Palau",
+    "capital": "Q515229",
+    "highest_point": "Q1191219",
+    "iso2": "PW",
+    "iso3": "PLW",
+    "cctld": "http://www.wikidata.org/entity/Q44083",
+    "currency": "Q4917",
+    "borders": [
+      "Q252",
+      "Q702",
+      "Q928"
+    ]
+  },
+  "Q804": {
+    "label": "Panama",
+    "capital": "Q3306",
+    "highest_point": "Q594726",
+    "iso2": "PA",
+    "iso3": "PAN",
+    "cctld": "http://www.wikidata.org/entity/Q41948",
+    "currency": "Q210472",
+    "borders": [
+      "Q30",
+      "Q739",
+      "Q800"
+    ]
+  },
+  "Q691": {
+    "label": "Papua New Guinea",
+    "capital": "Q36526",
+    "highest_point": "Q277441",
+    "iso2": "PG",
+    "iso3": "PNG",
+    "cctld": "http://www.wikidata.org/entity/Q43147",
+    "currency": "Q200759",
+    "borders": [
+      "Q252",
+      "Q408",
+      "Q685",
+      "Q702"
+    ]
+  },
+  "Q733": {
+    "label": "Paraguay",
+    "capital": "Q2933",
+    "highest_point": "Q1055965",
+    "iso2": "PY",
+    "iso3": "PRY",
+    "cctld": "http://www.wikidata.org/entity/Q43161",
+    "currency": "Q207514",
+    "borders": [
+      "Q155",
+      "Q414",
+      "Q750"
+    ]
+  },
+  "Q148": {
+    "label": "People's Republic of China",
+    "capital": "Q956",
+    "highest_point": "Q513",
+    "iso2": "CN",
+    "iso3": "CHN",
+    "cctld": "http://www.wikidata.org/entity/Q11837483",
+    "currency": "Q39099",
+    "borders": [
+      "Q17",
+      "Q159",
+      "Q232",
+      "Q423",
+      "Q668",
+      "Q711",
+      "Q813",
+      "Q819",
+      "Q836",
+      "Q837",
+      "Q843",
+      "Q863",
+      "Q881",
+      "Q884",
+      "Q889",
+      "Q917"
+    ]
+  },
+  "Q419": {
+    "label": "Peru",
+    "capital": "Q2868",
+    "highest_point": "Q200935",
+    "iso2": "PE",
+    "iso3": "PER",
+    "cctld": "http://www.wikidata.org/entity/Q41954",
+    "currency": "Q204656",
+    "borders": [
+      "Q155",
+      "Q298",
+      "Q736",
+      "Q739",
+      "Q750",
+      "Q199821"
+    ]
+  },
+  "Q928": {
+    "label": "Philippines",
+    "capital": "Q1461",
+    "highest_point": "Q455963",
+    "iso2": "PH",
+    "iso3": "PHL",
+    "cctld": "http://www.wikidata.org/entity/Q41840",
+    "currency": "Q17193",
+    "borders": [
+      "Q17",
+      "Q148",
+      "Q252",
+      "Q695",
+      "Q833",
+      "Q865"
+    ]
+  },
+  "Q36": {
+    "label": "Poland",
+    "capital": "Q270",
+    "highest_point": "Q672936",
+    "iso2": "PL",
+    "iso3": "POL",
+    "cctld": "http://www.wikidata.org/entity/Q37907",
+    "currency": "Q123213",
+    "borders": [
+      "Q37",
+      "Q159",
+      "Q183",
+      "Q184",
+      "Q212",
+      "Q213",
+      "Q214"
+    ]
+  },
+  "Q45": {
+    "label": "Portugal",
+    "capital": "Q597",
+    "highest_point": "Q928681",
+    "iso2": "PT",
+    "iso3": "PRT",
+    "cctld": "http://www.wikidata.org/entity/Q39959",
+    "currency": "Q4916",
+    "borders": [
+      "Q29"
+    ]
+  },
+  "Q846": {
+    "label": "Qatar",
+    "capital": "Q3861",
+    "highest_point": "Q1633034",
+    "iso2": "QA",
+    "iso3": "QAT",
+    "cctld": "http://www.wikidata.org/entity/Q43117",
+    "currency": "Q206386",
+    "borders": [
+      "Q794",
+      "Q851"
+    ]
+  },
+  "Q971": {
+    "label": "Republic of the Congo",
+    "capital": "Q3844",
+    "highest_point": "Q3113296",
+    "iso2": "CG",
+    "iso3": "COG",
+    "cctld": "http://www.wikidata.org/entity/Q39906",
+    "currency": "Q847739",
+    "borders": [
+      "Q916",
+      "Q929",
+      "Q974",
+      "Q1000",
+      "Q1009"
+    ]
+  },
+  "Q218": {
+    "label": "Romania",
+    "capital": "Q19660",
+    "highest_point": "Q746524",
+    "iso2": "RO",
+    "iso3": "ROU",
+    "cctld": "http://www.wikidata.org/entity/Q42677",
+    "currency": "Q131645",
+    "borders": [
+      "Q28",
+      "Q212",
+      "Q217",
+      "Q219",
+      "Q403"
+    ]
+  },
+  "Q159": {
+    "label": "Russia",
+    "capital": "Q649",
+    "highest_point": "Q43105",
+    "iso2": "RU",
+    "iso3": "RUS",
+    "cctld": "http://www.wikidata.org/entity/Q16524723",
+    "currency": "Q41044",
+    "borders": [
+      "Q17",
+      "Q20",
+      "Q30",
+      "Q33",
+      "Q34",
+      "Q36",
+      "Q37",
+      "Q148",
+      "Q184",
+      "Q191",
+      "Q211",
+      "Q212",
+      "Q227",
+      "Q230",
+      "Q232",
+      "Q423",
+      "Q458",
+      "Q711"
+    ]
+  },
+  "Q1037": {
+    "label": "Rwanda",
+    "capital": "Q3859",
+    "highest_point": "Q737859",
+    "iso2": "RW",
+    "iso3": "RWA",
+    "cctld": "http://www.wikidata.org/entity/Q43592",
+    "currency": "Q4741",
+    "borders": [
+      "Q924",
+      "Q967",
+      "Q974",
+      "Q1036"
+    ]
+  },
+  "Q763": {
+    "label": "Saint Kitts and Nevis",
+    "capital": "Q41295",
+    "highest_point": "Q1269774",
+    "iso2": "KN",
+    "iso3": "KNA",
+    "cctld": "http://www.wikidata.org/entity/Q43146",
+    "currency": "Q26365",
+    "borders": [
+      "Q145",
+      "Q717"
+    ]
+  },
+  "Q760": {
+    "label": "Saint Lucia",
+    "capital": "Q41699",
+    "highest_point": "Q1811114",
+    "iso2": "LC",
+    "iso3": "LCA",
+    "cctld": "http://www.wikidata.org/entity/Q42648",
+    "currency": "Q26365",
+    "borders": [
+      "Q717"
+    ]
+  },
+  "Q757": {
+    "label": "Saint Vincent and the Grenadines",
+    "capital": "Q41474",
+    "highest_point": "Q26544",
+    "iso2": "VC",
+    "iso3": "VCT",
+    "cctld": "http://www.wikidata.org/entity/Q42863",
+    "currency": "Q26365",
+    "borders": [
+      "Q717"
+    ]
+  },
+  "Q683": {
+    "label": "Samoa",
+    "capital": "Q36260",
+    "highest_point": "Q1147814",
+    "iso2": "WS",
+    "iso3": "WSM",
+    "cctld": "http://www.wikidata.org/entity/Q42864",
+    "currency": "Q4588",
+    "borders": [
+      "Q30"
+    ]
+  },
+  "Q238": {
+    "label": "San Marino",
+    "capital": "Q1848",
+    "highest_point": "Q158526",
+    "iso2": "SM",
+    "iso3": "SMR",
+    "cctld": "http://www.wikidata.org/entity/Q43094",
+    "currency": "Q4916",
+    "borders": [
+      "Q38",
+      "Q458"
+    ]
+  },
+  "Q851": {
+    "label": "Saudi Arabia",
+    "capital": "Q3692",
+    "highest_point": "Q1261892",
+    "iso2": "SA",
+    "iso3": "SAU",
+    "cctld": "http://www.wikidata.org/entity/Q137014",
+    "currency": "Q199857",
+    "borders": [
+      "Q79",
+      "Q398",
+      "Q794",
+      "Q796",
+      "Q805",
+      "Q810",
+      "Q817",
+      "Q842",
+      "Q846",
+      "Q878"
+    ]
+  },
+  "Q1041": {
+    "label": "Senegal",
+    "capital": "Q3718",
+    "highest_point": "Q98596662",
+    "iso2": "SN",
+    "iso3": "SEN",
+    "cctld": "http://www.wikidata.org/entity/Q60117",
+    "currency": "Q861690",
+    "borders": [
+      "Q912",
+      "Q1005",
+      "Q1006",
+      "Q1007",
+      "Q1025",
+      "Q7172"
+    ]
+  },
+  "Q403": {
+    "label": "Serbia",
+    "capital": "Q3711",
+    "highest_point": "Q20568528",
+    "iso2": "RS",
+    "iso3": "SRB",
+    "cctld": "http://www.wikidata.org/entity/Q48367",
+    "currency": "Q172524",
+    "borders": [
+      "Q28",
+      "Q218",
+      "Q219",
+      "Q221",
+      "Q222",
+      "Q224",
+      "Q225",
+      "Q236",
+      "Q458",
+      "Q1246"
+    ]
+  },
+  "Q1042": {
+    "label": "Seychelles",
+    "capital": "Q3940",
+    "highest_point": "Q1579060",
+    "iso2": "SC",
+    "iso3": "SYC",
+    "cctld": "http://www.wikidata.org/entity/Q43139",
+    "currency": "Q4595",
+    "borders": [
+      "Q142",
+      "Q924",
+      "Q970",
+      "Q1019",
+      "Q1027"
+    ]
+  },
+  "Q1044": {
+    "label": "Sierra Leone",
+    "capital": "Q3780",
+    "highest_point": "Q769525",
+    "iso2": "SL",
+    "iso3": "SLE",
+    "cctld": "http://www.wikidata.org/entity/Q43767",
+    "currency": "Q4587",
+    "borders": [
+      "Q1006",
+      "Q1014"
+    ]
+  },
+  "Q334": {
+    "label": "Singapore",
+    "capital": "Q334",
+    "highest_point": "Q720209",
+    "iso2": "SG",
+    "iso3": "SGP",
+    "cctld": "http://www.wikidata.org/entity/Q41851",
+    "currency": "Q190951",
+    "borders": [
+      "Q252",
+      "Q833"
+    ]
+  },
+  "Q214": {
+    "label": "Slovakia",
+    "capital": "Q1780",
+    "highest_point": "Q81213",
+    "iso2": "SK",
+    "iso3": "SVK",
+    "cctld": "http://www.wikidata.org/entity/Q41529",
+    "currency": "Q4916",
+    "borders": [
+      "Q28",
+      "Q36",
+      "Q40",
+      "Q212",
+      "Q213"
+    ]
+  },
+  "Q215": {
+    "label": "Slovenia",
+    "capital": "Q437",
+    "highest_point": "Q1024",
+    "iso2": "SI",
+    "iso3": "SVN",
+    "cctld": "http://www.wikidata.org/entity/Q58723",
+    "currency": "Q4916",
+    "borders": [
+      "Q28",
+      "Q38",
+      "Q40",
+      "Q224"
+    ]
+  },
+  "Q685": {
+    "label": "Solomon Islands",
+    "capital": "Q40921",
+    "highest_point": "Q760819",
+    "iso2": "SB",
+    "iso3": "SLB",
+    "cctld": "http://www.wikidata.org/entity/Q43829",
+    "currency": "Q4597",
+    "borders": [
+      "Q142",
+      "Q408",
+      "Q686",
+      "Q691",
+      "Q712"
+    ]
+  },
+  "Q1045": {
+    "label": "Somalia",
+    "capital": "Q2449",
+    "highest_point": "Q649162",
+    "iso2": "SO",
+    "iso3": "SOM",
+    "cctld": "http://www.wikidata.org/entity/Q126480",
+    "currency": "Q4603",
+    "borders": [
+      "Q114",
+      "Q115",
+      "Q977"
+    ]
+  },
+  "Q258": {
+    "label": "South Africa",
+    "capital": "Q37701",
+    "highest_point": "Q1883683",
+    "iso2": "ZA",
+    "iso3": "ZAF",
+    "cctld": "http://www.wikidata.org/entity/Q42754",
+    "currency": "Q181907",
+    "borders": [
+      "Q954",
+      "Q963",
+      "Q1013",
+      "Q1029",
+      "Q1030",
+      "Q1050"
+    ]
+  },
+  "Q884": {
+    "label": "South Korea",
+    "capital": "Q8684",
+    "highest_point": "Q494645",
+    "iso2": "KR",
+    "iso3": "KOR",
+    "cctld": "http://www.wikidata.org/entity/Q12579915",
+    "currency": "Q3867091",
+    "borders": [
+      "Q17",
+      "Q148",
+      "Q423"
+    ]
+  },
+  "Q958": {
+    "label": "South Sudan",
+    "capital": "Q1947",
+    "highest_point": "Q948298",
+    "iso2": "SS",
+    "iso3": "SSD",
+    "cctld": "http://www.wikidata.org/entity/Q717118",
+    "currency": "Q244366",
+    "borders": [
+      "Q114",
+      "Q115",
+      "Q929",
+      "Q974",
+      "Q1036",
+      "Q1049",
+      "Q7172"
+    ]
+  },
+  "Q29": {
+    "label": "Spain",
+    "capital": "Q2807",
+    "highest_point": "Q38954",
+    "iso2": "ES",
+    "iso3": "ESP",
+    "cctld": "http://www.wikidata.org/entity/Q37883",
+    "currency": "Q4916",
+    "borders": [
+      "Q45",
+      "Q142",
+      "Q228",
+      "Q1028",
+      "Q1410"
+    ]
+  },
+  "Q854": {
+    "label": "Sri Lanka",
+    "capital": "Q41963",
+    "highest_point": "Q1146327",
+    "iso2": "LK",
+    "iso3": "LKA",
+    "cctld": "http://www.wikidata.org/entity/Q136682",
+    "currency": "Q4596",
+    "borders": [
+      "Q668"
+    ]
+  },
+  "Q1049": {
+    "label": "Sudan",
+    "capital": "Q1963",
+    "highest_point": "Q2520348",
+    "iso2": "SD",
+    "iso3": "SDN",
+    "cctld": "http://www.wikidata.org/entity/Q43762",
+    "currency": "Q271206",
+    "borders": [
+      "Q79",
+      "Q114",
+      "Q115",
+      "Q657",
+      "Q929",
+      "Q958",
+      "Q974",
+      "Q986",
+      "Q1016",
+      "Q1036",
+      "Q7204",
+      "Q620634"
+    ]
+  },
+  "Q730": {
+    "label": "Suriname",
+    "capital": "Q3001",
+    "highest_point": "Q1549215",
+    "iso2": "SR",
+    "iso3": "SUR",
+    "cctld": "http://www.wikidata.org/entity/Q43102",
+    "currency": "Q202036",
+    "borders": [
+      "Q142",
+      "Q155",
+      "Q734"
+    ]
+  },
+  "Q34": {
+    "label": "Sweden",
+    "capital": "Q1754",
+    "highest_point": "Q214011",
+    "iso2": "SE",
+    "iso3": "SWE",
+    "cctld": "http://www.wikidata.org/entity/Q40442",
+    "currency": "Q122922",
+    "borders": [
+      "Q20",
+      "Q33",
+      "Q35"
+    ]
+  },
+  "Q39": {
+    "label": "Switzerland",
+    "capital": "Q70",
+    "highest_point": "Q3403",
+    "iso2": "CH",
+    "iso3": "CHE",
+    "cctld": "http://www.wikidata.org/entity/Q20577158",
+    "currency": "Q25344",
+    "borders": [
+      "Q38",
+      "Q40",
+      "Q142",
+      "Q183",
+      "Q347",
+      "Q458"
+    ]
+  },
+  "Q858": {
+    "label": "Syria",
+    "capital": "Q3766",
+    "highest_point": "Q215471",
+    "iso2": "SY",
+    "iso3": "SYR",
+    "cctld": "http://www.wikidata.org/entity/Q42778",
+    "currency": "Q240468",
+    "borders": [
+      "Q43",
+      "Q796",
+      "Q801",
+      "Q810",
+      "Q822"
+    ]
+  },
+  "Q1039": {
+    "label": "São Tomé and Príncipe",
+    "capital": "Q3932",
+    "highest_point": "Q1471391",
+    "iso2": "ST",
+    "iso3": "STP",
+    "cctld": "http://www.wikidata.org/entity/Q43772",
+    "currency": "Q193712",
+    "borders": [
+      "Q983",
+      "Q1000",
+      "Q1033"
+    ]
+  },
+  "Q863": {
+    "label": "Tajikistan",
+    "capital": "Q9365",
+    "highest_point": "Q41413",
+    "iso2": "TJ",
+    "iso3": "TJK",
+    "cctld": "http://www.wikidata.org/entity/Q42033",
+    "currency": "Q199886",
+    "borders": [
+      "Q148",
+      "Q265",
+      "Q813",
+      "Q889"
+    ]
+  },
+  "Q924": {
+    "label": "Tanzania",
+    "capital": "Q3866",
+    "highest_point": "Q1394606",
+    "iso2": "TZ",
+    "iso3": "TZA",
+    "cctld": "http://www.wikidata.org/entity/Q43159",
+    "currency": "Q4589",
+    "borders": [
+      "Q114",
+      "Q953",
+      "Q967",
+      "Q974",
+      "Q1020",
+      "Q1029",
+      "Q1036",
+      "Q1037",
+      "Q1042",
+      "Q5505"
+    ]
+  },
+  "Q869": {
+    "label": "Thailand",
+    "capital": "Q1861",
+    "highest_point": "Q1140075",
+    "iso2": "TH",
+    "iso3": "THA",
+    "cctld": "http://www.wikidata.org/entity/Q43133",
+    "currency": "Q177882",
+    "borders": [
+      "Q424",
+      "Q819",
+      "Q833",
+      "Q836"
+    ]
+  },
+  "Q778": {
+    "label": "The Bahamas",
+    "capital": "Q2467",
+    "highest_point": "Q746274",
+    "iso2": "BS",
+    "iso3": "BHS",
+    "cctld": "http://www.wikidata.org/entity/Q40514",
+    "currency": "Q194339",
+    "borders": [
+      "Q30",
+      "Q145",
+      "Q18221"
+    ]
+  },
+  "Q1005": {
+    "label": "The Gambia",
+    "capital": "Q3726",
+    "highest_point": null,
+    "iso2": "GM",
+    "iso3": "GMB",
+    "cctld": "http://www.wikidata.org/entity/Q41758",
+    "currency": "Q202885",
+    "borders": [
+      "Q1041"
+    ]
+  },
+  "Q574": {
+    "label": "Timor-Leste",
+    "capital": "Q9310",
+    "highest_point": "Q1539961",
+    "iso2": "TL",
+    "iso3": "TLS",
+    "cctld": "http://www.wikidata.org/entity/Q43153",
+    "currency": "Q572213",
+    "borders": [
+      "Q252",
+      "Q408"
+    ]
+  },
+  "Q945": {
+    "label": "Togo",
+    "capital": "Q3792",
+    "highest_point": "Q1753509",
+    "iso2": "TG",
+    "iso3": "TGO",
+    "cctld": "http://www.wikidata.org/entity/Q42860",
+    "currency": "Q861690",
+    "borders": [
+      "Q117",
+      "Q962",
+      "Q965",
+      "Q1017008"
+    ]
+  },
+  "Q678": {
+    "label": "Tonga",
+    "capital": "Q38834",
+    "highest_point": "Q1520405",
+    "iso2": "TO",
+    "iso3": "TON",
+    "cctld": "http://www.wikidata.org/entity/Q41626",
+    "currency": "Q4613",
+    "borders": [
+      "Q30"
+    ]
+  },
+  "Q754": {
+    "label": "Trinidad and Tobago",
+    "capital": "Q39178",
+    "highest_point": "Q1056103",
+    "iso2": "TT",
+    "iso3": "TTO",
+    "cctld": "http://www.wikidata.org/entity/Q43118",
+    "currency": "Q242890",
+    "borders": [
+      "Q717"
+    ]
+  },
+  "Q948": {
+    "label": "Tunisia",
+    "capital": "Q3572",
+    "highest_point": "Q1232136",
+    "iso2": "TN",
+    "iso3": "TUN",
+    "cctld": "http://www.wikidata.org/entity/Q43163",
+    "currency": "Q4602",
+    "borders": [
+      "Q262",
+      "Q1016"
+    ]
+  },
+  "Q43": {
+    "label": "Turkey",
+    "capital": "Q3640",
+    "highest_point": "Q72303",
+    "iso2": "TR",
+    "iso3": "TUR",
+    "cctld": "http://www.wikidata.org/entity/Q41104",
+    "currency": "Q172872",
+    "borders": [
+      "Q41",
+      "Q219",
+      "Q227",
+      "Q230",
+      "Q399",
+      "Q458",
+      "Q794",
+      "Q796",
+      "Q858",
+      "Q7172"
+    ]
+  },
+  "Q874": {
+    "label": "Turkmenistan",
+    "capital": "Q23438",
+    "highest_point": "Q794684",
+    "iso2": "TM",
+    "iso3": "TKM",
+    "cctld": "http://www.wikidata.org/entity/Q41824",
+    "currency": "Q486637",
+    "borders": [
+      "Q232",
+      "Q265",
+      "Q794",
+      "Q889"
+    ]
+  },
+  "Q672": {
+    "label": "Tuvalu",
+    "capital": "Q34126",
+    "highest_point": "Q632489",
+    "iso2": "TV",
+    "iso3": "TUV",
+    "cctld": "http://www.wikidata.org/entity/Q40373",
+    "currency": "Q259502",
+    "borders": []
+  },
+  "Q1036": {
+    "label": "Uganda",
+    "capital": "Q3894",
+    "highest_point": "Q221666",
+    "iso2": "UG",
+    "iso3": "UGA",
+    "cctld": "http://www.wikidata.org/entity/Q43122",
+    "currency": "Q4598",
+    "borders": [
+      "Q114",
+      "Q924",
+      "Q958",
+      "Q974",
+      "Q1037",
+      "Q1049",
+      "Q5505"
+    ]
+  },
+  "Q212": {
+    "label": "Ukraine",
+    "capital": "Q1899",
+    "highest_point": "Q627508",
+    "iso2": "UA",
+    "iso3": "UKR",
+    "cctld": "http://www.wikidata.org/entity/Q40656",
+    "currency": "Q81893",
+    "borders": [
+      "Q28",
+      "Q36",
+      "Q159",
+      "Q184",
+      "Q214",
+      "Q217",
+      "Q218",
+      "Q458"
+    ]
+  },
+  "Q878": {
+    "label": "United Arab Emirates",
+    "capital": "Q1519",
+    "highest_point": "Q3492099",
+    "iso2": "AE",
+    "iso3": "ARE",
+    "cctld": "http://www.wikidata.org/entity/Q136728",
+    "currency": "Q200294",
+    "borders": [
+      "Q794",
+      "Q842",
+      "Q851"
+    ]
+  },
+  "Q145": {
+    "label": "United Kingdom",
+    "capital": "Q84",
+    "highest_point": "Q104674",
+    "iso2": "GB",
+    "iso3": "GBR",
+    "cctld": "http://www.wikidata.org/entity/Q37913",
+    "currency": "Q25224",
+    "borders": [
+      "Q27"
+    ]
+  },
+  "Q30": {
+    "label": "United States",
+    "capital": "Q61",
+    "highest_point": "Q130018",
+    "iso2": "US",
+    "iso3": "USA",
+    "cctld": "http://www.wikidata.org/entity/Q37861",
+    "currency": "Q4917",
+    "borders": [
+      "Q16",
+      "Q96"
+    ]
+  },
+  "Q77": {
+    "label": "Uruguay",
+    "capital": "Q1335",
+    "highest_point": "Q1055837",
+    "iso2": "UY",
+    "iso3": "URY",
+    "cctld": "http://www.wikidata.org/entity/Q41848",
+    "currency": "Q209272",
+    "borders": [
+      "Q155",
+      "Q414"
+    ]
+  },
+  "Q265": {
+    "label": "Uzbekistan",
+    "capital": "Q269",
+    "highest_point": "Q519822",
+    "iso2": "UZ",
+    "iso3": "UZB",
+    "cctld": "http://www.wikidata.org/entity/Q41846",
+    "currency": "Q487888",
+    "borders": [
+      "Q232",
+      "Q813",
+      "Q863",
+      "Q874",
+      "Q889"
+    ]
+  },
+  "Q686": {
+    "label": "Vanuatu",
+    "capital": "Q37806",
+    "highest_point": "Q1542459",
+    "iso2": "VU",
+    "iso3": "VUT",
+    "cctld": "http://www.wikidata.org/entity/Q42701",
+    "currency": "Q207523",
+    "borders": [
+      "Q408",
+      "Q685"
+    ]
+  },
+  "Q717": {
+    "label": "Venezuela",
+    "capital": "Q1533",
+    "highest_point": "Q213704",
+    "iso2": "VE",
+    "iso3": "VEN",
+    "cctld": "http://www.wikidata.org/entity/Q42760",
+    "currency": "Q56349362",
+    "borders": [
+      "Q30",
+      "Q142",
+      "Q145",
+      "Q155",
+      "Q734",
+      "Q739",
+      "Q754",
+      "Q757",
+      "Q760",
+      "Q763",
+      "Q769",
+      "Q784",
+      "Q786",
+      "Q29999",
+      "Q130304",
+      "Q124653007"
+    ]
+  },
+  "Q881": {
+    "label": "Vietnam",
+    "capital": "Q1858",
+    "highest_point": "Q123782",
+    "iso2": "VN",
+    "iso3": "VNM",
+    "cctld": "http://www.wikidata.org/entity/Q42683",
+    "currency": "Q192090",
+    "borders": [
+      "Q148",
+      "Q424",
+      "Q819"
+    ]
+  },
+  "Q805": {
+    "label": "Yemen",
+    "capital": "Q131694",
+    "highest_point": "Q1261935",
+    "iso2": "YE",
+    "iso3": "YEM",
+    "cctld": "http://www.wikidata.org/entity/Q42842",
+    "currency": "Q240512",
+    "borders": [
+      "Q842",
+      "Q851"
+    ]
+  },
+  "Q953": {
+    "label": "Zambia",
+    "capital": "Q3881",
+    "highest_point": "Q18351462",
+    "iso2": "ZM",
+    "iso3": "ZMB",
+    "cctld": "http://www.wikidata.org/entity/Q41842",
+    "currency": "Q73408",
+    "borders": [
+      "Q916",
+      "Q924",
+      "Q954",
+      "Q963",
+      "Q974",
+      "Q1020",
+      "Q1029",
+      "Q1030"
+    ]
+  },
+  "Q954": {
+    "label": "Zimbabwe",
+    "capital": "Q3921",
+    "highest_point": "Q152294",
+    "iso2": "ZW",
+    "iso3": "ZWE",
+    "cctld": "http://www.wikidata.org/entity/Q42286",
+    "currency": "Q125352135",
+    "borders": [
+      "Q258",
+      "Q953",
+      "Q963",
+      "Q1029"
+    ]
+  },
+  "Q124653007": {
+    "label": "realm of the United Kingdom",
+    "capital": "Q84",
+    "highest_point": null,
+    "iso2": "",
+    "iso3": "",
+    "cctld": "",
+    "currency": null,
+    "borders": [
+      "Q27"
+    ]
+  }
+}

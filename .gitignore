@@ -28,8 +28,8 @@ frontend/dist/
 frontend/.vite/
 *.tsbuildinfo
 
-# Backend data
-backend/data/raw/
+# Backend data: everything committed (final dataset + raw API cache)
+# so cloning the repo never requires re-fetching from Wikipedia/Wikidata.
 !backend/data/countries.json
 !backend/data/daily_order.json
 !backend/data/countries.db
