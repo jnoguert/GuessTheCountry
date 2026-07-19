@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import re
+import time
 from typing import Dict, List, Tuple
 from .wikidata_core import fetch_wikidata_core
 from .wikidata_lexical import fetch_wikidata_lexical
@@ -144,7 +145,11 @@ def fetch_all_wikipedia_articles():
         lang_dir = os.path.join(RAW_DATA_DIR, f'wikipedia_{lang}')
         os.makedirs(lang_dir, exist_ok=True)
 
-        for qid, country_data in core.items():
+        for idx, (qid, country_data) in enumerate(core.items()):
+            # Rate limiting: 0.5s delay between requests to respect Wikipedia's terms
+            if idx > 0:
+                time.sleep(0.5)
+
             title = get_wikipedia_title(lang, qid, lexical)
             if not title:
                 print(f"  No title found for {qid} in {lang}")
