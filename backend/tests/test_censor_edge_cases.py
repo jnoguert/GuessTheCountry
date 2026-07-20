@@ -1,7 +1,10 @@
 """Tests for the censorship engine (pipeline/censor.py)."""
+import random
+import re
 from pipeline.censor import (
     create_censor_regex, censor_paragraph, expand_demonym,
     collect_proper_nouns, censor_proper_nouns, censor_name_stems,
+    fuzz_block_length, BLOCK_LENGTH_JITTER_RANGE,
 )
 
 
@@ -15,7 +18,7 @@ class TestWordBoundaries:
         result = censor(['Niger'], 'Nigeria and Niger are neighbours.')
         assert 'Nigeria' in result
         assert ' Niger ' not in result
-        assert '█████' in result
+        assert '█' in result  # block length is jittered, not necessarily 5
 
     def test_nigeria_does_not_censor_niger(self):
         result = censor(['Nigeria'], 'Nigeria and Niger are neighbours.')
@@ -135,9 +138,66 @@ class TestProperNounCensor:
         assert 'Mediterráneo' not in result
         assert 'río' in result
 
-    def test_block_length_matches_word(self):
-        [result] = censor_all(['They travelled to Catalonia quickly.'])
-        assert '█' * len('Catalonia') in result
+    def test_block_length_is_jittered_not_exact(self):
+        # With the length obfuscation, the block for "Catalonia" (9 letters)
+        # must NOT reveal the true 9-character width
+        rng = random.Random(1)
+        known = collect_proper_nouns(['They travelled to Catalonia quickly.'], 'en')
+        result = censor_proper_nouns('They travelled to Catalonia quickly.', 'en', known, rng)
+        block = re.search(r'█+', result).group(0)
+        assert len(block) != len('Catalonia')
+
+
+class TestBlockLengthJitter:
+    """The displayed block length must never equal the true word length -
+    otherwise the player can count letters and drastically narrow guesses."""
+
+    def test_never_matches_true_length(self):
+        rng = random.Random(0)
+        for word_len in range(1, 20):
+            for _ in range(20):
+                assert fuzz_block_length(word_len, rng) != word_len
+
+    def test_offset_is_within_declared_range(self):
+        rng = random.Random(7)
+        word_len = 10
+        for _ in range(200):
+            length = fuzz_block_length(word_len, rng)
+            offset = abs(length - word_len)
+            assert offset in BLOCK_LENGTH_JITTER_RANGE
+
+    def test_never_goes_below_one_character(self):
+        rng = random.Random(3)
+        for _ in range(200):
+            assert fuzz_block_length(1, rng) >= 1
+            assert fuzz_block_length(2, rng) >= 1
+
+    def test_both_directions_occur(self):
+        # Over many draws, the block must sometimes be longer and
+        # sometimes shorter than the real word - not a one-way tell
+        rng = random.Random(9)
+        word_len = 8
+        deltas = [fuzz_block_length(word_len, rng) - word_len for _ in range(200)]
+        assert any(d > 0 for d in deltas)
+        assert any(d < 0 for d in deltas)
+
+    def test_same_seed_is_reproducible(self):
+        lengths_a = [fuzz_block_length(8, random.Random(42)) for _ in range(10)]
+        lengths_b = [fuzz_block_length(8, random.Random(42)) for _ in range(10)]
+        assert lengths_a == lengths_b
+
+    def test_applied_in_term_pass(self):
+        rng = random.Random(5)
+        pattern = create_censor_regex({'France'}, 'en')
+        result = censor_paragraph('France is large.', pattern, rng)
+        block = re.search(r'█+', result).group(0)
+        assert len(block) != len('France')
+
+    def test_applied_in_name_stem_pass(self):
+        rng = random.Random(6)
+        result = censor_name_stems('el estado austríaco moderno', {'austri'}, rng)
+        block = re.search(r'█+', result).group(0)
+        assert len(block) != len('austríaco')
 
 
 class TestParenthesizedVariants:

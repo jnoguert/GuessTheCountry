@@ -29,6 +29,7 @@ export function InstructionsModal({ isOpen, onClose, t }: InstructionsModalProps
           <section>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">🎯 {t.htp_goal_title}</h3>
             <p>{t.htp_goal_body}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t.htp_goal_note}</p>
           </section>
 
           <section>

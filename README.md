@@ -10,7 +10,9 @@ same secret country each day, in English, Català, or Español.
 
 1. Read the censored paragraph. Every country name, capital, neighboring
    country, demonym, language, currency and other geographic giveaway is
-   blacked out (`███`).
+   blacked out (`███`). The width of each black-out is deliberately
+   scrambled by ±2-3 characters, so you can't count letters to narrow
+   down the answer — a block never shows the hidden word's real length.
 2. You have **5 guesses** and **3 hint unlocks**. You start with 1 paragraph
    and can unlock up to 3 more (4 total) — but the fewer hints you use, the
    higher your score.
@@ -170,6 +172,19 @@ Censorship runs in layered passes over the real Wikipedia text:
 3. **Name-stem pass** — lowercase words derived from the country's own name
    (e.g. Spanish "austríaco", Catalan "sud-africà", or compounds like
    "afrobolivians") are caught by substring matching on normalized stems.
+
+Every block produced by any of the three passes above then goes through one
+more step:
+
+4. **Length obfuscation** — the number of `█` characters shown is the real
+   word's length **shifted by 2 or 3 characters**, direction chosen at
+   random per occurrence (`fuzz_block_length` in `censor.py`). Without this,
+   a block's width directly tells you how many letters the hidden word has
+   — a huge shortcut for a 4-6 letter country name. The shift is seeded
+   (`CENSOR_RNG_SEED`), so a full rebuild with unchanged inputs always
+   produces byte-identical output — useful for reviewing diffs and for the
+   test suite, while still being unpredictable to a player who only sees
+   the rendered blocks.
 
 A data-quality test suite (`test_real_data.py`) verifies the *built* dataset
 directly: no country's own name leaks into its own paragraphs, every

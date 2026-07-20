@@ -2,11 +2,45 @@ import re
 import unicodedata
 import json
 import os
-from typing import Dict, List, Set
+import random
+from typing import Dict, List, Optional, Set
 from .wikidata_core import fetch_wikidata_core
 from .wikidata_lexical import fetch_wikidata_lexical
 
 RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
+
+# Blurring block length: a censored block's size otherwise leaks the exact
+# letter count of the hidden word, which is a huge tell (e.g. a 5-letter
+# block for a country name narrows the guess enormously). Each block's
+# length is shifted by 2-3 characters, direction picked at random, so the
+# visible width no longer matches the real word.
+BLOCK_LENGTH_JITTER_RANGE = (2, 3)
+
+
+def fuzz_block_length(length: int, rng: random.Random) -> int:
+    """Word length -> displayed block length, offset by 2-3 chars, never
+    the true length and never below 1 character.
+
+    Short words (<=3 letters) can't always go shorter without hitting 0,
+    so on underflow the offset flips to the positive direction instead of
+    clamping - clamping to 1 can accidentally reproduce the true length
+    (e.g. a 1-letter word minus 2 or 3, clamped to 1, equals itself)."""
+    delta = rng.randint(*BLOCK_LENGTH_JITTER_RANGE)
+    if rng.random() < 0.5:
+        delta = -delta
+    fuzzed = length + delta
+    if fuzzed < 1:
+        fuzzed = length + abs(delta)
+    return fuzzed
+
+
+def _block(word: str, rng: random.Random) -> str:
+    return '█' * fuzz_block_length(len(word), rng)
+
+
+# Fixed seed: a full pipeline rebuild with unchanged inputs always produces
+# byte-identical censored output, so re-runs don't cause spurious git diffs.
+CENSOR_RNG_SEED = 20260120
 
 SUFFIX_TABLES = {
     'es': [
@@ -154,13 +188,14 @@ def create_censor_regex(terms: Set[str], lang: str) -> str:
     return pattern
 
 
-def censor_paragraph(text: str, pattern: str) -> str:
+def censor_paragraph(text: str, pattern: str, rng: Optional[random.Random] = None) -> str:
     if not pattern:
         return text
+    rng = rng or random.Random()
 
     def replace_match(match):
         words = match.group(0).split()
-        return ' '.join(['█' * len(w) for w in words])
+        return ' '.join(_block(w, rng) for w in words)
 
     return re.sub(pattern, replace_match, text, flags=re.IGNORECASE | re.UNICODE)
 
@@ -262,7 +297,7 @@ def build_name_stems(qid: str, lang: str, core: Dict, lexical: Dict) -> Set[str]
     return stems
 
 
-def censor_name_stems(text: str, stems: Set[str]) -> str:
+def censor_name_stems(text: str, stems: Set[str], rng: Optional[random.Random] = None) -> str:
     """Black out any word derived from the country's own name.
 
     Substring (not prefix) matching so compounds are caught too:
@@ -271,32 +306,34 @@ def censor_name_stems(text: str, stems: Set[str]) -> str:
     """
     if not stems:
         return text
+    rng = rng or random.Random()
 
     def replace(m):
         word = m.group(0)
         normalized = _strip_accents(word).casefold()
         if any(stem in normalized for stem in stems):
-            return '█' * len(word)
+            return _block(word, rng)
         return word
 
     return _WORD_RE.sub(replace, text)
 
 
-def censor_proper_nouns(text: str, lang: str, known: Set[str]) -> str:
+def censor_proper_nouns(text: str, lang: str, known: Set[str], rng: Optional[random.Random] = None) -> str:
     """Black out every capitalized mid-sentence word, every known proper
     noun (even sentence-initial), and non-whitelisted acronyms."""
     whitelist = PROPER_NOUN_WHITELIST.get(lang, set())
     starts = _sentence_starts(text)
+    rng = rng or random.Random()
 
     def replace(m):
         word = m.group(0)
         if _is_acronym(word):
-            return word if word in ACRONYM_WHITELIST else '█' * len(word)
+            return word if word in ACRONYM_WHITELIST else _block(word, rng)
         if not _is_capitalized(word) or word in whitelist:
             return word
         if m.start() in starts and word not in known:
             return word  # plain sentence-initial capitalization
-        return '█' * len(word)
+        return _block(word, rng)
 
     return _WORD_RE.sub(replace, text)
 
@@ -304,6 +341,7 @@ def censor_proper_nouns(text: str, lang: str, known: Set[str]) -> str:
 def censor_all_articles():
     print("Building censorship regexes and censoring articles...")
     core, lexical = load_data()
+    rng = random.Random(CENSOR_RNG_SEED)
 
     censored_articles = {}
     langs = ['en', 'ca', 'es']
@@ -322,14 +360,14 @@ def censor_all_articles():
 
                 paragraphs = wiki_data.get('paragraphs', [])
                 # Pass 1: censor known terms (names, borders, demonyms...)
-                censored = [censor_paragraph(p, pattern) for p in paragraphs]
+                censored = [censor_paragraph(p, pattern, rng) for p in paragraphs]
                 # Pass 2: censor every remaining proper noun / toponym
                 known_proper = collect_proper_nouns(censored, lang)
-                censored = [censor_proper_nouns(p, lang, known_proper) for p in censored]
+                censored = [censor_proper_nouns(p, lang, known_proper, rng) for p in censored]
                 # Pass 3: censor lowercase words derived from the name
                 # ('australià', 'austríaco') that passes 1-2 can miss
                 stems = build_name_stems(qid, lang, core, lexical)
-                censored = [censor_name_stems(p, stems) for p in censored]
+                censored = [censor_name_stems(p, stems, rng) for p in censored]
 
                 censored_articles[qid][lang] = {
                     'paragraphs': censored,

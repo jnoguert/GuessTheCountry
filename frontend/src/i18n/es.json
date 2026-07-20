@@ -34,6 +34,7 @@
   "htp_intro": "Adivina el país es un rompecabezas diario: todos los jugadores reciben el mismo país secreto, que hay que adivinar a partir de un extracto censurado de su artículo de Wikipedia. Cada día hay un país nuevo.",
   "htp_goal_title": "El objetivo",
   "htp_goal_body": "Todos los nombres de países, capitales, países vecinos, gentilicios, idiomas, monedas y otras pistas geográficas quedan censurados (███). Lee lo que queda y averigua el país.",
+  "htp_goal_note": "El ancho de cada bloque censurado se distorsiona unos pocos caracteres, así que no puedes contar letras para adivinar la palabra oculta — ¡no te fíes del tamaño del bloque!",
   "htp_guesses_title": "Intentos y pistas",
   "htp_guesses_body": "Empiezas con 1 párrafo censurado y tienes 5 intentos para acertar el país. ¿Te quedas atascado? Desbloquea hasta 3 párrafos extra como pistas — cada pista que uses reduce tu puntuación máxima posible.",
   "htp_scoring_title": "Puntuación",
