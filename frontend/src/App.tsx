@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { fetchPuzzle, fetchCountries, submitGuess, fetchPuzzleState, CountryOption } from './lib/api'
+import { fetchPuzzle, fetchCountries, submitGuess, fetchPuzzleState, fetchFullText, CountryOption } from './lib/api'
 import { normalizeText } from './lib/engine'
 import {
   getGameState, saveGameState, clearGameState, getLanguage, setLanguage,
@@ -66,8 +66,22 @@ export default function App() {
         setPuzzleId(puzzleData.puzzle_id)
 
         const saved = getGameState()
-        if (saved && saved.puzzleId === puzzleData.puzzle_id && saved.lang === lang && saved.paragraphs?.length) {
-          // Same day, same language: resume
+        if (saved && saved.puzzleId === puzzleData.puzzle_id && (saved.isWon || saved.isLost)) {
+          // Finished game (any language): show the full uncensored
+          // article plus the stored result
+          const [fullText, state] = await Promise.all([
+            fetchFullText(lang, puzzleData.puzzle_id),
+            fetchPuzzleState(lang, puzzleData.puzzle_id, 1),
+          ])
+          setParagraphs(fullText)
+          setGuesses(saved.guesses)
+          setUnlocksUsed(saved.unlocksUsed ?? 0)
+          setIsWon(saved.isWon)
+          setIsLost(saved.isLost)
+          setScore(saved.score ?? 0)
+          setAnswer(state.answer)
+        } else if (saved && saved.puzzleId === puzzleData.puzzle_id && saved.lang === lang && saved.paragraphs?.length) {
+          // Same day, same language, game in progress: resume
           setParagraphs(saved.paragraphs)
           setGuesses(saved.guesses)
           setUnlocksUsed(saved.unlocksUsed ?? 0)
@@ -75,17 +89,6 @@ export default function App() {
           setIsLost(saved.isLost)
           setScore(saved.score ?? 0)
           setAnswer(saved.answer ?? null)
-        } else if (saved && saved.puzzleId === puzzleData.puzzle_id && (saved.isWon || saved.isLost)) {
-          // Finished game viewed in another language: keep the result,
-          // translate the visible content (free once the game is over)
-          const state = await fetchPuzzleState(lang, puzzleData.puzzle_id, saved.paragraphs.length)
-          setParagraphs(state.paragraphs)
-          setGuesses(saved.guesses)
-          setUnlocksUsed(saved.unlocksUsed ?? 0)
-          setIsWon(saved.isWon)
-          setIsLost(saved.isLost)
-          setScore(saved.score ?? 0)
-          setAnswer(state.answer)
         } else {
           // New day: start fresh
           clearGameState()
@@ -142,20 +145,26 @@ export default function App() {
 
       if (result.correct) {
         const wonScore = computeScore(unlocksUsed, newGuesses.length - 1, true)
+        // Reward: the whole article, uncensored
+        const fullText = await fetchFullText(lang, puzzleId)
+        setParagraphs(fullText)
         setIsWon(true)
         setScore(wonScore)
         setAnswer(result.answer ?? null)
         setStats(recordGameEnd(puzzleId, true, wonScore))
-        persist({ guesses: newGuesses, isWon: true, score: wonScore, answer: result.answer })
+        persist({ guesses: newGuesses, paragraphs: fullText, isWon: true, score: wonScore, answer: result.answer })
         return
       }
 
       setIsShaking(true)
       if (result.game_over) {
+        // Consolation: read the full uncensored article anyway
+        const fullText = await fetchFullText(lang, puzzleId)
+        setParagraphs(fullText)
         setIsLost(true)
         setAnswer(result.answer ?? null)
         setStats(recordGameEnd(puzzleId, false, 0))
-        persist({ guesses: newGuesses, isLost: true, score: 0, answer: result.answer })
+        persist({ guesses: newGuesses, paragraphs: fullText, isLost: true, score: 0, answer: result.answer })
       } else {
         persist({ guesses: newGuesses })
       }
@@ -258,6 +267,11 @@ export default function App() {
           </div>
         ) : paragraphs.length > 0 ? (
           <>
+            {gameOver && (
+              <div className="card p-3 mb-4 text-center text-sm font-medium text-green-800 dark:text-green-200 bg-green-50 dark:bg-green-900">
+                📖 {t.full_text}
+              </div>
+            )}
             <ParagraphReveal paragraphs={paragraphs} revealedCount={paragraphs.length} />
 
             {!gameOver && (

@@ -99,12 +99,23 @@ def build_countries_json():
     return countries
 
 
+def _load_plain_paragraphs(qid: str, lang: str) -> List[str]:
+    """Original (uncensored) paragraphs from the raw Wikipedia cache,
+    revealed to the player once the game is over."""
+    cache_file = os.path.join(RAW_DATA_DIR, f'wikipedia_{lang}', f'{qid}.json')
+    if not os.path.exists(cache_file):
+        return []
+    with open(cache_file, 'r', encoding='utf-8') as f:
+        return json.load(f).get('paragraphs', [])[:5]
+
+
 def build_frontend_game_json(countries: Dict, daily_order: List[str]):
     """Export the dataset for the fully client-side build (GitHub Pages).
 
     Slimmed: unplayable countries keep only their names/aliases (needed
     for the autocomplete) since they can never be the daily answer, and
-    fields the frontend never reads are dropped.
+    fields the frontend never reads are dropped. Playable countries also
+    carry the uncensored text ('plain') shown after the game ends.
     """
     frontend_public = os.path.join(os.path.dirname(__file__), '../../frontend/public')
     os.makedirs(frontend_public, exist_ok=True)
@@ -120,6 +131,7 @@ def build_frontend_game_json(countries: Dict, daily_order: List[str]):
                     'capital': i18n.get('capital', ''),
                     'aliases': i18n.get('aliases', []),
                     'paragraphs': i18n.get('paragraphs', []) if playable else [],
+                    'plain': _load_plain_paragraphs(qid, lang) if playable else [],
                 }
                 for lang, i18n in country.get('i18n', {}).items()
             },

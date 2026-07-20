@@ -27,5 +27,6 @@
   "switch_lang_body": "Switching to {lang} costs 1 hint, and your unlocked clues will NOT carry over: you'll start from the first paragraph again. Continue?",
   "switch_lang_blocked": "You have no hint unlocks left, so you can't change language until today's game is over.",
   "switch_lang_confirm": "Switch (-1 hint)",
-  "switch_lang_cancel": "Stay"
+  "switch_lang_cancel": "Stay",
+  "full_text": "Full article revealed — no censorship"
 }

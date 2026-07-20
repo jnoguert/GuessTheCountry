@@ -86,6 +86,22 @@ export async function fetchCountries(lang: string): Promise<CountryOption[]> {
   return listCountries(data, lang)
 }
 
+/** Full uncensored article for the day's country, shown once the game
+ * is over so players can read everything about the answer. Falls back
+ * to the censored text if the plain version isn't in the dataset. */
+export async function fetchFullText(lang: string, puzzleId: string): Promise<string[]> {
+  const data = await loadGameData()
+  const epochMs = new Date(data.epoch + 'T00:00:00Z').getTime()
+  const puzzleMs = new Date(puzzleId + 'T00:00:00Z').getTime()
+  const dayIndex = Math.round((puzzleMs - epochMs) / 86400000)
+
+  const daily = getDailyCountry(data, dayIndex)
+  if (!daily) return []
+
+  const i18n = daily.country.i18n[lang]
+  return (i18n?.plain?.length ? i18n.plain : i18n?.paragraphs) ?? []
+}
+
 /** Puzzle state for a given day in a given language: the first
  * `revealedCount` paragraphs plus the answer. Used when the player
  * switches language mid-game (reveal parity in the new language). */

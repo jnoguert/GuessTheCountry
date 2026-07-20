@@ -13,6 +13,8 @@ export interface CountryI18n {
   capital: string
   aliases: string[]
   paragraphs: string[]
+  /** Uncensored text, revealed once the game is over */
+  plain?: string[]
 }
 
 export interface Country {
