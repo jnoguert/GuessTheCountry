@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps'
 // Heavy (~740KB) topology data: this whole module is loaded via React.lazy
 // at the call site, so it never enters the main bundle for players who
@@ -50,7 +50,15 @@ const MODES: MarkState[] = ['consider', 'discard', 'neutral']
  * text input, as always. */
 export function WorldMapModal({ isOpen, onClose, marks, onMark, countries, t }: WorldMapModalProps) {
   const [hovered, setHovered] = useState<string | null>(null)
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null)
   const [activeMode, setActiveMode] = useState<MarkState>('consider')
+  const mapContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = mapContainerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }
 
   const nameByIso2 = useMemo(() => {
     const map: Record<string, string> = {}
@@ -109,11 +117,22 @@ export function WorldMapModal({ isOpen, onClose, marks, onMark, countries, t }: 
         </div>
 
         <div
+          ref={mapContainerRef}
+          onMouseMove={handleMouseMove}
           className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 relative bg-blue-50 dark:bg-gray-900"
           style={{ height: '55vh' }}
         >
-          {hovered && (
-            <div className="absolute top-2 left-2 z-10 px-2 py-1 rounded bg-white/90 dark:bg-gray-800/90 text-sm font-medium text-gray-900 dark:text-white shadow pointer-events-none">
+          {hovered && mousePos && (
+            <div
+              className="absolute z-10 px-2 py-1 rounded bg-white/90 dark:bg-gray-800/90 text-sm font-medium text-gray-900 dark:text-white shadow pointer-events-none whitespace-nowrap"
+              style={{
+                left: mousePos.x,
+                top: mousePos.y,
+                transform: `translate(${
+                  mousePos.x > (mapContainerRef.current?.clientWidth ?? 0) / 2 ? 'calc(-100% - 12px)' : '12px'
+                }, -50%)`,
+              }}
+            >
               {hovered}
             </div>
           )}
