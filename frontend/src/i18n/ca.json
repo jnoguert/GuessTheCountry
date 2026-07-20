@@ -24,7 +24,7 @@
   "hints_cost_note": "Menys pistes = més punts",
   "unlock_hint": "Desbloqueja una pista",
   "switch_lang_title": "Canviar d'idioma?",
-  "switch_lang_body": "Llegir les pistes en {lang} revela informació extra, així que canviar costa 1 pista. Vols continuar?",
+  "switch_lang_body": "Canviar a {lang} costa 1 pista, i les pistes desbloquejades NO es mantindran: tornaràs a començar des del primer paràgraf. Vols continuar?",
   "switch_lang_blocked": "No et queden pistes, així que no pots canviar d'idioma fins que acabi la partida d'avui.",
   "switch_lang_confirm": "Canvia (-1 pista)",
   "switch_lang_cancel": "Queda't"

@@ -24,7 +24,7 @@
   "hints_cost_note": "Menos pistas = más puntos",
   "unlock_hint": "Desbloquear una pista",
   "switch_lang_title": "¿Cambiar de idioma?",
-  "switch_lang_body": "Leer las pistas en {lang} revela información extra, así que cambiar cuesta 1 pista. ¿Continuar?",
+  "switch_lang_body": "Cambiar a {lang} cuesta 1 pista, y las pistas desbloqueadas NO se mantendrán: volverás a empezar desde el primer párrafo. ¿Continuar?",
   "switch_lang_blocked": "No te quedan pistas, así que no puedes cambiar de idioma hasta que termine la partida de hoy.",
   "switch_lang_confirm": "Cambiar (-1 pista)",
   "switch_lang_cancel": "Quedarme"

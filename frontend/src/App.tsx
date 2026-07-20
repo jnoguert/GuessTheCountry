@@ -198,8 +198,10 @@ export default function App() {
     if (!lang || !pendingLang || unlocksUsed >= MAX_UNLOCKS) return
     try {
       const newUnlocks = unlocksUsed + 1
-      // Reveal parity in the new language; the unlock is the switch cost
-      const state = await fetchPuzzleState(pendingLang, puzzleId, paragraphs.length)
+      // The new language starts with NO active clues: only the base
+      // paragraph is shown. Unlocks spent so far stay spent, and the
+      // switch itself costs one more.
+      const state = await fetchPuzzleState(pendingLang, puzzleId, 1)
       setParagraphs(state.paragraphs)
       setUnlocksUsed(newUnlocks)
       setLanguage(pendingLang)
