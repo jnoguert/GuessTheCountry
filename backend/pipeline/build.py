@@ -14,6 +14,10 @@ RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
 DATA_DIR = os.path.join(os.path.dirname(__file__), '../data')
 os.makedirs(DATA_DIR, exist_ok=True)
 
+# 1 starting paragraph + 3 hint unlocks = 4 paragraphs max per game,
+# so the dataset ships exactly 4 (the raw cache keeps 5 as spare).
+PARAGRAPHS_PER_COUNTRY = 4
+
 
 def load_pipeline_data():
     print("Loading pipeline data...")
@@ -103,7 +107,7 @@ def build_countries_json():
             i18n[lang] = {
                 'name': lang_label,
                 'capital': capital_label,
-                'paragraphs': censored_paragraphs[:5] if censored_paragraphs else [],
+                'paragraphs': censored_paragraphs[:PARAGRAPHS_PER_COUNTRY] if censored_paragraphs else [],
                 'aliases': aliases
             }
 
@@ -129,7 +133,7 @@ def _load_plain_paragraphs(qid: str, lang: str) -> List[str]:
     if not os.path.exists(cache_file):
         return []
     with open(cache_file, 'r', encoding='utf-8') as f:
-        return json.load(f).get('paragraphs', [])[:5]
+        return json.load(f).get('paragraphs', [])[:PARAGRAPHS_PER_COUNTRY]
 
 
 def build_frontend_game_json(countries: Dict, daily_order: List[str]):

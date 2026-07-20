@@ -44,15 +44,17 @@ def test_enough_playable_countries(dataset):
     assert len(playable) >= 100, f'only {len(playable)} fully playable countries'
 
 
-def test_every_playable_country_has_5_paragraphs(dataset):
-    countries, _ = dataset
-    for qid, c in countries.items():
+def test_playable_countries_have_exactly_4_paragraphs(dataset):
+    """1 starting paragraph + 3 hint unlocks = 4; the dataset must not
+    ship a 5th fragment nobody can earn."""
+    countries, daily_order = dataset
+    for qid in daily_order:
+        c = countries[qid]
         for lang in ('en', 'ca', 'es'):
             paragraphs = c['i18n'].get(lang, {}).get('paragraphs', [])
-            if paragraphs:
-                assert len(paragraphs) <= 5
-                for p in paragraphs:
-                    assert len(p) > 50, f'{qid}/{lang} has a suspiciously short paragraph'
+            assert len(paragraphs) == 4, f'{qid}/{lang} has {len(paragraphs)} paragraphs'
+            for p in paragraphs:
+                assert len(p) > 50, f'{qid}/{lang} has a suspiciously short paragraph'
 
 
 def test_own_name_is_censored_in_paragraphs(dataset):
