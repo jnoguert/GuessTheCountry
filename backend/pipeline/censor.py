@@ -21,10 +21,18 @@ def fuzz_block_length(length: int, rng: random.Random) -> int:
     """Word length -> displayed block length, offset by 2-3 chars, never
     the true length and never below 1 character.
 
-    Short words (<=3 letters) can't always go shorter without hitting 0,
-    so on underflow the offset flips to the positive direction instead of
-    clamping - clamping to 1 can accidentally reproduce the true length
-    (e.g. a 1-letter word minus 2 or 3, clamped to 1, equals itself)."""
+    The subtraction CAN exceed the word's own length - e.g. a 1-letter
+    word minus 3, or a 3-letter word minus 3 landing on exactly 0. Naively
+    clamping that to 1 would be wrong twice over: it can accidentally
+    reproduce the true length (a 1-letter word minus anything, clamped to
+    1, equals itself), and it silently shrinks the intended 2-3 character
+    offset down to whatever's left. Instead, an underflow flips the whole
+    offset to the positive direction, so the offset magnitude (2 or 3) is
+    always preserved and the result never equals the input:
+        length=1, magnitude=3  ->  1-3=-2 underflows  ->  1+3=4
+        length=3, magnitude=3  ->  3-3=0  underflows  ->  3+3=6
+        length=4, magnitude=3  ->  4-3=1  (no underflow, valid as-is)
+    """
     delta = rng.randint(*BLOCK_LENGTH_JITTER_RANGE)
     if rng.random() < 0.5:
         delta = -delta

@@ -172,6 +172,38 @@ class TestBlockLengthJitter:
             assert fuzz_block_length(1, rng) >= 1
             assert fuzz_block_length(2, rng) >= 1
 
+    def test_subtracting_more_than_word_length_is_safe(self):
+        """Exhaustive (not sampled) check of every case where the negative
+        offset would exceed the word's own length - e.g. a 1-letter word
+        minus 3, or a 3-letter word minus 3 landing on exactly 0. Each
+        combination is forced directly rather than hoping random sampling
+        stumbles onto it."""
+
+        class ForcedRng:
+            """Stand-in for random.Random that forces a specific
+            (magnitude, sign) pair instead of sampling one."""
+            def __init__(self, magnitude, negative):
+                self.magnitude, self.negative = magnitude, negative
+
+            def randint(self, a, b):
+                return self.magnitude
+
+            def random(self):
+                return 0.1 if self.negative else 0.9  # < 0.5 triggers "negative"
+
+        for word_len in range(1, 8):  # covers every case magnitude >= word_len
+            for magnitude in BLOCK_LENGTH_JITTER_RANGE:  # 2, 3
+                rng = ForcedRng(magnitude, negative=True)
+                result = fuzz_block_length(word_len, rng)
+                assert result >= 1, (
+                    f'word_len={word_len} magnitude={magnitude}: '
+                    f'got non-positive length {result}'
+                )
+                assert result != word_len, (
+                    f'word_len={word_len} magnitude={magnitude}: '
+                    f'result {result} leaks the true length'
+                )
+
     def test_both_directions_occur(self):
         # Over many draws, the block must sometimes be longer and
         # sometimes shorter than the real word - not a one-way tell
