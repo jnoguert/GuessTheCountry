@@ -1,192 +1,268 @@
 # Guess the Country 🌍
 
-A daily word-puzzle game where you guess countries based on censored Wikipedia excerpts. Similar to Wordle, but for geography!
+A daily puzzle game where you guess a country from a censored excerpt of its
+Wikipedia article — think Wordle, but for geography. Every player gets the
+same secret country each day, in English, Català, or Español.
+
+**▶️ Play now: https://jnoguert.github.io/GuessTheCountry/**
+
+## How It Works
+
+1. Read the censored paragraph. Every country name, capital, neighboring
+   country, demonym, language, currency and other geographic giveaway is
+   blacked out (`███`).
+2. You have **5 guesses** and **3 hint unlocks**. You start with 1 paragraph
+   and can unlock up to 3 more (4 total) — but the fewer hints you use, the
+   higher your score.
+3. **Scoring** is inverse: 0 hints → 100 pts, 1 → 70, 2 → 50, 3 → 30, minus
+   10 per wrong guess (min 10 on a win, 0 on a loss).
+4. Switching language mid-game **costs 1 hint unlock** and restarts you from
+   paragraph 1 in the new language — no free peeking. It's free once the
+   game is over.
+5. Win or lose, the **full uncensored article** is revealed at the end so
+   you can read about the country.
+6. Come back daily to build a **streak**, tracked locally in your browser.
+
+The in-app **❓ How to Play** button (shown automatically on first visit)
+covers all of this with the exact numbers.
 
 ## Features
 
-- 🌐 **Multilingual**: English, Catalan, and Spanish
-- 🎨 **Modern UI**: Clean, responsive design inspired by Worldle
-- 🌙 **Dark Mode**: Light/dark theme toggle
-- 📊 **Progressive Reveals**: Start with one censored paragraph, reveal more with each wrong guess
-- 🎯 **Smart Censorship**: Automatically redacts country names, capitals, bordering countries, demonyms, and famous mountains
-- 💾 **Persistent State**: Your progress is saved in localStorage
+- 🌐 **Multilingual**: English, Català, Español — same daily country in all three
+- 🎯 **Smart censorship**: names, capitals, borders, demonyms, languages,
+  currencies, and other proper nouns/toponyms are automatically redacted
+  from real Wikipedia text
+- 💡 **Hint system**: unlock up to 3 extra paragraphs; fewer hints = higher score
+- 🏆 **Inverse scoring** + day streak, both saved locally
+- 📖 **Full reveal**: read the uncensored article once the game ends
+- 🎨 **Modern UI** with light/dark theme
+- 📱 **Fully client-side**: no backend required to play — works from a single
+  static bundle, deployable anywhere (GitHub Pages, any static host, or the
+  bundled Docker image)
 
-## Getting Started (Quickest Way - Docker!)
+## Architecture
 
-### Docker Setup (Recommended)
+The entire game — daily country selection, guess checking, hints, scoring —
+runs **in the browser** against a single static file, `game.json`, generated
+offline by a Python pipeline. There is no live server involved in gameplay.
 
-The easiest way to run the entire app with one command:
+```
+Wikidata + Wikipedia  →  Python pipeline  →  game.json  →  React app
+     (offline, run occasionally)              (bundled with the frontend build)
+```
+
+- **`frontend/`** — React + TypeScript + Vite + Tailwind. `src/lib/engine.ts`
+  implements the game rules (daily rotation, guess matching, i18n text) purely
+  against `game.json`; `src/lib/api.ts` wraps it in an API-shaped interface so
+  the rest of the app doesn't care where answers come from.
+- **`backend/pipeline/`** — offline data pipeline: queries Wikidata for
+  country metadata (capital, borders, demonyms, languages, currency, highest
+  point), fetches Wikipedia article text per language, and censors it with a
+  layered regex/proper-noun engine. Outputs `countries.json`, `countries.db`
+  (SQLite), and `frontend/public/game.json`.
+- **`backend/app/`** — a FastAPI service that serves the same static build
+  and a legacy REST API mirroring the client-side rules. Not required to
+  play the deployed game; useful for local development, the test suite, or
+  self-hosting the exact same static bundle behind a real server (e.g. on a
+  LAN with no internet).
+
+## Getting Started
+
+### Just play
+
+Open **https://jnoguert.github.io/GuessTheCountry/** — nothing to install.
+
+### Self-host with Docker
+
+Runs the identical static game behind a small Python server, useful for LAN
+parties, private hosting, or if you don't want to rely on GitHub Pages:
 
 ```bash
-# Clone the repo
 git clone https://github.com/jnoguert/GuessTheCountry.git
 cd GuessTheCountry
-
-# Start everything
 docker-compose up --build
 ```
 
-Then open **http://localhost:8000** — the whole game (frontend + API) is served
-from that single port, so it works identically on your machine, in GitHub
-Codespaces (just open the forwarded port 8000), or on any cloud host.
+Open **http://localhost:8000**.
 
-- **Game**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
-
-**Useful commands:**
 ```bash
-make help          # See all available commands
-make up            # Start services
-make down          # Stop services
-make logs          # View logs
-make rebuild       # Rebuild and restart
-make clean         # Clean everything
+make help          # see all available commands
+make up            # start
+make down          # stop
+make logs          # follow logs
+make rebuild       # rebuild image and restart
+make test          # run the backend test suite inside the container
 ```
 
-### Manual Development Setup
+### Local development (no Docker)
 
-If you prefer to run without Docker:
+**Frontend only** — this is all you need to work on the game itself, since
+`game.json` already ships in the repo:
 
-#### Prerequisites
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
+Open http://localhost:5173.
 
-### Development Setup
+**Backend / pipeline** (optional — only needed to regenerate the dataset or
+run the Python test suite):
 
-1. **Clone the repository**
-   ```bash
-   git clone <repo-url>
-   cd guess_the_country
-   ```
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate      # Windows; use `source .venv/bin/activate` on macOS/Linux
+pip install -r requirements.txt
+python -m uvicorn app.main:app --reload   # legacy API + static server, if wanted
+```
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   python -m venv venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+## Regenerating the Game Data
 
-3. **Frontend Setup**
-   ```bash
-   cd ../frontend
-   npm install
-   ```
-
-### Building the Game Data
-
-First, generate the countries database from Wikidata and Wikipedia:
+The repo already ships a complete, built dataset (`backend/data/countries.json`,
+`countries.db`, and `frontend/public/game.json`), so this step is only needed
+if you want to refresh the content (e.g. Wikipedia articles changed) or tweak
+the censorship rules.
 
 ```bash
 cd backend
 python -m pipeline.build
 ```
 
-This will:
-1. Fetch country metadata from Wikidata (stage A)
-2. Fetch lexical data (labels, aliases, demonyms) in EN/CA/ES (stage B)
-3. Fetch Wikipedia articles and extract paragraphs (stage C1)
-4. Apply smart censorship to the articles (stage C2)
-5. Generate `data/countries.json` and `data/daily_order.json`
+This runs, in order:
+1. **Wikidata core** — country roster + capital, highest point, ISO codes,
+   currency, bordering countries (SPARQL)
+2. **Wikidata lexical** — labels/aliases/demonyms/official languages in
+   en/ca/es for every entity referenced above (batched `wbgetentities`)
+3. **Wikipedia fetch** — article extracts per language, split into
+   paragraphs, cached locally (resumable — re-runs skip already-fetched
+   articles and only pull what's missing)
+4. **Censorship** — layered redaction (see below), producing exactly 4
+   paragraphs per country per language (1 starting + 3 unlockable hints)
+5. **Daily order** — a fixed, seeded shuffle of all fully-playable countries,
+   so every day serves a different, non-alphabetical answer with no
+   short-term repeats
+6. **SQLite export** (`countries.db`) — for the legacy backend API
+7. **`game.json` export** — the slim, client-side dataset the frontend ships;
+   unplayable countries keep only their name (for autocomplete), and every
+   playable country carries both the censored and original (`plain`) text
 
-The process takes a few minutes and caches Wikipedia responses locally to avoid redundant fetches.
-
-### Running Locally
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-python -m uvicorn app.main:app --reload
-```
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-npm run dev
-```
-
-Then open http://localhost:5173 in your browser.
+The pipeline caches all Wikidata/Wikipedia responses under `backend/data/raw/`,
+so re-runs after a tweak to the censorship logic are near-instant — only
+`censor.py`'s output changes, no network calls are repeated.
 
 ## How the Censorship Works
 
-The pipeline automatically identifies and redacts:
-- The country's own name and aliases
-- The capital city
-- Bordering countries and their demonyms
-- The country's most famous mountain
-- Plurals, genders, and case forms in Spanish and Catalan
+Censorship runs in layered passes over the real Wikipedia text:
 
-Censorship is applied via a per-country regex that respects word boundaries, so "Niger" won't accidentally redact inside "Nigeria".
+1. **Known-term pass** — the country's own name/aliases, capital, bordering
+   countries (+ their demonyms), the country's own demonym (with
+   language-specific plural/gender inflection), official/spoken languages,
+   currency name, and highest point/mountain — all pulled from Wikidata,
+   matched with word-boundary-safe regex (so "Niger" never matches inside
+   "Nigeria").
+2. **Proper-noun pass** — every remaining capitalized word appearing
+   mid-sentence anywhere in the article (and that same word even where it
+   starts a sentence) gets redacted too — this catches regions, historical
+   entities, and other place names Wikidata doesn't model explicitly (e.g.
+   "Catalonia", "the county of Urgell").
+3. **Name-stem pass** — lowercase words derived from the country's own name
+   (e.g. Spanish "austríaco", Catalan "sud-africà", or compounds like
+   "afrobolivians") are caught by substring matching on normalized stems.
+
+A data-quality test suite (`test_real_data.py`) verifies the *built* dataset
+directly: no country's own name leaks into its own paragraphs, every
+playable country has exactly 4 paragraphs and a non-empty capital in all
+three languages, the daily rotation contains no duplicates and isn't
+alphabetical, and a simulated year of days always produces a playable puzzle.
 
 ## Project Structure
 
 ```
 guess_the_country/
+├── Dockerfile                # Multi-stage: builds frontend, serves it from FastAPI
+├── docker-compose.yml
+├── Makefile
+├── .github/workflows/
+│   └── deploy-pages.yml      # Builds frontend + game.json, deploys to GitHub Pages
 ├── backend/
-│   ├── app/                 # FastAPI application
+│   ├── app/                  # FastAPI app (legacy API + static file server)
 │   │   ├── main.py
-│   │   ├── schemas.py
+│   │   ├── puzzle.py         # Daily rotation + guess checking (mirrors engine.ts)
 │   │   ├── data_loader.py
-│   │   ├── puzzle.py
 │   │   └── routers/
-│   ├── pipeline/            # Data generation pipeline
+│   ├── pipeline/              # Offline data generation
 │   │   ├── wikidata_core.py
 │   │   ├── wikidata_lexical.py
 │   │   ├── wikipedia_fetch.py
 │   │   ├── censor.py
+│   │   ├── db_store.py
 │   │   └── build.py
 │   ├── data/
-│   │   ├── countries.json   # Final game data
-│   │   └── daily_order.json # Daily rotation
-│   └── requirements.txt
+│   │   ├── countries.json     # Full dataset (censored + plain text)
+│   │   ├── countries.db       # Same data as SQLite (legacy API)
+│   │   ├── daily_order.json   # Shuffled rotation of playable countries
+│   │   └── raw/               # Cached Wikidata/Wikipedia API responses
+│   └── tests/                 # pytest suite (censorship, rotation, data quality)
 ├── frontend/
+│   ├── public/
+│   │   └── game.json          # Client-side dataset (generated, bundled at build time)
 │   ├── src/
 │   │   ├── App.tsx
-│   │   ├── components/
-│   │   ├── hooks/
+│   │   ├── components/        # LanguageSelect, HintPanel, ResultModal,
+│   │   │                       InstructionsModal, LanguageWarningModal, ...
 │   │   ├── lib/
-│   │   └── i18n/            # Translation files
-│   ├── index.html
+│   │   │   ├── engine.ts      # Game rules, run entirely client-side
+│   │   │   ├── api.ts         # API-shaped wrapper around engine.ts
+│   │   │   ├── score.ts       # Inverse scoring formula
+│   │   │   └── storage.ts     # localStorage: game state, streak, theme
+│   │   └── i18n/               # en / ca / es translation strings
 │   └── package.json
 └── README.md
 ```
 
-## API Endpoints
+## Testing
 
-- `GET /api/puzzle/{lang}` — Get today's puzzle in the specified language
-- `POST /api/guess` — Submit a guess
-- `GET /api/countries/{lang}` — Get list of countries for autocomplete
-- `GET /health` — Health check
+```bash
+cd backend
+.venv\Scripts\activate
+python -m pytest tests/ -v
+```
 
-## Technologies
+74 tests covering: censorship edge cases (Niger/Nigeria, Guinea family,
+accents, elision, proper nouns, name-stem matching), daily rotation logic
+(determinism, no repeats, playability simulation across a year), the SQLite
+store, the legacy HTTP API, and data-quality checks against the real built
+dataset.
 
-**Backend:**
-- FastAPI for the REST API
-- Python for the data pipeline
-- Wikidata SPARQL and Wikipedia API for content
+```bash
+cd frontend
+npm run build   # type-checks and builds; fails on any TypeScript error
+```
 
-**Frontend:**
-- React 18 with TypeScript
-- Vite for fast builds
-- Tailwind CSS for styling
+## Deployment
 
-## Performance
+- **GitHub Pages** (live site): `.github/workflows/deploy-pages.yml` builds
+  the frontend (with `game.json` bundled in) and deploys on every push to
+  `main`. Requires **Settings → Pages → Source: GitHub Actions** to be set
+  once per repo.
+- **Docker**: `docker-compose up --build` serves the identical static build
+  from a FastAPI container on port 8000 — usable anywhere Docker runs.
 
-The entire game runs as a static dataset loaded once at startup:
-- ~195 countries × 3 languages × ~5 paragraphs
-- Total dataset: ~500KB JSON, loads instantly
+## Optional Add-ons (branches)
 
-No database queries at runtime — pure in-memory lookup.
+A couple of features were built but are kept off `main` to keep the core
+game simple:
 
-## Future Improvements
+- **`feature/leaderboard`** — usernames, daily scores, and today/all-time
+  rankings backed by the FastAPI service + SQLite. Requires a real hosted
+  backend (not compatible with pure static hosting like GitHub Pages).
+- **`feature/android-apk`** — Capacitor packaging + a CI workflow that
+  builds a downloadable, fully offline Android APK from the same frontend.
 
-- [ ] Leaderboard / stats tracking
-- [ ] Difficulty levels (easy/hard)
-- [ ] More languages
-- [ ] Mobile app version
-- [ ] Weekly/monthly challenges
+Merge either into `main` (`git merge feature/<name>`) when you're ready to
+use them.
 
 ## License
 
@@ -194,7 +270,7 @@ MIT
 
 ## Contributing
 
-Pull requests welcome! Please note:
-- The censorship pipeline is the complex bit — test edge cases like Niger/Nigeria thoroughly
-- Language translations should be complete across all three languages
-- UI changes should respect the light/dark theme toggle
+- The censorship pipeline is the most delicate part — test edge cases like
+  Niger/Nigeria and the Guinea family thoroughly before changing it.
+- Keep all three language translations in sync (`frontend/src/i18n/*.json`).
+- Run `python -m pytest tests/ -v` and `npm run build` before submitting changes.

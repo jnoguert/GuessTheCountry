@@ -16,6 +16,7 @@ import { GuessInput } from './components/GuessInput'
 import { GuessHistory } from './components/GuessHistory'
 import { HintPanel } from './components/HintPanel'
 import { ResultModal } from './components/ResultModal'
+import { InstructionsModal } from './components/InstructionsModal'
 
 export default function App() {
   const [lang, setLang] = useState<string | null>(getLanguage())
@@ -36,6 +37,7 @@ export default function App() {
   const [showResult, setShowResult] = useState(false)
   const [pendingLang, setPendingLang] = useState<string | null>(null)
   const [unlockPending, setUnlockPending] = useState(false)
+  const [showInstructions, setShowInstructions] = useState(false)
 
   const t = useI18n(lang ?? 'en')
   const gameOver = isWon || isLost
@@ -233,7 +235,15 @@ export default function App() {
   }
 
   if (!lang) {
-    return <LanguageSelect onSelect={(l) => { setLanguage(l); setLang(l) }} />
+    return (
+      <LanguageSelect
+        onSelect={(l) => {
+          setLanguage(l)
+          setLang(l)
+          setShowInstructions(true) // first-ever visit: explain the rules
+        }}
+      />
+    )
   }
 
   return (
@@ -250,6 +260,14 @@ export default function App() {
                 🔥 {stats.currentStreak}
               </span>
             )}
+            <button
+              onClick={() => setShowInstructions(true)}
+              className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+              title={t.how_to_play}
+              aria-label={t.how_to_play}
+            >
+              ❓
+            </button>
             <ThemeToggle theme={theme} onThemeChange={handleThemeChange} />
             <LanguageSwitcher currentLang={lang} onLangChange={handleLangRequest} />
           </div>
@@ -301,6 +319,12 @@ export default function App() {
             )}
           </>
         ) : null}
+
+        <InstructionsModal
+          isOpen={showInstructions}
+          onClose={() => setShowInstructions(false)}
+          t={t}
+        />
 
         <LanguageWarningModal
           isOpen={pendingLang !== null}
