@@ -56,6 +56,28 @@ def _capital_label(country_qid: str, capital_qid: str, lang: str, lexical: Dict)
     return ''
 
 
+# Manual fixes for whole-country data gaps caused by Wikidata modeling a
+# country as a separate "sovereign state" entity distinct from the common
+# "country" entity (e.g. Denmark's UN seat is modeled under Q756617
+# "Kingdom of Denmark" rather than Q35 "Denmark"). That entity has no
+# ISO 3166 codes attached at all (blank flag emoji, unmatchable on the
+# Easy Mode map), and its ca/es labels are the formal long form with no
+# short-form alias, so natural guesses like "Dinamarca" would fail even
+# though the equivalent short-form alias already exists in English.
+COUNTRY_OVERRIDES = {
+    'Q756617': {
+        'iso2': 'DK',
+        'iso3': 'DNK',
+        'name': {'en': 'Denmark', 'ca': 'Dinamarca', 'es': 'Dinamarca'},
+        'extra_aliases': {
+            'en': ['Kingdom of Denmark'],
+            'ca': ['Regne de Dinamarca'],
+            'es': ['Reino de Dinamarca'],
+        },
+    },
+}
+
+
 def load_cached_articles():
     print("Loading cached Wikipedia articles...")
     articles = {}
@@ -85,14 +107,16 @@ def build_countries_json():
     countries = {}
 
     for qid, country_data in core.items():
-        iso2 = country_data.get('iso2', '')
-        iso3 = country_data.get('iso3', '')
+        override = COUNTRY_OVERRIDES.get(qid, {})
+        iso2 = override.get('iso2') or country_data.get('iso2', '')
+        iso3 = override.get('iso3') or country_data.get('iso3', '')
         cctld = country_data.get('cctld', '')
 
         i18n = {}
         for lang in ['en', 'ca', 'es']:
             entity = lexical.get(qid, {})
-            lang_label = entity.get('labels', {}).get(lang, {}).get('value', country_data.get('label', ''))
+            lang_label = override.get('name', {}).get(lang) or \
+                entity.get('labels', {}).get(lang, {}).get('value', country_data.get('label', ''))
             capital_qid = country_data.get('capital')
             capital_label = ''
             if capital_qid:
@@ -100,6 +124,7 @@ def build_countries_json():
 
             # Aliases let guesses like "USA" or "Estats Units" match
             aliases = clean_aliases(entity.get('aliases', {}).get(lang, []))
+            aliases.extend(override.get('extra_aliases', {}).get(lang, []))
 
             censored_data = censored.get(qid, {}).get(lang, {})
             censored_paragraphs = censored_data.get('paragraphs', [])

@@ -95,6 +95,36 @@ def test_playable_countries_have_capitals_in_every_language(dataset):
     assert not missing, 'Blank capitals:\n' + '\n'.join(missing)
 
 
+def test_playable_countries_have_iso2(dataset):
+    """A blank iso2 breaks the flag emoji on the result screen and makes
+    the country unmatchable on the Easy Mode map (found via Q756617
+    'Kingdom of Denmark': Wikidata never attaches ISO codes to the
+    sovereign-state entity distinct from the plain country entity)."""
+    countries, daily_order = dataset
+    missing = [
+        f"{qid} ({countries[qid]['i18n']['en']['name']}) has no iso2"
+        for qid in daily_order if not countries[qid].get('iso2')
+    ]
+    assert not missing, 'Blank iso2:\n' + '\n'.join(missing)
+
+
+def test_denmark_short_form_guessable_in_every_language(dataset):
+    """Regression for Q756617: its ca/es labels were the formal 'Regne/
+    Reino de Dinamarca' with zero aliases, so the natural short guess
+    'Dinamarca' would incorrectly fail even though the equivalent short
+    English alias already existed."""
+    countries, _ = dataset
+    denmark = countries.get('Q756617')
+    if denmark is None:
+        pytest.skip('Denmark entity not present in this dataset')
+    assert denmark['iso2'] == 'DK'
+    expected_short_form = {'en': 'denmark', 'ca': 'dinamarca', 'es': 'dinamarca'}
+    for lang, short in expected_short_form.items():
+        i18n = denmark['i18n'][lang]
+        names = {i18n['name'].casefold(), *(a.casefold() for a in i18n['aliases'])}
+        assert short in names, f'{lang}: "{short}" not guessable ({names})'
+
+
 def test_daily_order_is_shuffled(dataset):
     """The rotation must not be alphabetical/insertion order."""
     countries, daily_order = dataset
