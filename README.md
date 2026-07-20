@@ -24,6 +24,12 @@ same secret country each day, in English, Català, or Español.
 5. Win or lose, the **full uncensored article** is revealed at the end so
    you can read about the country.
 6. Come back daily to build a **streak**, tracked locally in your browser.
+7. Optional **Easy Mode** (🗺️ button) opens an interactive world map where
+   you can mark countries as considering (green) or discarded (red) as a
+   scratchpad while you reason — it never submits a guess for you, you
+   still type your answer in the box as always. Turning it on requires
+   confirming a warning, since it **halves your score for the day** and
+   can't be turned back off until the next day's puzzle.
 
 The in-app **❓ How to Play** button (shown automatically on first visit)
 covers all of this with the exact numbers.
@@ -35,6 +41,8 @@ covers all of this with the exact numbers.
   currencies, and other proper nouns/toponyms are automatically redacted
   from real Wikipedia text
 - 💡 **Hint system**: unlock up to 3 extra paragraphs; fewer hints = higher score
+- 🗺️ **Easy Mode**: an interactive world map for marking candidate
+  countries, at half score, opt-in fresh every day
 - 🏆 **Inverse scoring** + day streak, both saved locally
 - 📖 **Full reveal**: read the uncensored article once the game ends
 - 🎨 **Modern UI** with light/dark theme
@@ -192,6 +200,28 @@ playable country has exactly 4 paragraphs and a non-empty capital in all
 three languages, the daily rotation contains no duplicates and isn't
 alphabetical, and a simulated year of days always produces a playable puzzle.
 
+## Easy Mode Map
+
+`WorldMapModal` renders an interactive, clickable choropleth (via
+[react-simple-maps](https://www.react-simple-maps.io/)) using
+[world-atlas](https://www.npmjs.com/package/world-atlas)'s 50m-resolution
+TopoJSON — good country-shape detail at ~740KB, far smaller than the 10m
+tier (14+ MB) that level of detail isn't needed for a click target. Each
+map region carries a numeric ISO 3166-1 id; `frontend/src/assets/iso2-to-map-id.json`
+is a small, pre-generated crosswalk from our own `iso2` codes to those
+numeric ids (produced once from the `i18n-iso-countries` package's
+conversion table, which is **not** a runtime dependency — only its output
+is committed). Validated against the real dataset: 191 of 192 playable
+countries resolve to a clickable region; Tuvalu's landmass is too small to
+render even at 50m resolution, so it remains guessable by text as normal,
+just not clickable on the map.
+
+The whole map — component, `react-simple-maps`, and the topology data —
+is loaded via `React.lazy()`, so it's absent from the main bundle entirely
+until a player actually turns on Easy Mode (confirmed by build output: the
+main chunk stays ~180KB, the map lazy-chunk is a separate ~860KB/272KB
+gzipped download).
+
 ## Project Structure
 
 ```
@@ -225,12 +255,15 @@ guess_the_country/
 │   │   └── game.json          # Client-side dataset (generated, bundled at build time)
 │   ├── src/
 │   │   ├── App.tsx
+│   │   ├── assets/
+│   │   │   └── iso2-to-map-id.json  # iso2 -> world-atlas numeric id crosswalk
 │   │   ├── components/        # LanguageSelect, HintPanel, ResultModal,
-│   │   │                       InstructionsModal, LanguageWarningModal, ...
+│   │   │                       InstructionsModal, LanguageWarningModal,
+│   │   │                       EasyModeWarningModal, WorldMapModal, ...
 │   │   ├── lib/
 │   │   │   ├── engine.ts      # Game rules, run entirely client-side
 │   │   │   ├── api.ts         # API-shaped wrapper around engine.ts
-│   │   │   ├── score.ts       # Inverse scoring formula
+│   │   │   ├── score.ts       # Inverse scoring + Easy Mode halving
 │   │   │   └── storage.ts     # localStorage: game state, streak, theme
 │   │   └── i18n/               # en / ca / es translation strings
 │   └── package.json

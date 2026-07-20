@@ -50,5 +50,20 @@
   "htp_after_body": "Ganes o pierdas, se revela el artículo completo de Wikipedia sin censura para que puedas leer sobre el país. Comparte tu resultado — intentos, pistas, puntuación y racha — con tus amigos.",
   "htp_streak_title": "Racha de días",
   "htp_streak_body": "Vuelve cada día para mantener tu racha. Tus estadísticas se guardan en este navegador, así que están ligadas a este dispositivo.",
-  "htp_got_it": "¡Entendido!"
+  "htp_easy_title": "Modo fácil",
+  "htp_easy_body": "Activa el Modo fácil para abrir un mapamundi donde puedes marcar países como posibles (verde) o descartados (rojo) mientras razonas — es un cuaderno de notas, no una respuesta automática. Cuesta la mitad de la puntuación y se reinicia cada día, así que decides si usarlo cada vez que juegas. Sigues enviando tu respuesta de la forma habitual, escribiéndola.",
+  "htp_got_it": "¡Entendido!",
+  "easy_mode_button": "Activar Modo fácil (mapa)",
+  "easy_mode_title": "¿Activar el Modo fácil?",
+  "easy_mode_body": "El Modo fácil abre un mapamundi para marcar países mientras piensas en la pista, pero reduce tu puntuación de hoy a la mitad y no se puede desactivar hasta mañana. ¿Continuar en Modo fácil, o quedarte en Modo difícil?",
+  "easy_mode_confirm": "Modo fácil (½ puntos)",
+  "easy_mode_cancel": "Quedarme en Modo difícil",
+  "easy_mode_active": "El Modo fácil está activado hoy — puntuación a la mitad",
+  "open_map": "Abrir mapa",
+  "map_button": "Mapa",
+  "map_title": "Mapa de países",
+  "map_instructions": "Haz clic en un país para alternar: posible → descartado → borrado. Son solo tus notas — igualmente debes enviar tu respuesta en el cuadro de abajo.",
+  "map_neutral": "Sin marcar",
+  "map_considering": "Posible",
+  "map_discarded": "Descartado"
 }

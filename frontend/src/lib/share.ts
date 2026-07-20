@@ -5,12 +5,13 @@ export interface ShareParams {
   unlocksUsed: number
   score: number
   streak: number
+  easyMode: boolean
 }
 
 export function generateShareText(p: ShareParams): string {
   const outcome = p.isWon ? `✅ ${p.guessCount}/5` : '❌ X/5'
   const hints = `💡 ${p.unlocksUsed}/3`
-  const scoreLine = p.isWon ? ` · 🏆 ${p.score} pts` : ''
+  const scoreLine = p.isWon ? ` · 🏆 ${p.score} pts${p.easyMode ? ' 🗺️' : ''}` : ''
   const streakLine = p.streak > 0 ? ` · 🔥 ${p.streak}` : ''
   return `Guess the Country #${p.puzzleId}\n${outcome} · ${hints}${scoreLine}${streakLine}\n\nhttps://jnoguert.github.io/GuessTheCountry/`
 }

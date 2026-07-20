@@ -1,5 +1,7 @@
 const STORAGE_PREFIX = 'gtc_'
 
+export type MapMarkState = 'neutral' | 'consider' | 'discard'
+
 export interface GameState {
   puzzleId: string
   lang: string
@@ -14,6 +16,13 @@ export interface GameState {
     capital: string
     iso2: string
   }
+  /** Easy Mode is an explicit, per-day opt-in: it lives on GameState so it
+   * resets automatically whenever the day (puzzleId) changes, same as
+   * guesses/unlocks. Halves the day's score in exchange for the map tool. */
+  easyMode?: boolean
+  /** Player's own discard/consider notes on the Easy Mode map, keyed by
+   * iso2. Purely a scratchpad - never affects guess checking or scoring. */
+  mapMarks?: Record<string, MapMarkState>
 }
 
 export interface Stats {

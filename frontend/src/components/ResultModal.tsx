@@ -15,19 +15,20 @@ interface ResultModalProps {
   score: number
   stats: Stats
   puzzleId: string
+  easyMode: boolean
   onClose: () => void
   t: Record<string, any>
 }
 
 export function ResultModal({
-  isOpen, isWon, answer, guessCount, unlocksUsed, score, stats, puzzleId, onClose, t,
+  isOpen, isWon, answer, guessCount, unlocksUsed, score, stats, puzzleId, easyMode, onClose, t,
 }: ResultModalProps) {
   const [copied, setCopied] = useState(false)
   if (!isOpen || !answer) return null
 
   const handleShare = () => {
     const shareText = generateShareText({
-      puzzleId, isWon, guessCount, unlocksUsed, score, streak: stats.currentStreak,
+      puzzleId, isWon, guessCount, unlocksUsed, score, streak: stats.currentStreak, easyMode,
     })
     copyToClipboard(shareText).then(() => {
       setCopied(true)
@@ -56,7 +57,9 @@ export function ResultModal({
         <div className="mb-6 grid grid-cols-2 gap-2 text-sm">
           <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
             <div className="text-2xl font-bold text-gray-900 dark:text-white">{score}</div>
-            <div className="text-gray-500 dark:text-gray-400">{t.points}</div>
+            <div className="text-gray-500 dark:text-gray-400">
+              {t.points}{easyMode && <span title={t.easy_mode_active}> 🗺️</span>}
+            </div>
           </div>
           <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
             <div className="text-2xl font-bold text-gray-900 dark:text-white">🔥 {stats.currentStreak}</div>

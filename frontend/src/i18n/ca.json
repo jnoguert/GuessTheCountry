@@ -50,5 +50,20 @@
   "htp_after_body": "Guanyis o perdis, es revela l'article complet de la Viquipèdia sense censura perquè puguis llegir sobre el país. Comparteix el teu resultat — intents, pistes, puntuació i ratxa — amb els amics.",
   "htp_streak_title": "Ratxa de dies",
   "htp_streak_body": "Torna cada dia per mantenir la teva ratxa. Les teves estadístiques es guarden en aquest navegador, així que estan lligades a aquest dispositiu.",
-  "htp_got_it": "Entesos!"
+  "htp_easy_title": "Mode fàcil",
+  "htp_easy_body": "Activa el Mode fàcil per obrir un mapamundi on pots marcar països com a possibles (verd) o descartats (vermell) mentre raones — és un bloc de notes, no una resposta automàtica. Costa la meitat de la puntuació i es reinicia cada dia, així que tu decideixes si el vols fer servir cada vegada que jugues. L'endevinalla la continues enviant de la manera normal, escrivint-la.",
+  "htp_got_it": "Entesos!",
+  "easy_mode_button": "Activa el Mode fàcil (mapa)",
+  "easy_mode_title": "Activar el Mode fàcil?",
+  "easy_mode_body": "El Mode fàcil obre un mapamundi per marcar països mentre penses en la pista, però et redueix la puntuació d'avui a la meitat i no es pot desactivar fins demà. Vols continuar en Mode fàcil, o quedar-te en Mode difícil?",
+  "easy_mode_confirm": "Mode fàcil (½ punts)",
+  "easy_mode_cancel": "Queda't en Mode difícil",
+  "easy_mode_active": "El Mode fàcil està activat avui — puntuació a la meitat",
+  "open_map": "Obre el mapa",
+  "map_button": "Mapa",
+  "map_title": "Mapa de països",
+  "map_instructions": "Clica un país per alternar: possible → descartat → esborrat. Són només les teves notes — la resposta l'has d'enviar igualment a la casella de sota.",
+  "map_neutral": "Sense marcar",
+  "map_considering": "Possible",
+  "map_discarded": "Descartat"
 }

@@ -50,6 +50,11 @@ export function InstructionsModal({ isOpen, onClose, t }: InstructionsModalProps
           </section>
 
           <section>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-1">🗺️ {t.htp_easy_title}</h3>
+            <p>{t.htp_easy_body}</p>
+          </section>
+
+          <section>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">🌐 {t.htp_language_title}</h3>
             <p>{t.htp_language_body}</p>
           </section>

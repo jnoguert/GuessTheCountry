@@ -50,5 +50,20 @@
   "htp_after_body": "Win or lose, the full uncensored Wikipedia article is revealed so you can read about the country. Share your result — guesses, hints, score and streak — with friends.",
   "htp_streak_title": "Day Streak",
   "htp_streak_body": "Come back every day to keep your streak alive. Your stats are saved in this browser, so they're tied to this device.",
-  "htp_got_it": "Got it!"
+  "htp_easy_title": "Easy Mode",
+  "htp_easy_body": "Turn on Easy Mode to open a world map where you can mark countries as considering (green) or discarded (red) while you reason — a scratchpad, not an auto-guess. It costs half your score and resets every day, so you choose whether to use it each time you play. You still submit your guess the normal way, by typing it in.",
+  "htp_got_it": "Got it!",
+  "easy_mode_button": "Turn on Easy Mode (map)",
+  "easy_mode_title": "Turn on Easy Mode?",
+  "easy_mode_body": "Easy Mode opens a world map to mark countries as you think through the clue, but it halves your score for today and can't be turned back off until tomorrow. Continue in Easy Mode, or stay in Hard Mode?",
+  "easy_mode_confirm": "Easy Mode (½ points)",
+  "easy_mode_cancel": "Stay in Hard Mode",
+  "easy_mode_active": "Easy Mode is on for today — score halved",
+  "open_map": "Open map",
+  "map_button": "Map",
+  "map_title": "Country Map",
+  "map_instructions": "Click a country to cycle: considering → discarded → clear. This is just for your own notes — you still submit your guess in the box below.",
+  "map_neutral": "Unmarked",
+  "map_considering": "Considering",
+  "map_discarded": "Discarded"
 }

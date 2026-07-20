@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react'
 import { fetchPuzzle, fetchCountries, submitGuess, fetchPuzzleState, fetchFullText, CountryOption } from './lib/api'
 import { normalizeText } from './lib/engine'
 import {
   getGameState, saveGameState, clearGameState, getLanguage, setLanguage,
-  getTheme, setTheme, getStats, recordGameEnd, GameState, Stats,
+  getTheme, setTheme, getStats, recordGameEnd, GameState, Stats, MapMarkState,
 } from './lib/storage'
-import { computeScore, MAX_GUESSES, MAX_UNLOCKS } from './lib/score'
+import { computeScore, applyEasyModePenalty, MAX_GUESSES, MAX_UNLOCKS } from './lib/score'
 import { useI18n } from './hooks/useI18n'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { LanguageSelect, LANG_LABELS } from './components/LanguageSelect'
@@ -17,6 +17,11 @@ import { GuessHistory } from './components/GuessHistory'
 import { HintPanel } from './components/HintPanel'
 import { ResultModal } from './components/ResultModal'
 import { InstructionsModal } from './components/InstructionsModal'
+import { EasyModeWarningModal } from './components/EasyModeWarningModal'
+
+// The map pulls in a ~740KB world topology file; lazy-loaded so it only
+// downloads for players who actually turn on Easy Mode.
+const WorldMapModal = lazy(() => import('./components/WorldMapModal').then((m) => ({ default: m.WorldMapModal })))
 
 export default function App() {
   const [lang, setLang] = useState<string | null>(getLanguage())
@@ -38,6 +43,10 @@ export default function App() {
   const [pendingLang, setPendingLang] = useState<string | null>(null)
   const [unlockPending, setUnlockPending] = useState(false)
   const [showInstructions, setShowInstructions] = useState(false)
+  const [easyMode, setEasyMode] = useState(false)
+  const [mapMarks, setMapMarks] = useState<Record<string, MapMarkState>>({})
+  const [showEasyModeWarning, setShowEasyModeWarning] = useState(false)
+  const [showMap, setShowMap] = useState(false)
 
   const t = useI18n(lang ?? 'en')
   const gameOver = isWon || isLost
@@ -82,6 +91,8 @@ export default function App() {
           setIsLost(saved.isLost)
           setScore(saved.score ?? 0)
           setAnswer(state.answer)
+          setEasyMode(saved.easyMode ?? false)
+          setMapMarks(saved.mapMarks ?? {})
         } else if (saved && saved.puzzleId === puzzleData.puzzle_id && saved.lang === lang && saved.paragraphs?.length) {
           // Same day, same language, game in progress: resume
           setParagraphs(saved.paragraphs)
@@ -91,8 +102,11 @@ export default function App() {
           setIsLost(saved.isLost)
           setScore(saved.score ?? 0)
           setAnswer(saved.answer ?? null)
+          setEasyMode(saved.easyMode ?? false)
+          setMapMarks(saved.mapMarks ?? {})
         } else {
-          // New day: start fresh
+          // New day: start fresh - Easy Mode and map notes reset too,
+          // since it's an explicit per-day opt-in
           clearGameState()
           setParagraphs(puzzleData.paragraphs)
           setGuesses([])
@@ -102,6 +116,8 @@ export default function App() {
           setScore(0)
           setAnswer(null)
           setShowResult(false)
+          setEasyMode(false)
+          setMapMarks({})
         }
 
         const countriesData = await fetchCountries(lang)
@@ -124,6 +140,7 @@ export default function App() {
       puzzleId, lang, guesses, paragraphs, unlocksUsed,
       isWon, isLost, score,
       answer: answer ?? undefined,
+      easyMode, mapMarks,
       ...partial,
     })
   }
@@ -146,7 +163,8 @@ export default function App() {
       setGuesses(newGuesses)
 
       if (result.correct) {
-        const wonScore = computeScore(unlocksUsed, newGuesses.length - 1, true)
+        const rawScore = computeScore(unlocksUsed, newGuesses.length - 1, true)
+        const wonScore = applyEasyModePenalty(rawScore, easyMode)
         // Reward: the whole article, uncensored
         const fullText = await fetchFullText(lang, puzzleId)
         setParagraphs(fullText)
@@ -221,6 +239,7 @@ export default function App() {
         puzzleId, lang: pendingLang, guesses, paragraphs: state.paragraphs,
         unlocksUsed: newUnlocks, isWon, isLost, score,
         answer: answer ?? undefined,
+        easyMode, mapMarks,
       })
     } catch (err) {
       console.error('Failed to switch language:', err)
@@ -232,6 +251,29 @@ export default function App() {
   const handleThemeChange = (newTheme: 'light' | 'dark') => {
     setThemeState(newTheme)
     setTheme(newTheme)
+  }
+
+  const handleEasyModeRequest = () => {
+    if (gameOver || easyMode) return
+    setShowEasyModeWarning(true)
+  }
+
+  const confirmEasyMode = () => {
+    setEasyMode(true)
+    setShowEasyModeWarning(false)
+    persist({ easyMode: true })
+    setShowMap(true) // jump straight into the map they just unlocked
+  }
+
+  const handleToggleMark = (iso2: string) => {
+    setMapMarks((prev) => {
+      const current = prev[iso2] ?? 'neutral'
+      const next: MapMarkState =
+        current === 'neutral' ? 'consider' : current === 'consider' ? 'discard' : 'neutral'
+      const updated = { ...prev, [iso2]: next }
+      persist({ mapMarks: updated })
+      return updated
+    })
   }
 
   if (!lang) {
@@ -249,16 +291,36 @@ export default function App() {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'}`}>
       <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <header className="flex justify-between items-center mb-8 gap-3">
+        <header className="flex justify-between items-center mb-8 gap-3 flex-wrap">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{t.title}</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">{t.subtitle}</p>
           </div>
-          <div className="flex gap-2 items-center shrink-0">
+          <div className="flex gap-2 items-center shrink-0 flex-wrap">
             {stats.currentStreak > 0 && (
               <span className="text-sm font-semibold text-gray-900 dark:text-white" title={t.day_streak}>
                 🔥 {stats.currentStreak}
               </span>
+            )}
+            {easyMode ? (
+              <button
+                onClick={() => setShowMap(true)}
+                className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-all"
+                title={t.open_map}
+              >
+                🗺️ {t.map_button}
+              </button>
+            ) : (
+              !gameOver && (
+                <button
+                  onClick={handleEasyModeRequest}
+                  className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+                  title={t.easy_mode_button}
+                  aria-label={t.easy_mode_button}
+                >
+                  🗺️
+                </button>
+              )
             )}
             <button
               onClick={() => setShowInstructions(true)}
@@ -272,6 +334,12 @@ export default function App() {
             <LanguageSwitcher currentLang={lang} onLangChange={handleLangRequest} />
           </div>
         </header>
+
+        {easyMode && (
+          <div className="card p-2 mb-4 text-center text-xs font-medium text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900">
+            🗺️ {t.easy_mode_active}
+          </div>
+        )}
 
         {error && (
           <div className="card p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 mb-6 rounded-lg">
@@ -326,6 +394,30 @@ export default function App() {
           t={t}
         />
 
+        <EasyModeWarningModal
+          isOpen={showEasyModeWarning}
+          onConfirm={confirmEasyMode}
+          onCancel={() => setShowEasyModeWarning(false)}
+          t={t}
+        />
+
+        {showMap && (
+          <Suspense fallback={
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="card p-6 text-gray-900 dark:text-white">{t.loading}</div>
+            </div>
+          }>
+            <WorldMapModal
+              isOpen={showMap}
+              onClose={() => setShowMap(false)}
+              marks={mapMarks}
+              onToggleMark={handleToggleMark}
+              countries={countries}
+              t={t}
+            />
+          </Suspense>
+        )}
+
         <LanguageWarningModal
           isOpen={pendingLang !== null}
           targetLangLabel={pendingLang ? LANG_LABELS[pendingLang] : ''}
@@ -344,6 +436,7 @@ export default function App() {
           score={score}
           stats={stats}
           puzzleId={puzzleId}
+          easyMode={easyMode}
           onClose={() => setShowResult(false)}
           t={t}
         />

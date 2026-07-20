@@ -17,5 +17,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    // The Easy Mode map chunk (react-simple-maps + world topology, ~860KB)
+    // is intentionally large and lazy-loaded - only players who open it
+    // download it, so the default 500KB warning is expected noise here.
+    chunkSizeWarningLimit: 900,
   },
 })
