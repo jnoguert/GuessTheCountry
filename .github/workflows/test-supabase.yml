@@ -1,0 +1,47 @@
+name: Test Supabase Leaderboard
+
+on:
+  push:
+    branches: [main, feature/supabase-leaderboard]
+    paths:
+      - 'supabase/**'
+      - '.github/workflows/test-supabase.yml'
+  pull_request:
+    paths:
+      - 'supabase/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Starts Postgres + Auth + PostgREST + the local functions gateway,
+      # and applies every file under supabase/migrations/ automatically.
+      - name: Start local Supabase stack
+        run: supabase start
+
+      - name: Run pgTAP suite (RLS invariants)
+        run: supabase test db
+
+      - name: Run Deno unit tests (scoring formula)
+        run: deno test --allow-net --allow-env supabase/functions/_shared/score.test.ts
+
+      - name: Run Deno integration tests (submit-score, real HTTP+JWT path)
+        env:
+          SUPABASE_URL: http://127.0.0.1:54321
+        run: |
+          ANON_KEY=$(supabase status -o env | grep '^ANON_KEY=' | cut -d= -f2 | tr -d '"')
+          SUPABASE_ANON_KEY="$ANON_KEY" deno test --allow-net --allow-env supabase/functions/submit-score/test.ts
+
+      - name: Stop local Supabase stack
+        if: always()
+        run: supabase stop

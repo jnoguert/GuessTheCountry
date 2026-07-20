@@ -309,19 +309,62 @@ npm run build   # type-checks and builds; fails on any TypeScript error
 - **Docker**: `docker-compose up --build` serves the identical static build
   from a FastAPI container on port 8000 — usable anywhere Docker runs.
 
-## Optional Add-ons (branches)
+## Leaderboard (Supabase)
 
-A couple of features were built but are kept off `main` to keep the core
-game simple:
+On the `feature/supabase-leaderboard` branch: usernames, daily scores, and
+today/all-time rankings, backed entirely by [Supabase](https://supabase.com)
+(hosted Postgres + Auth + Row Level Security) instead of a custom server —
+the frontend stays 100% static and talks to Supabase directly, so this works
+on GitHub Pages with no backend of ours to run or host.
 
-- **`feature/leaderboard`** — usernames, daily scores, and today/all-time
-  rankings backed by the FastAPI service + SQLite. Requires a real hosted
-  backend (not compatible with pure static hosting like GitHub Pages).
+**Identity**: passwordless. A player picks a username, which mints an
+anonymous Supabase Auth session behind the scenes — no email, no password,
+matching the rest of the game's zero-friction UX. A claimed username is
+permanent (no rename, no recovery if you clear your browser storage — same
+trade-off the rest of the game's localStorage-based stats already make).
+
+**Anti-abuse**: writes to the `scores` table are only possible through the
+`submit-score` Edge Function — the table has no INSERT policy at all. The
+function derives the player's identity from their verified session (never a
+client-supplied id), computes the score itself from the reported
+guesses/hints/easy-mode (the client never sends a score to trust or
+distrust), and "today" is always the function's own UTC clock. One
+submission per player per day is enforced by a database-level unique
+constraint, not application logic.
+
+**Setup** (only needed if you want to run/deploy this branch):
+1. `npm install -g supabase` (or use `npx supabase`), then `supabase login`.
+2. Create a project at [supabase.com](https://supabase.com), or run
+   `supabase start` for local development (needs Docker Desktop running).
+3. **Enable anonymous sign-ins**: local dev — already on via
+   `supabase/config.toml`; hosted project — Dashboard → Authentication →
+   Sign In / Providers → toggle Anonymous Sign-Ins on.
+4. `supabase link --project-ref <your-project-ref>` then
+   `supabase db push` to apply `supabase/migrations/`.
+5. `supabase functions deploy submit-score` (uses the service-role key
+   automatically via `SUPABASE_SERVICE_ROLE_KEY`, injected by the platform —
+   nothing to configure by hand for a hosted project).
+6. Set `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` — locally in
+   `frontend/.env.local` (see `frontend/.env.example`); in CI as GitHub
+   Actions repo **Variables** (not Secrets — the anon key is meant to be
+   public, RLS is the real boundary); for Docker, as build args (see
+   `docker-compose.yml`).
+
+**Testing**: `supabase test db` runs a pgTAP suite pinning down the RLS
+invariants (direct writes blocked, reads public, usernames immutable);
+`deno test` runs unit tests on the shared scoring formula and integration
+tests against the real HTTP+JWT path (duplicate submissions rejected,
+forged/out-of-range input rejected, username-claim races resolve to exactly
+one winner). See `.github/workflows/test-supabase.yml` for the exact
+commands, or run them locally against `supabase start` — never the hosted
+project, to avoid burning free-tier quota during development.
+
+## Other Optional Add-ons (branches)
+
 - **`feature/android-apk`** — Capacitor packaging + a CI workflow that
   builds a downloadable, fully offline Android APK from the same frontend.
 
-Merge either into `main` (`git merge feature/<name>`) when you're ready to
-use them.
+Merge into `main` (`git merge feature/<name>`) when you're ready to use it.
 
 ## License
 

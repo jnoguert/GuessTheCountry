@@ -23,6 +23,11 @@ export interface GameState {
   /** Player's own discard/consider notes on the Easy Mode map, keyed by
    * iso2. Purely a scratchpad - never affects guess checking or scoring. */
   mapMarks?: Record<string, MapMarkState>
+  /** Whether today's result has already been posted to the leaderboard -
+   * avoids a redundant submit attempt on every re-render/reload once it
+   * has succeeded (the server's own per-day constraint is the real
+   * backstop, this is just to skip the pointless extra network call). */
+  submitted?: boolean
 }
 
 export interface Stats {

@@ -5,6 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # Build-time only (baked into the frontend bundle) -- set these in
+        # a .env file next to this compose file, or export them in your
+        # shell before `docker compose up --build`. Unset is fine; the
+        # leaderboard just won't appear.
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
     container_name: guess-the-country
     ports:
       - "8000:8000"

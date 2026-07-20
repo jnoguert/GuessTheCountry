@@ -30,6 +30,13 @@ jobs:
         working-directory: frontend
         env:
           VITE_BASE: /GuessTheCountry/
+          # Repo Variables, not Secrets: the anon key is meant to be public
+          # client-side (Row Level Security is the real security boundary,
+          # not key secrecy). Set both under Settings -> Secrets and
+          # variables -> Actions -> Variables. Leaving them unset is fine --
+          # the leaderboard just won't appear (see lib/leaderboard.ts).
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
         run: |
           npm ci --no-audit
           npm run build

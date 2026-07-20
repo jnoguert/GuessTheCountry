@@ -1,6 +1,16 @@
 # ---- Stage 1: build the frontend ----
 FROM node:20-slim AS frontend-builder
 
+# Vite bakes these into the static bundle at build time, not read at
+# container runtime -- they must be passed as --build-arg (see
+# docker-compose.yml's build.args), a plain `environment:` entry on the
+# service has no effect on an already-built image. Optional: leaving them
+# unset just means the leaderboard doesn't appear.
+ARG VITE_SUPABASE_URL=""
+ARG VITE_SUPABASE_ANON_KEY=""
+ENV VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+ENV VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+
 WORKDIR /build
 COPY frontend/package*.json ./
 RUN npm ci --no-audit

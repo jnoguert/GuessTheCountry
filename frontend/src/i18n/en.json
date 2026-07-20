@@ -68,5 +68,15 @@
   "map_discarded": "Discarded",
   "map_mode_consider": "Consider",
   "map_mode_discard": "Discard",
-  "map_mode_clear": "Unmark"
+  "map_mode_clear": "Unmark",
+  "leaderboard": "Leaderboard",
+  "choose_username": "Choose a username to join the leaderboard",
+  "username_placeholder": "Your username",
+  "username_rules": "3-20 characters: letters, numbers, - and _",
+  "save": "Save",
+  "username_taken": "That username is already taken. Try another one.",
+  "today": "Today",
+  "all_time": "All time",
+  "leaderboard_empty": "No scores yet — be the first!",
+  "points_abbr": "pts"
 }
