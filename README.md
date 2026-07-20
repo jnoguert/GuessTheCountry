@@ -214,7 +214,18 @@ conversion table, which is **not** a runtime dependency — only its output
 is committed). Validated against the real dataset: 191 of 192 playable
 countries resolve to a clickable region; Tuvalu's landmass is too small to
 render even at 50m resolution, so it remains guessable by text as normal,
-just not clickable on the map.
+just not clickable on the map. Greenland renders as its own large,
+separate landmass (id `304`) but isn't itself one of our 194 playable
+countries — since our game already models it as part of Denmark's
+sovereign state (see the Denmark fix above), clicking Greenland is
+manually mapped to mark Denmark instead of being dead space.
+
+**Interaction is mode-based, not click-to-cycle**: three buttons
+(Consider / Discard / Unmark) select the active mode, and every
+subsequent country click applies that mode directly — so marking many
+countries the same way is one click each, not up to three. Hover only
+thickens a country's border for feedback; no color (blue or otherwise)
+is ever applied on hover or press, only on an actual click.
 
 The whole map — component, `react-simple-maps`, and the topology data —
 is loaded via `React.lazy()`, so it's absent from the main bundle entirely

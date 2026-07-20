@@ -51,7 +51,7 @@
   "htp_streak_title": "Day Streak",
   "htp_streak_body": "Come back every day to keep your streak alive. Your stats are saved in this browser, so they're tied to this device.",
   "htp_easy_title": "Easy Mode",
-  "htp_easy_body": "Turn on Easy Mode to open a world map where you can mark countries as considering (green) or discarded (red) while you reason — a scratchpad, not an auto-guess. It costs half your score and resets every day, so you choose whether to use it each time you play. You still submit your guess the normal way, by typing it in.",
+  "htp_easy_body": "Turn on Easy Mode to open a world map with three buttons — Consider, Discard, Unmark. Pick one, then click any number of countries to mark them that way — a scratchpad, not an auto-guess. It costs half your score and resets every day, so you choose whether to use it each time you play. You still submit your guess the normal way, by typing it in.",
   "htp_got_it": "Got it!",
   "easy_mode_button": "Turn on Easy Mode (map)",
   "easy_mode_title": "Turn on Easy Mode?",
@@ -62,8 +62,11 @@
   "open_map": "Open map",
   "map_button": "Map",
   "map_title": "Country Map",
-  "map_instructions": "Click a country to cycle: considering → discarded → clear. This is just for your own notes — you still submit your guess in the box below.",
+  "map_instructions": "Pick a mode below, then click any country to mark it. This is just for your own notes — you still submit your guess in the box below.",
   "map_neutral": "Unmarked",
   "map_considering": "Considering",
-  "map_discarded": "Discarded"
+  "map_discarded": "Discarded",
+  "map_mode_consider": "Consider",
+  "map_mode_discard": "Discard",
+  "map_mode_clear": "Unmark"
 }

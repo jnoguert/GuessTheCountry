@@ -265,12 +265,10 @@ export default function App() {
     setShowMap(true) // jump straight into the map they just unlocked
   }
 
-  const handleToggleMark = (iso2: string) => {
+  const handleSetMark = (iso2: string, mode: MapMarkState) => {
     setMapMarks((prev) => {
-      const current = prev[iso2] ?? 'neutral'
-      const next: MapMarkState =
-        current === 'neutral' ? 'consider' : current === 'consider' ? 'discard' : 'neutral'
-      const updated = { ...prev, [iso2]: next }
+      if (prev[iso2] === mode) return prev
+      const updated = { ...prev, [iso2]: mode }
       persist({ mapMarks: updated })
       return updated
     })
@@ -411,7 +409,7 @@ export default function App() {
               isOpen={showMap}
               onClose={() => setShowMap(false)}
               marks={mapMarks}
-              onToggleMark={handleToggleMark}
+              onMark={handleSetMark}
               countries={countries}
               t={t}
             />

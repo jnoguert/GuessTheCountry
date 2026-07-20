@@ -13,7 +13,7 @@ interface WorldMapModalProps {
   isOpen: boolean
   onClose: () => void
   marks: Record<string, MarkState>
-  onToggleMark: (iso2: string) => void
+  onMark: (iso2: string, mode: MarkState) => void
   countries: CountryOption[]
   t: Record<string, any>
 }
@@ -25,21 +25,32 @@ const mapIdToIso2: Record<string, string> = Object.fromEntries(
   Object.entries(iso2ToMapId as Record<string, string>).map(([iso2, id]) => [id, iso2])
 )
 
+// A few large landmasses on the map are dependent territories with their
+// own geometry but aren't separately guessable in our country list - our
+// game models them as part of their sovereign state, so clicking them
+// should mark that state instead of being dead, confusing space.
+// Greenland (id 304) -> Denmark (our Q756617 entity covers the whole
+// Kingdom of Denmark, Greenland included). The Faroe Islands aren't
+// rendered at all at this map resolution (too small), so no entry needed.
+mapIdToIso2['304'] = 'DK'
+
 const COLORS = {
   neutral: '#d1d5db', // gray-300
   consider: '#22c55e', // green-500
   discard: '#ef4444', // red-500
-  hover: '#3b82f6', // blue-500
-  pressed: '#2563eb', // blue-600
   noData: '#e5e7eb', // gray-200: landmass with no matching country (e.g. Antarctica)
 }
 
-/** Easy Mode scratchpad: a world map where the player marks countries as
- * "considering" or "discarded" while reasoning about the clue. Purely a
- * visual note-taking aid - it never submits a guess. The actual guess
- * still goes through the text input, as always. */
-export function WorldMapModal({ isOpen, onClose, marks, onToggleMark, countries, t }: WorldMapModalProps) {
+const MODES: MarkState[] = ['consider', 'discard', 'neutral']
+
+/** Easy Mode scratchpad: a world map where the player picks a mode
+ * (consider / discard / unmark) and then clicks countries to apply it -
+ * a bulk-marking tool, not a click-to-cycle toggle. Purely a note-taking
+ * aid: it never submits a guess. The actual guess still goes through the
+ * text input, as always. */
+export function WorldMapModal({ isOpen, onClose, marks, onMark, countries, t }: WorldMapModalProps) {
   const [hovered, setHovered] = useState<string | null>(null)
+  const [activeMode, setActiveMode] = useState<MarkState>('consider')
 
   const nameByIso2 = useMemo(() => {
     const map: Record<string, string> = {}
@@ -52,6 +63,17 @@ export function WorldMapModal({ isOpen, onClose, marks, onToggleMark, countries,
   const fillFor = (iso2: string | undefined) => {
     if (!iso2) return COLORS.noData
     return COLORS[marks[iso2] ?? 'neutral']
+  }
+
+  const modeLabel: Record<MarkState, string> = {
+    consider: t.map_mode_consider,
+    discard: t.map_mode_discard,
+    neutral: t.map_mode_clear,
+  }
+  const modeColor: Record<MarkState, string> = {
+    consider: COLORS.consider,
+    discard: COLORS.discard,
+    neutral: COLORS.neutral,
   }
 
   return (
@@ -67,21 +89,23 @@ export function WorldMapModal({ isOpen, onClose, marks, onToggleMark, countries,
             ×
           </button>
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t.map_instructions}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{t.map_instructions}</p>
 
-        <div className="flex gap-4 mb-2 text-xs text-gray-700 dark:text-gray-300">
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-sm" style={{ background: COLORS.neutral }} />
-            {t.map_neutral}
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-sm" style={{ background: COLORS.consider }} />
-            {t.map_considering}
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-sm" style={{ background: COLORS.discard }} />
-            {t.map_discarded}
-          </span>
+        <div className="flex gap-2 mb-3">
+          {MODES.map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setActiveMode(mode)}
+              className="flex-1 px-3 py-2 rounded-lg text-sm font-medium border-2 transition-all"
+              style={
+                activeMode === mode
+                  ? { background: modeColor[mode], borderColor: modeColor[mode], color: mode === 'neutral' ? '#1f2937' : '#fff' }
+                  : { background: 'transparent', borderColor: modeColor[mode], color: modeColor[mode] }
+              }
+            >
+              {modeLabel[mode]}
+            </button>
+          ))}
         </div>
 
         <div
@@ -103,11 +127,15 @@ export function WorldMapModal({ isOpen, onClose, marks, onToggleMark, countries,
                     return (
                       <Geography
                         key={geo.rsmKey}
+                        id={iso2 ? `country-${iso2}-${geo.id}` : undefined}
                         geography={geo}
-                        onClick={() => iso2 && onToggleMark(iso2)}
+                        onClick={() => iso2 && onMark(iso2, activeMode)}
                         onMouseEnter={() => setHovered(name ?? null)}
                         onMouseLeave={() => setHovered(null)}
                         style={{
+                          // No color change on hover/press - only a
+                          // thicker stroke, so nothing ever "paints blue"
+                          // before the player actually clicks.
                           default: {
                             fill: fillFor(iso2),
                             stroke: '#FFFFFF',
@@ -116,15 +144,15 @@ export function WorldMapModal({ isOpen, onClose, marks, onToggleMark, countries,
                             cursor: iso2 ? 'pointer' : 'default',
                           },
                           hover: {
-                            fill: iso2 ? COLORS.hover : fillFor(iso2),
-                            stroke: '#FFFFFF',
-                            strokeWidth: 0.3,
+                            fill: fillFor(iso2),
+                            stroke: iso2 ? '#1f2937' : '#FFFFFF',
+                            strokeWidth: iso2 ? 1.2 : 0.3,
                             outline: 'none',
                           },
                           pressed: {
-                            fill: COLORS.pressed,
-                            stroke: '#FFFFFF',
-                            strokeWidth: 0.3,
+                            fill: fillFor(iso2),
+                            stroke: '#1f2937',
+                            strokeWidth: 1.5,
                             outline: 'none',
                           },
                         }}

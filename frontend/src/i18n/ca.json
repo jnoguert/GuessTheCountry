@@ -51,7 +51,7 @@
   "htp_streak_title": "Ratxa de dies",
   "htp_streak_body": "Torna cada dia per mantenir la teva ratxa. Les teves estadístiques es guarden en aquest navegador, així que estan lligades a aquest dispositiu.",
   "htp_easy_title": "Mode fàcil",
-  "htp_easy_body": "Activa el Mode fàcil per obrir un mapamundi on pots marcar països com a possibles (verd) o descartats (vermell) mentre raones — és un bloc de notes, no una resposta automàtica. Costa la meitat de la puntuació i es reinicia cada dia, així que tu decideixes si el vols fer servir cada vegada que jugues. L'endevinalla la continues enviant de la manera normal, escrivint-la.",
+  "htp_easy_body": "Activa el Mode fàcil per obrir un mapamundi amb tres botons — Considera, Descarta, Desmarca. Tria'n un i després clica tants països com vulguis per marcar-los així — és un bloc de notes, no una resposta automàtica. Costa la meitat de la puntuació i es reinicia cada dia, així que tu decideixes si el vols fer servir cada vegada que jugues. L'endevinalla la continues enviant de la manera normal, escrivint-la.",
   "htp_got_it": "Entesos!",
   "easy_mode_button": "Activa el Mode fàcil (mapa)",
   "easy_mode_title": "Activar el Mode fàcil?",
@@ -62,8 +62,11 @@
   "open_map": "Obre el mapa",
   "map_button": "Mapa",
   "map_title": "Mapa de països",
-  "map_instructions": "Clica un país per alternar: possible → descartat → esborrat. Són només les teves notes — la resposta l'has d'enviar igualment a la casella de sota.",
+  "map_instructions": "Tria un mode a sota i després clica qualsevol país per marcar-lo. Són només les teves notes — la resposta l'has d'enviar igualment a la casella de sota.",
   "map_neutral": "Sense marcar",
   "map_considering": "Possible",
-  "map_discarded": "Descartat"
+  "map_discarded": "Descartat",
+  "map_mode_consider": "Considera",
+  "map_mode_discard": "Descarta",
+  "map_mode_clear": "Desmarca"
 }

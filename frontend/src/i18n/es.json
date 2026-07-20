@@ -51,7 +51,7 @@
   "htp_streak_title": "Racha de días",
   "htp_streak_body": "Vuelve cada día para mantener tu racha. Tus estadísticas se guardan en este navegador, así que están ligadas a este dispositivo.",
   "htp_easy_title": "Modo fácil",
-  "htp_easy_body": "Activa el Modo fácil para abrir un mapamundi donde puedes marcar países como posibles (verde) o descartados (rojo) mientras razonas — es un cuaderno de notas, no una respuesta automática. Cuesta la mitad de la puntuación y se reinicia cada día, así que decides si usarlo cada vez que juegas. Sigues enviando tu respuesta de la forma habitual, escribiéndola.",
+  "htp_easy_body": "Activa el Modo fácil para abrir un mapamundi con tres botones — Considerar, Descartar, Desmarcar. Elige uno y luego haz clic en tantos países como quieras para marcarlos así — es un cuaderno de notas, no una respuesta automática. Cuesta la mitad de la puntuación y se reinicia cada día, así que decides si usarlo cada vez que juegas. Sigues enviando tu respuesta de la forma habitual, escribiéndola.",
   "htp_got_it": "¡Entendido!",
   "easy_mode_button": "Activar Modo fácil (mapa)",
   "easy_mode_title": "¿Activar el Modo fácil?",
@@ -62,8 +62,11 @@
   "open_map": "Abrir mapa",
   "map_button": "Mapa",
   "map_title": "Mapa de países",
-  "map_instructions": "Haz clic en un país para alternar: posible → descartado → borrado. Son solo tus notas — igualmente debes enviar tu respuesta en el cuadro de abajo.",
+  "map_instructions": "Elige un modo abajo y luego haz clic en cualquier país para marcarlo. Son solo tus notas — igualmente debes enviar tu respuesta en el cuadro de abajo.",
   "map_neutral": "Sin marcar",
   "map_considering": "Posible",
-  "map_discarded": "Descartado"
+  "map_discarded": "Descartado",
+  "map_mode_consider": "Considerar",
+  "map_mode_discard": "Descartar",
+  "map_mode_clear": "Desmarcar"
 }
