@@ -79,6 +79,20 @@ def test_own_name_is_censored_in_paragraphs(dataset):
     assert not leaks, 'Name leaks found:\n' + '\n'.join(leaks[:20])
 
 
+def test_playable_countries_have_capitals_in_every_language(dataset):
+    """The result screen shows the capital; a playable country must never
+    ship with a blank one (e.g. Nigeria's capital entity lacks en/ca
+    labels on Wikidata itself - the build must fall back or patch)."""
+    countries, daily_order = dataset
+    missing = []
+    for qid in daily_order:
+        c = countries[qid]
+        for lang in ('en', 'ca', 'es'):
+            if not c['i18n'].get(lang, {}).get('capital'):
+                missing.append(f"{qid} ({c['i18n']['en']['name']}) has no capital in {lang}")
+    assert not missing, 'Blank capitals:\n' + '\n'.join(missing)
+
+
 def test_daily_order_is_shuffled(dataset):
     """The rotation must not be alphabetical/insertion order."""
     countries, daily_order = dataset

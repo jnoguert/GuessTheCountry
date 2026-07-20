@@ -29,6 +29,29 @@ def load_pipeline_data():
     return core, lexical
 
 
+# Manual fixes for gaps in Wikidata itself (e.g. Nigeria's capital entity
+# has no en/ca label at the source). Keyed by country QID, then language.
+CAPITAL_LABEL_PATCHES = {
+    'Q1033': {'en': 'Abuja', 'ca': 'Abuja'},
+}
+
+
+def _capital_label(country_qid: str, capital_qid: str, lang: str, lexical: Dict) -> str:
+    """Capital display name with fallbacks: manual patch -> requested
+    language -> English -> any label Wikidata has."""
+    patched = CAPITAL_LABEL_PATCHES.get(country_qid, {}).get(lang)
+    if patched:
+        return patched
+
+    labels = lexical.get(capital_qid, {}).get('labels', {})
+    for candidate in (lang, 'en'):
+        if candidate in labels:
+            return labels[candidate].get('value', '')
+    if labels:
+        return next(iter(labels.values())).get('value', '')
+    return ''
+
+
 def load_cached_articles():
     print("Loading cached Wikipedia articles...")
     articles = {}
@@ -68,8 +91,8 @@ def build_countries_json():
             lang_label = entity.get('labels', {}).get(lang, {}).get('value', country_data.get('label', ''))
             capital_qid = country_data.get('capital')
             capital_label = ''
-            if capital_qid and capital_qid in lexical:
-                capital_label = lexical[capital_qid].get('labels', {}).get(lang, {}).get('value', '')
+            if capital_qid:
+                capital_label = _capital_label(qid, capital_qid, lang, lexical)
 
             # Aliases let guesses like "USA" or "Estats Units" match
             aliases = clean_aliases(entity.get('aliases', {}).get(lang, []))
