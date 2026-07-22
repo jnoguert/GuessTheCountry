@@ -5,7 +5,7 @@
 --
 -- Run with: supabase test db
 begin;
-select plan(11);
+select plan(12);
 
 -- A fixed "player" id to simulate an authenticated user's own row.
 -- (Not a real auth.users row -- these tests only exercise RLS, not FKs
@@ -59,10 +59,18 @@ select throws_ok(
 set local role authenticated;
 set local "request.jwt.claims" to '{"sub":"00000000-0000-0000-0000-000000000002","role":"authenticated"}';
 
-select lives_ok(
+-- RLS must LET this insert through (auth.uid() = id passes). Because these
+-- role-simulation tests don't populate auth.users, the statement then trips
+-- the FK (23503) -- which is itself the proof that RLS allowed it: a blocked
+-- insert would raise 42501 first and never reach the FK. The full happy path
+-- (real auth.users row + committed insert) is covered by the Deno integration
+-- test, which registers a genuine user.
+select throws_ok(
   $$ insert into public.profiles (id, username)
      values ('00000000-0000-0000-0000-000000000002', 'ownuser') $$,
-  'authenticated user can insert a profile row matching their own auth.uid()'
+  '23503',
+  null,
+  'RLS allows an authenticated user to insert their OWN profile row (reaches the FK)'
 );
 
 -- ...but never anyone else's, even while authenticated
@@ -105,7 +113,7 @@ select throws_ok(
 
 select lives_ok(
   $$ select * from public.profiles where id = '00000000-0000-0000-0000-000000000002' $$,
-  'authenticated user can read their own just-inserted profile row back'
+  'authenticated user can select from profiles (public read policy)'
 );
 
 select lives_ok(
