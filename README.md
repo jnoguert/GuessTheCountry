@@ -1,10 +1,10 @@
-# Guess the Country 🌍
+# Redactica 🌍
 
-A daily puzzle game where you guess a country from a censored excerpt of its
-Wikipedia article — think Wordle, but for geography. Every player gets the
-same secret country each day, in English, Català, or Español.
+**Redactica** is a daily puzzle game where you guess a country from a censored
+excerpt of its Wikipedia article — think Wordle, but for geography. Every
+player gets the same secret country each day, in English, Català, or Español.
 
-**▶️ Play now: https://jnoguert.github.io/GuessTheCountry/**
+**▶️ Play now: https://jnoguert.github.io/Redactica/**
 
 ## How It Works
 
@@ -77,7 +77,7 @@ its output is committed to the repo.
 
 ### Just play
 
-Open **https://jnoguert.github.io/GuessTheCountry/** — nothing to install.
+Open **https://jnoguert.github.io/Redactica/** — nothing to install.
 
 ### Run locally
 
@@ -209,7 +209,7 @@ gzipped download).
 ## Project Structure
 
 ```
-guess_the_country/
+redactica/
 ├── .github/workflows/
 │   └── deploy-pages.yml      # Builds frontend + game.json, deploys to GitHub Pages
 ├── backend/                  # Offline data pipeline (no runtime server)

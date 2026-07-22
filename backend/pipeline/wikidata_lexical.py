@@ -36,7 +36,7 @@ def collect_qids(countries: Dict) -> Set[str]:
 def batch_fetch_entities(qids: List[str], country_qids: List[str], languages: List[str] = ['en', 'ca', 'es']) -> Dict:
     print(f"Fetching lexical data for {len(qids)} entities...")
     headers = {
-        'User-Agent': 'GuessTheCountry/1.0 (https://github.com/yourusername/guess-the-country)'
+        'User-Agent': 'Redactica/1.0 (https://github.com/jnoguert/Redactica)'
     }
 
     entities = {}
@@ -86,7 +86,7 @@ def fetch_demonyms_for_countries(country_qids: List[str], lang: str,
     """
 
     headers = {
-        'User-Agent': 'GuessTheCountry/1.0',
+        'User-Agent': 'Redactica/1.0',
         'Accept': 'application/sparql-results+json'
     }
 

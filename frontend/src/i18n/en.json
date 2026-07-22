@@ -1,5 +1,5 @@
 {
-  "title": "Guess the Country",
+  "title": "Redactica",
   "subtitle": "Read censored Wikipedia excerpts and guess the country",
   "language": "Language",
   "guess": "Guess",
@@ -31,7 +31,7 @@
   "full_text": "Full article revealed — no censorship",
   "how_to_play": "How to Play",
   "htp_title": "How to Play",
-  "htp_intro": "Guess the Country is a daily puzzle: every player gets the same secret country, guessed from a censored excerpt of its Wikipedia article. A new country is chosen every day.",
+  "htp_intro": "Redactica is a daily puzzle: every player gets the same secret country, guessed from a censored excerpt of its Wikipedia article. A new country is chosen every day.",
   "htp_goal_title": "The Goal",
   "htp_goal_body": "All country names, capitals, neighboring countries, demonyms, languages, currencies and other geographic giveaways are blacked out (███). Read what's left and figure out the country.",
   "htp_goal_note": "The width of each black-out is scrambled by a couple of characters, so you can't count letters to guess the hidden word — don't trust the block size!",

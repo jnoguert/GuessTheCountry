@@ -41,7 +41,7 @@ def fetch_wikidata_core(force: bool = False) -> Dict:
 
     print("Fetching core country data from Wikidata...")
     headers = {
-        'User-Agent': 'GuessTheCountry/1.0 (https://github.com/yourusername/guess-the-country)',
+        'User-Agent': 'Redactica/1.0 (https://github.com/jnoguert/Redactica)',
         'Accept': 'application/sparql-results+json'
     }
 

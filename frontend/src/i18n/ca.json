@@ -1,5 +1,5 @@
 {
-  "title": "Endevina el país",
+  "title": "Redactica",
   "subtitle": "Llegeix extractes censurats de la Viquipèdia i endevina el país",
   "language": "Idioma",
   "guess": "Endevina",
@@ -31,7 +31,7 @@
   "full_text": "Article complet revelat — sense censura",
   "how_to_play": "Com es juga",
   "htp_title": "Com es juga",
-  "htp_intro": "Endevina el país és un trencaclosques diari: tots els jugadors reben el mateix país secret, que cal endevinar a partir d'un extracte censurat del seu article de la Viquipèdia. Cada dia hi ha un país nou.",
+  "htp_intro": "Redactica és un trencaclosques diari: tots els jugadors reben el mateix país secret, que cal endevinar a partir d'un extracte censurat del seu article de la Viquipèdia. Cada dia hi ha un país nou.",
   "htp_goal_title": "L'objectiu",
   "htp_goal_body": "Tots els noms de països, capitals, països veïns, gentilicis, llengües, monedes i altres pistes geogràfiques queden censurats (███). Llegeix el que queda i esbrina el país.",
   "htp_goal_note": "L'amplada de cada bloc censurat es distorsiona uns quants caràcters, així que no pots comptar lletres per endevinar la paraula amagada — no et fiïs de la mida del bloc!",

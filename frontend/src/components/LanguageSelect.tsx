@@ -15,7 +15,7 @@ export function LanguageSelect({ onSelect }: LanguageSelectProps) {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="card p-8 max-w-sm w-full mx-4 text-center">
         <div className="text-6xl mb-4">🌍</div>
-        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Guess the Country</h1>
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Redactica</h1>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Choose your language · Tria el teu idioma · Elige tu idioma
         </p>

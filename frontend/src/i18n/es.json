@@ -1,5 +1,5 @@
 {
-  "title": "Adivina el país",
+  "title": "Redactica",
   "subtitle": "Lee extractos censurados de Wikipedia y adivina el país",
   "language": "Idioma",
   "guess": "Adivina",
@@ -31,7 +31,7 @@
   "full_text": "Artículo completo revelado — sin censura",
   "how_to_play": "Cómo jugar",
   "htp_title": "Cómo jugar",
-  "htp_intro": "Adivina el país es un rompecabezas diario: todos los jugadores reciben el mismo país secreto, que hay que adivinar a partir de un extracto censurado de su artículo de Wikipedia. Cada día hay un país nuevo.",
+  "htp_intro": "Redactica es un rompecabezas diario: todos los jugadores reciben el mismo país secreto, que hay que adivinar a partir de un extracto censurado de su artículo de Wikipedia. Cada día hay un país nuevo.",
   "htp_goal_title": "El objetivo",
   "htp_goal_body": "Todos los nombres de países, capitales, países vecinos, gentilicios, idiomas, monedas y otras pistas geográficas quedan censurados (███). Lee lo que queda y averigua el país.",
   "htp_goal_note": "El ancho de cada bloque censurado se distorsiona unos pocos caracteres, así que no puedes contar letras para adivinar la palabra oculta — ¡no te fíes del tamaño del bloque!",

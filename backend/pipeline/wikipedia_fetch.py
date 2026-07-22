@@ -71,7 +71,7 @@ def fetch_wikipedia_extract(lang: str, title: str, max_retries: int = 3) -> Tupl
         'formatversion': 2
     }
 
-    headers = {'User-Agent': 'GuessTheCountry/1.0'}
+    headers = {'User-Agent': 'Redactica/1.0'}
 
     # Exponential backoff with retries
     for attempt in range(max_retries):
