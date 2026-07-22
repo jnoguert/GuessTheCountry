@@ -66,7 +66,7 @@ export function LeaderboardModal({ isOpen, onClose, onUsernameClaimed, t }: Lead
       result === 'username_taken' ? t.username_taken
         : result === 'weak_password' ? t.weak_password
         : result === 'invalid_credentials' ? t.invalid_credentials
-        : t.error
+        : t.auth_error
     )
   }
 

@@ -84,6 +84,7 @@
   "username_taken": "Aquest nom d'usuari ja està agafat. Prova'n un altre.",
   "invalid_credentials": "Nom d'usuari o contrasenya incorrectes.",
   "weak_password": "La contrasenya ha de tenir com a mínim 8 caràcters.",
+  "auth_error": "No s'ha pogut iniciar la sessió. Torna-ho a provar.",
   "today": "Avui",
   "all_time": "Històric",
   "leaderboard_empty": "Encara no hi ha puntuacions — sigues el primer!",

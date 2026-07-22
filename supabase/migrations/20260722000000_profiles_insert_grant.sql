@@ -1,0 +1,14 @@
+-- Grant authenticated users INSERT on profiles.
+--
+-- The initial leaderboard migration created the RLS insert policy
+-- (auth.uid() = id) but not the table-level privilege. Recent Supabase
+-- projects no longer grant DML to `authenticated` on public tables by
+-- default, so without this the insert fails with 42501 (permission denied) --
+-- which breaks account registration and RLS test #6, even though the policy
+-- itself is correct.
+--
+-- INSERT only: no UPDATE/DELETE grant, so usernames stay immutable, and the
+-- RLS policy still limits each user to their own row. `scores` deliberately
+-- gets no insert grant at all -- only the submit-score Edge Function
+-- (service-role key) may write it.
+grant insert on public.profiles to authenticated;

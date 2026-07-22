@@ -94,17 +94,24 @@ export async function register(username: string, password: string): Promise<Auth
         return 'username_taken'
       }
       if (msg.includes('password')) return 'weak_password'
+      console.error('[leaderboard] sign-up failed:', error)
       return 'error'
     }
 
     const uid = data.session?.user?.id ?? data.user?.id
-    if (!uid || !data.session) return 'error' // no session => confirmations still on
+    if (!uid || !data.session) {
+      // No session issued => "Confirm email" is still enabled on the project.
+      console.error('[leaderboard] sign-up returned no session — disable "Confirm email" in Supabase Auth settings.')
+      return 'error'
+    }
 
     const { error: insertErr } = await supabase
       .from('profiles')
       .insert({ id: uid, username: username.trim() })
     if (insertErr) {
-      return insertErr.code === '23505' ? 'username_taken' : 'error'
+      if (insertErr.code === '23505') return 'username_taken'
+      console.error('[leaderboard] profile insert failed:', insertErr)
+      return 'error'
     }
     return 'ok'
   } catch {
@@ -122,7 +129,10 @@ export async function login(username: string, password: string): Promise<AuthRes
       email: usernameToEmail(username),
       password,
     })
-    if (error || !data.session) return 'invalid_credentials'
+    if (error || !data.session) {
+      if (error) console.error('[leaderboard] login failed:', error)
+      return 'invalid_credentials'
+    }
 
     const uid = data.session.user.id
     const { data: profile } = await supabase

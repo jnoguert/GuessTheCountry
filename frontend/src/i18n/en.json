@@ -84,6 +84,7 @@
   "username_taken": "That username is already taken. Try another one.",
   "invalid_credentials": "Wrong username or password.",
   "weak_password": "Password must be at least 8 characters.",
+  "auth_error": "Couldn't sign you in. Please try again.",
   "today": "Today",
   "all_time": "All time",
   "leaderboard_empty": "No scores yet — be the first!",
