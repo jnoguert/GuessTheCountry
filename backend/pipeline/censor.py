@@ -16,8 +16,8 @@ RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
 # up to LEDE_MAX_CHARS (a few sentences), and never stop below LEDE_MIN_CHARS:
 # a one-line lede like "Malaysia is a country in Southeast Asia." would
 # otherwise censor down to a uselessly short clue.
-LEDE_MAX_CHARS = 520
-LEDE_MIN_CHARS = 320
+LEDE_MAX_CHARS = 1040
+LEDE_MIN_CHARS = 640
 
 # Blurring block length: a censored block's size otherwise leaks the exact
 # letter count of the hidden word, which is a huge tell (e.g. a 5-letter

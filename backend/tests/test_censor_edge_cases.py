@@ -357,7 +357,7 @@ class TestSentenceSplitting:
 
 
 class TestTrimLede:
-    # Eleven full sentences, ~660 chars total - longer than LEDE_MAX_CHARS so
+    # Many full sentences, ~1200 chars total - longer than LEDE_MAX_CHARS so
     # the default trim genuinely has to drop the tail.
     LEDE = (
         "Islàndia és un estat insular situat al nord de l'oceà. "
@@ -370,7 +370,15 @@ class TestTrimLede:
         'Els primers pobladors van arribar fa més de mil anys. '
         'Durant segles va formar part de dues monarquies veïnes. '
         'Avui és una república amb un alt nivell de desenvolupament humà. '
-        'El paisatge combina fiords, altiplans i grans camps de lava.'
+        'El paisatge combina fiords, altiplans i grans camps de lava. '
+        'El turisme ha esdevingut un pilar econòmic les darreres dècades. '
+        'La xarxa de carreteres principals envolta tota la línia de costa. '
+        "L'interior, en canvi, només és accessible amb vehicles preparats. "
+        'La densitat de població és de les més baixes del continent. '
+        "Bona part de l'electricitat prové de fonts renovables. "
+        'Les seves aigües són riques en peix i altres recursos marins. '
+        'El país manté una llarga tradició literària i cultural. '
+        'Les nits amb sol de mitjanit atrauen molts visitants a l\'estiu.'
     )
 
     def test_keeps_whole_sentences_within_budget(self):
