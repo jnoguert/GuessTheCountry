@@ -6,8 +6,17 @@ import random
 from typing import Dict, List, Optional, Set
 from .wikidata_core import fetch_wikidata_core
 from .wikidata_lexical import fetch_wikidata_lexical
+from .geo_adjectives import GEO_ADJECTIVES
 
 RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
+
+# The starting clue is Wikipedia's whole intro (lede), often several hundred
+# words - far too long to read as an opening hint. Keep whole sentences up to
+# LEDE_MAX_CHARS (a couple of sentences) instead of a wall of text, but never
+# stop below LEDE_MIN_CHARS: a one-line lede like "Malaysia is a country in
+# Southeast Asia." would otherwise censor down to a uselessly short clue.
+LEDE_MAX_CHARS = 260
+LEDE_MIN_CHARS = 120
 
 # Blurring block length: a censored block's size otherwise leaks the exact
 # letter count of the hidden word, which is a huge tell (e.g. a 5-letter
@@ -70,6 +79,181 @@ SUFFIX_TABLES = {
 
 def normalize_text(text: str) -> str:
     return unicodedata.normalize('NFC', text)
+
+
+# Split on the space after . ! ? only when the next sentence starts with a
+# capital letter. This deliberately does NOT fire inside "103.000" (a digit
+# follows the dot, not a capital) or after "s.", "aC" etc. (lowercase follows),
+# which is exactly the punctuation a naive split on "." would mangle.
+_SENTENCE_BOUNDARY = re.compile(r'(?<=[.!?])\s+(?=[A-ZÀ-ÖØ-Þ])', re.UNICODE)
+# Zero-width / invisible chars (ZWSP, ZWNJ, ZWJ, word-joiner, BOM).
+_ZERO_WIDTH = re.compile('[' + ''.join(map(chr, (0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF))) + ']')
+
+
+def split_sentences(text: str) -> List[str]:
+    # Wikipedia extracts leave zero-width chars (citation artifacts) glued right
+    # after sentence-ending periods; they aren't \s, so they'd block the split
+    # and swallow several sentences into one. Drop them first.
+    text = _ZERO_WIDTH.sub('', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return [s for s in _SENTENCE_BOUNDARY.split(text) if s]
+
+
+def trim_lede(text: str, max_chars: int = LEDE_MAX_CHARS,
+              min_chars: int = LEDE_MIN_CHARS) -> str:
+    """Shorten the intro paragraph to the first few whole sentences.
+
+    Adds whole sentences until the clue is at least min_chars long, then keeps
+    adding while they still fit inside max_chars. The first sentence is always
+    kept, so the clue is never empty and never cut mid-sentence.
+    """
+    sentences = split_sentences(text)
+    if not sentences:
+        return text.strip()
+
+    clue = sentences[0]
+    for sentence in sentences[1:]:
+        if len(clue) >= min_chars and len(clue) + 1 + len(sentence) > max_chars:
+            break
+        clue += ' ' + sentence
+    return clue
+
+
+# ---------------------------------------------------------------------------
+# Phonetic / pronunciation stripping
+# ---------------------------------------------------------------------------
+# The opening parenthetical of a country article is a naming/pronunciation
+# dump: IPA ("Islàndia (... IPA: [ˈistlant])"), English respellings ("Gabon
+# ( gə-BON; ...)"), native scripts ("Rússia (rus: Россия ...)"), romanizations
+# and audio links ("escolteu (?·pàg.)"). All of these spell out how the answer
+# sounds or is written and make the first clue far too easy, so we remove them.
+
+_IPA_MARKS = 'ˈˌːˑ'  # primary/secondary stress and length marks - IPA-only
+# Non-Latin scripts used to gloss the native name (Cyrillic, Greek, CJK, ...).
+_FOREIGN_SCRIPT = re.compile(
+    '[Ͱ-Ͽ'   # Greek
+    'Ѐ-ԯ'    # Cyrillic
+    'Ա-֏'    # Armenian
+    '֐-׿'    # Hebrew
+    '؀-ۿ'    # Arabic
+    'ऀ-ॿ'    # Devanagari
+    '฀-๿'    # Thai
+    'ᄀ-ᇿ'    # Hangul Jamo
+    '぀-ヿ'    # Kana
+    '㐀-鿿'    # CJK
+    '가-힯]'   # Hangul syllables
+)
+# Labels that introduce a transcription, plus audio-link artifacts.
+_PRON_LABEL = re.compile(
+    r'\b(?:IPA|AFI|TR)\b:?'
+    r'|\bpron(?:un|ún|ounc)\w*'
+    r'|\bpinyin\b|\bromani[zst]\w*|\btransliter\w*|\btranscripci\w*'
+    r'|\bescolt\w*|\bescuch\w*'
+    r'|\(\?·[^)]*\)',
+    re.IGNORECASE,
+)
+_BRACKETED = re.compile(r'\[[^\[\]]*\]')
+# A /.../ pair is an IPA transcription only if it actually contains a phonetic
+# character - guards against "1969/70" (single slash) and the like.
+_SLASHED_IPA = re.compile(
+    r'/(?=[^/\n]*[' + _IPA_MARKS + r'ɐ-ʯ̀-ͯ])[^/\n]{1,80}/'
+)
+# A run carrying an IPA stress/length mark - catches un-bracketed IPA ("AFI
+# romɨˈni.a") that a malformed extract left outside its brackets.
+_BARE_IPA = re.compile(
+    r"[\w.'ɐ-ʯ̀-ͯ" + _IPA_MARKS + r']*'
+    r'[' + _IPA_MARKS + r']'
+    r"[\w.'ɐ-ʯ̀-ͯ" + _IPA_MARKS + r']*'
+)
+
+
+def _is_pron_parenthetical(content: str) -> bool:
+    """A parenthetical is pronunciation/native-name clutter (not a factual
+    aside like '(a 287 km)') if it carries a phonetic or foreign-script signal."""
+    if any(mark in content for mark in _IPA_MARKS):
+        return True
+    if '[' in content or ']' in content:
+        return True
+    if _SLASHED_IPA.search(content):
+        return True
+    if _PRON_LABEL.search(content):
+        return True
+    if _FOREIGN_SCRIPT.search(content):
+        return True
+    return False
+
+
+def _drop_pron_parentheticals(text: str) -> str:
+    """Delete whole (possibly nested) parentheticals that are pronunciation or
+    native-name clutter, keeping purely factual ones. An unbalanced '(' is left
+    in place; the residual passes still scrub any phonetics inside it."""
+    out = []
+    i, n = 0, len(text)
+    while i < n:
+        if text[i] == '(':
+            depth, j = 0, i
+            while j < n:
+                if text[j] == '(':
+                    depth += 1
+                elif text[j] == ')':
+                    depth -= 1
+                    if depth == 0:
+                        break
+                j += 1
+            if j < n and depth == 0:  # matched close found
+                if not _is_pron_parenthetical(text[i + 1:j]):
+                    out.append(text[i:j + 1])
+                i = j + 1
+                continue
+        out.append(text[i])
+        i += 1
+    return ''.join(out)
+
+
+def _strip_unmatched(text: str, opener: str, closer: str) -> str:
+    """Drop leftover unmatched brackets/parens (malformed source extracts and
+    nested-markup remnants leave dangling ones behind)."""
+    keep = [True] * len(text)
+    stack = []
+    for i, ch in enumerate(text):
+        if ch == opener:
+            stack.append(i)
+        elif ch == closer:
+            if stack:
+                stack.pop()
+            else:
+                keep[i] = False  # closer with no opener
+    for i in stack:
+        keep[i] = False          # opener with no closer
+    return ''.join(ch for ch, k in zip(text, keep) if k)
+
+
+def _tidy_spacing(text: str) -> str:
+    text = re.sub(r'\(\s*[,;:]?\s*\)', '', text)   # empty / near-empty parens
+    text = re.sub(r'\(\s+', '(', text)              # space just inside "("
+    text = re.sub(r'\s+([,;:.)])', r'\1', text)     # space before punctuation
+    text = re.sub(r'([,;:])(?:\s*[,;:])+', r'\1', text)  # doubled separators
+    text = re.sub(r'\s{2,}', ' ', text)
+    return text.strip()
+
+
+def strip_phonetics(text: str) -> str:
+    """Remove IPA, respellings, native-script glosses, romanizations and audio
+    links so the opening clue can't be read off phonetically."""
+    text = _ZERO_WIDTH.sub('', text)
+    text = _drop_pron_parentheticals(text)
+    # Iterate so nested markup remnants ("[[X]]" -> "[]" -> "") fully collapse.
+    while True:
+        stripped = _BRACKETED.sub('', text)
+        if stripped == text:
+            break
+        text = stripped
+    text = _SLASHED_IPA.sub('', text)
+    text = _BARE_IPA.sub('', text)
+    text = _PRON_LABEL.sub('', text)
+    text = _strip_unmatched(text, '(', ')')
+    text = _strip_unmatched(text, '[', ']')
+    return _tidy_spacing(text)
 
 
 def expand_demonym(base_form: str, lang: str) -> List[str]:
@@ -175,6 +359,26 @@ def build_censor_terms(qid: str, lang: str, core: Dict, lexical: Dict) -> Set[st
             label = cur_entity.get('labels', {}).get(lang, {}).get('value', '')
             if label:
                 terms.add(label)
+
+    return terms
+
+
+def build_global_geo_terms(lang: str, core: Dict, lexical: Dict) -> Set[str]:
+    """Geographic/nationality terms to censor in EVERY article, regardless of
+    which country it is.
+
+    Two sources, both giveaways when they appear in someone else's article:
+      * the demonym of ANY country (not just neighbours) - build_censor_terms
+        only covers borders, so a mention of a far-away nation's people leaks;
+      * the curated continent/region/nationality adjective list, which fills
+        the large gaps in Wikidata's Catalan/Spanish demonym coverage.
+    """
+    terms: Set[str] = set(GEO_ADJECTIVES.get(lang, []))
+
+    for qid in core:
+        entity = lexical.get(qid, {})
+        for dem in entity.get('demonyms', {}).get(lang, []):
+            terms.update(expand_demonym(dem, lang))
 
     return terms
 
@@ -354,11 +558,14 @@ def censor_all_articles():
     censored_articles = {}
     langs = ['en', 'ca', 'es']
 
+    # Same for every country in a language, so compute the (large) set once.
+    global_geo_terms = {lang: build_global_geo_terms(lang, core, lexical) for lang in langs}
+
     for qid in core.keys():
         censored_articles[qid] = {}
 
         for lang in langs:
-            terms = build_censor_terms(qid, lang, core, lexical)
+            terms = build_censor_terms(qid, lang, core, lexical) | global_geo_terms[lang]
             pattern = create_censor_regex(terms, lang)
 
             wiki_data_file = os.path.join(RAW_DATA_DIR, f'wikipedia_{lang}', f'{qid}.json')
@@ -367,6 +574,12 @@ def censor_all_articles():
                     wiki_data = json.load(f)
 
                 paragraphs = wiki_data.get('paragraphs', [])
+                # Strip IPA / pronunciation guides / native-script glosses first
+                # (they spell out the answer), then trim the intro paragraph to
+                # a couple of sentences so the opening clue isn't a wall of text.
+                paragraphs = [strip_phonetics(p) for p in paragraphs]
+                if paragraphs:
+                    paragraphs = [trim_lede(paragraphs[0])] + list(paragraphs[1:])
                 # Pass 1: censor known terms (names, borders, demonyms...)
                 censored = [censor_paragraph(p, pattern, rng) for p in paragraphs]
                 # Pass 2: censor every remaining proper noun / toponym

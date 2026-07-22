@@ -5,7 +5,10 @@ from pipeline.censor import (
     create_censor_regex, censor_paragraph, expand_demonym,
     collect_proper_nouns, censor_proper_nouns, censor_name_stems,
     fuzz_block_length, BLOCK_LENGTH_JITTER_RANGE,
+    split_sentences, trim_lede, build_global_geo_terms,
+    strip_phonetics, LEDE_MAX_CHARS, LEDE_MIN_CHARS,
 )
+from pipeline.geo_adjectives import GEO_ADJECTIVES
 
 
 def censor(terms, text):
@@ -286,6 +289,147 @@ class TestNameStems:
         result = censor_name_stems('el territori sud-africà i els sud-africans', {'sud-afr'})
         assert 'sud-africà' not in result
         assert 'sud-africans' not in result
+
+
+class TestStripPhonetics:
+    def test_removes_ipa_naming_parenthetical(self):
+        text = "Islàndia (en islandès, Ísland; IPA: [ˈistlant]) és un estat insular."
+        result = strip_phonetics(text)
+        assert 'ˈistlant' not in result
+        assert '[' not in result and ']' not in result
+        assert result == 'Islàndia és un estat insular.'
+
+    def test_keeps_factual_parentheticals_and_dates(self):
+        text = 'Les illes són Grimsey (a 287 km) i altres. El 1969/70 va nevar.'
+        result = strip_phonetics(text)
+        assert '(a 287 km)' in result   # factual aside survives
+        assert '1969/70' in result      # a single-slash date is not IPA
+
+    def test_removes_slashed_ipa(self):
+        result = strip_phonetics('Canadá (AFI: /ˈkænədə/) es un país.')
+        assert 'kænədə' not in result
+        assert '/' not in result
+        assert result == 'Canadá es un país.'
+
+    def test_removes_english_respelling_and_pronunciation_label(self):
+        result = strip_phonetics(
+            'Gabon ( gə-BON; French pronunciation: [ɡabɔ̃] ), officially a republic.')
+        assert 'gə-BON' not in result
+        assert 'pronunciation' not in result
+        assert 'ɡabɔ̃' not in result
+
+    def test_removes_native_script_gloss(self):
+        result = strip_phonetics('Rússia (rus: Россия, [rɐˈsʲijə]) és un estat.')
+        assert 'Россия' not in result
+        assert result == 'Rússia és un estat.'
+
+    def test_removes_audio_link_artifact(self):
+        result = strip_phonetics('La Xina (en pinyin: Zhonghua pronunciació (?·pàg.)) és extensa.')
+        assert '?·pàg' not in result
+        assert 'pinyin' not in result
+
+    def test_removes_bare_ipa_left_by_malformed_extract(self):
+        # No brackets around the transcription, and an unclosed paren
+        result = strip_phonetics('Romania (escrit en romanès, AFI romɨˈni.a és un estat.')
+        assert 'romɨˈni' not in result
+        assert result.count('(') == result.count(')')  # no dangling paren
+
+    def test_collapses_nested_bracket_remnants(self):
+        assert strip_phonetics('given to [[Margrave]] in 976.') == 'given to in 976.'
+
+
+class TestSentenceSplitting:
+    def test_does_not_split_on_thousands_separator(self):
+        # "103.000" must stay in one piece - the dot is followed by a digit
+        sents = split_sentences('Té una superfície de 103.000 km². És gran.')
+        assert sents == ['Té una superfície de 103.000 km².', 'És gran.']
+
+    def test_does_not_split_before_lowercase(self):
+        # A dot before a lowercase word (e.g. "s. xix") is not a boundary
+        sents = split_sentences('Va passar al s. xix a la regió.')
+        assert sents == ['Va passar al s. xix a la regió.']
+
+    def test_strips_zero_width_chars_blocking_a_boundary(self):
+        # Citation artifacts glue a zero-width space right after the period;
+        # without stripping it the two sentences would fuse into one.
+        text = 'És un país.​ El clima és fred.'
+        assert split_sentences(text) == ['És un país.', 'El clima és fred.']
+
+
+class TestTrimLede:
+    # Six full sentences, ~360 chars total - longer than LEDE_MAX_CHARS so the
+    # default trim genuinely has to drop the tail.
+    LEDE = (
+        "Islàndia és un estat insular situat al nord de l'oceà. "
+        'El 2021 tenia una població estimada de 376.000 habitants. '
+        'La capital i ciutat més gran concentra dos terços de la població. '
+        'És un territori volcànicament i geològicament molt actiu. '
+        "Té nombroses glaceres, rius i deserts a l'interior del país. "
+        'El clima és temperat malgrat la seva alta latitud septentrional.'
+    )
+
+    def test_keeps_whole_sentences_within_budget(self):
+        clue = trim_lede(self.LEDE, max_chars=70, min_chars=0)
+        # No sentence is cut mid-way: the clue ends on a full stop
+        assert clue.endswith('.')
+        assert len(clue) <= 70
+        assert clue.startswith("Islàndia és un estat insular situat al nord de l'oceà.")
+
+    def test_first_sentence_always_kept_even_if_over_budget(self):
+        long_first = 'A' * 400 + '. Second one here.'
+        clue = trim_lede(long_first, max_chars=100, min_chars=0)
+        assert clue == 'A' * 400 + '.'
+
+    def test_min_chars_floor_pulls_in_more_sentences(self):
+        # A short opening sentence must not yield a tiny clue: with a small
+        # budget the floor is what forces the second sentence to be included.
+        text = 'Malàisia és un país. Es compon de tretze estats i tres territoris.'
+        short_only = trim_lede(text, max_chars=25, min_chars=0)
+        floored = trim_lede(text, max_chars=25, min_chars=40)
+        assert short_only == 'Malàisia és un país.'
+        assert len(floored) > len(short_only)
+
+    def test_real_lede_is_shortened(self):
+        clue = trim_lede(self.LEDE)
+        assert len(clue) < len(self.LEDE)
+        assert clue.endswith('.')
+        assert LEDE_MIN_CHARS <= len(clue) <= LEDE_MAX_CHARS + 200
+
+
+class TestGeoAdjectives:
+    def test_curated_catalan_adjectives_censored(self):
+        terms = build_global_geo_terms('ca', {}, {})
+        pattern = create_censor_regex(terms, 'ca')
+        text = 'un estat insular europeu, el capità noruec i la monarquia danesa'
+        result = censor_paragraph(text, pattern)
+        for leak in ('europeu', 'noruec', 'danesa'):
+            assert leak not in result
+
+    def test_curated_spanish_adjectives_censored(self):
+        terms = build_global_geo_terms('es', {}, {})
+        pattern = create_censor_regex(terms, 'es')
+        result = censor_paragraph('el imperialismo británico y los portugueses', pattern)
+        assert 'británico' not in result
+        assert 'portugueses' not in result
+
+    def test_english_has_no_curated_list(self):
+        # English demonyms are capitalized -> covered by the proper-noun pass
+        assert GEO_ADJECTIVES['en'] == []
+
+    def test_includes_every_country_demonym_not_just_borders(self):
+        # A far-away (non-bordering) country's demonym still gets pulled in
+        core = {'Q99': {}}
+        lexical = {'Q99': {'demonyms': {'ca': ['japonès']}}}
+        terms = build_global_geo_terms('ca', core, lexical)
+        assert 'japonès' in terms
+
+    def test_common_geo_words_survive(self):
+        # Words we deliberately dropped from the list must NOT be censored
+        terms = build_global_geo_terms('ca', {}, {})
+        pattern = create_censor_regex(terms, 'ca')
+        result = censor_paragraph('un clima oceànic i un alfabet llatí', pattern)
+        assert 'oceànic' in result
+        assert 'llatí' in result
 
 
 class TestDemonymExpansion:
