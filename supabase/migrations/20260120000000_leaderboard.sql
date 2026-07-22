@@ -6,7 +6,9 @@ create extension if not exists citext with schema extensions;
 
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
-  username citext unique not null
+  -- Schema-qualified: on hosted Supabase the `extensions` schema isn't in the
+  -- migration search_path, so a bare `citext` fails to resolve (SQLSTATE 42704).
+  username extensions.citext unique not null
     check (char_length(username) between 3 and 20 and username ~ '^[A-Za-z0-9_-]+$'),
   created_at timestamptz not null default now()
 );
