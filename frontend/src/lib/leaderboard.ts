@@ -3,7 +3,26 @@
 // that without us hosting anything. Reads are public (RLS SELECT policies);
 // writes go through the `submit-score` Edge Function, which is the only
 // thing allowed to insert into `scores` at all.
+//
+// Accounts are username + password. Supabase Auth is email-based, so the
+// username is mapped to a hidden internal email (`name@INTERNAL_EMAIL_DOMAIN`);
+// Supabase still hashes the password (bcrypt) and the address is never shown
+// or emailed. This means there is no password recovery by design -- a chosen,
+// deliberate trade-off for a frictionless "username only" login. Requires the
+// project to have email confirmations DISABLED (an unconfirmable internal
+// address would otherwise lock the account out).
 import { supabase } from './supabaseClient'
+
+/** Internal-only address domain for the username->email mapping. No mail is
+ * ever sent here (email confirmations are off), so it needn't be routable. */
+const INTERNAL_EMAIL_DOMAIN = 'users.redactica.app'
+export const MIN_PASSWORD_LENGTH = 8
+
+function usernameToEmail(username: string): string {
+  // Lower-cased so login is case-insensitive and matches the citext-unique
+  // profile username; the display-case username is stored in `profiles`.
+  return `${username.trim().toLowerCase()}@${INTERNAL_EMAIL_DOMAIN}`
+}
 
 export interface Identity {
   username: string
@@ -26,14 +45,14 @@ export interface AlltimeEntry {
 
 /** Build-time feature detection: no Supabase project configured (e.g. a
  * plain static deploy with no env vars set) means no leaderboard, full
- * stop -- no network probe needed, unlike the old runtime ping. */
+ * stop -- no network probe needed. */
 export function isLeaderboardAvailable(): boolean {
   return supabase !== null
 }
 
-/** Existing session's claimed username, if any. Reads are public and don't
- * need a session at all -- this is only used to decide whether to show the
- * "choose a username" form or the player's own row highlighted. */
+/** The logged-in player's username, if a session exists. Reads are public and
+ * don't need a session; this only decides whether to show the auth form or
+ * the player's own row highlighted + a log-out button. */
 export async function getIdentity(): Promise<Identity | null> {
   if (!supabase) return null
   const { data } = await supabase.auth.getSession()
@@ -49,32 +68,41 @@ export async function getIdentity(): Promise<Identity | null> {
   return profile ? { username: profile.username as string } : null
 }
 
-export type ClaimResult = 'ok' | 'username_taken' | 'error'
+export type AuthResult =
+  | 'ok'
+  | 'username_taken'
+  | 'invalid_credentials'
+  | 'weak_password'
+  | 'error'
 
-/** Claims a username for this browser, immediately and durably (a real row
- * in `profiles`, not just a local pending value) -- so the player finds out
- * right away if the name is taken, rather than discovering it only after
- * playing a full game. Mints an anonymous Supabase session on first use
- * only (checked via getSession() first); opening the leaderboard to just
- * look at it never creates a session, only actually choosing a name does.
- * The insert goes through the user-scoped client, so RLS's
- * `auth.uid() = id` check is the actual enforcement, not just app logic. */
-export async function claimUsername(username: string): Promise<ClaimResult> {
+/** Create an account: a Supabase user (username -> internal email + password)
+ * plus a `profiles` row carrying the display-case username. The profile insert
+ * is RLS-enforced (`auth.uid() = id`), so the freshly minted session is the
+ * authorization, not app logic. Needs email confirmations disabled on the
+ * project, otherwise no session is issued and the profile insert can't run. */
+export async function register(username: string, password: string): Promise<AuthResult> {
   if (!supabase) return 'error'
+  if (password.length < MIN_PASSWORD_LENGTH) return 'weak_password'
   try {
-    const { data: existing } = await supabase.auth.getSession()
-    let uid = existing.session?.user?.id
-
-    if (!uid) {
-      const { data: signInData, error } = await supabase.auth.signInAnonymously()
-      if (error || !signInData.session) return 'error'
-      uid = signInData.session.user.id
+    const { data, error } = await supabase.auth.signUp({
+      email: usernameToEmail(username),
+      password,
+    })
+    if (error) {
+      const msg = (error.message || '').toLowerCase()
+      if (msg.includes('already') || (error as { code?: string }).code === 'user_already_exists') {
+        return 'username_taken'
+      }
+      if (msg.includes('password')) return 'weak_password'
+      return 'error'
     }
+
+    const uid = data.session?.user?.id ?? data.user?.id
+    if (!uid || !data.session) return 'error' // no session => confirmations still on
 
     const { error: insertErr } = await supabase
       .from('profiles')
-      .insert({ id: uid, username })
-
+      .insert({ id: uid, username: username.trim() })
     if (insertErr) {
       return insertErr.code === '23505' ? 'username_taken' : 'error'
     }
@@ -84,11 +112,42 @@ export async function claimUsername(username: string): Promise<ClaimResult> {
   }
 }
 
+/** Log in with username + password. As a safety net, if the account somehow
+ * has no profile row yet (e.g. a registration that half-completed), create it
+ * now so the leaderboard can show a name and the Edge Function accepts writes. */
+export async function login(username: string, password: string): Promise<AuthResult> {
+  if (!supabase) return 'error'
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: usernameToEmail(username),
+      password,
+    })
+    if (error || !data.session) return 'invalid_credentials'
+
+    const uid = data.session.user.id
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', uid)
+      .maybeSingle()
+    if (!profile) {
+      await supabase.from('profiles').insert({ id: uid, username: username.trim() })
+    }
+    return 'ok'
+  } catch {
+    return 'invalid_credentials'
+  }
+}
+
+export async function logout(): Promise<void> {
+  if (!supabase) return
+  await supabase.auth.signOut()
+}
+
 export type SubmitResult = 'ok' | 'error'
 
-/** Records today's result. Requires an existing session (i.e. a username
- * must already have been claimed) -- the Edge Function rejects
- * unauthenticated calls outright. The score itself is never sent; the
+/** Records today's result. Requires a logged-in session -- the Edge Function
+ * rejects unauthenticated calls outright. The score itself is never sent; the
  * function recomputes it server-side from these inputs. */
 export async function submitScore(
   won: boolean,
@@ -99,14 +158,14 @@ export async function submitScore(
   if (!supabase) return 'error'
   try {
     const { data: sessionData } = await supabase.auth.getSession()
-    if (!sessionData.session) return 'error' // no claimed username yet
+    if (!sessionData.session) return 'error' // not logged in
 
     const { error } = await supabase.functions.invoke('submit-score', {
       body: { won, guessCount, unlocksUsed, easyMode },
     })
 
-    // "already submitted today" is a soft-success from the caller's point
-    // of view -- their result IS recorded, just from an earlier attempt.
+    // "already submitted today" is a soft-success from the caller's point of
+    // view -- their result IS recorded, just from an earlier attempt.
     const errorBody = (error as { context?: { error?: string } } | null)?.context
     if (error && errorBody?.error !== 'already_submitted') return 'error'
     return 'ok'

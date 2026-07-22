@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import {
   Identity, TodayEntry, AlltimeEntry,
-  getIdentity, claimUsername, fetchToday, fetchAlltime,
+  getIdentity, register, login, logout, fetchToday, fetchAlltime,
+  MIN_PASSWORD_LENGTH,
 } from '../lib/leaderboard'
 
 const USERNAME_RE = /^[A-Za-z0-9_-]{3,20}$/
@@ -18,34 +19,61 @@ export function LeaderboardModal({ isOpen, onClose, onUsernameClaimed, t }: Lead
   const [today, setToday] = useState<TodayEntry[]>([])
   const [alltime, setAlltime] = useState<AlltimeEntry[]>([])
   const [loading, setLoading] = useState(false)
-  const [nameInput, setNameInput] = useState('')
-  const [claiming, setClaiming] = useState(false)
-  const [claimError, setClaimError] = useState(false)
   const [identity, setIdentity] = useState<Identity | null>(null)
 
-  useEffect(() => {
-    if (!isOpen) return
+  const [mode, setMode] = useState<'login' | 'register'>('login')
+  const [nameInput, setNameInput] = useState('')
+  const [pwInput, setPwInput] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+
+  const loadBoards = () => {
     setLoading(true)
     Promise.all([fetchToday(), fetchAlltime(), getIdentity()])
       .then(([td, at, id]) => { setToday(td); setAlltime(at); setIdentity(id) })
       .catch(() => { setToday([]); setAlltime([]) })
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    if (!isOpen) return
+    loadBoards()
   }, [isOpen])
 
   if (!isOpen) return null
 
-  const handleClaim = async () => {
-    if (!USERNAME_RE.test(nameInput) || claiming) return
-    setClaiming(true)
-    setClaimError(false)
-    const result = await claimUsername(nameInput)
-    setClaiming(false)
+  const canSubmit = USERNAME_RE.test(nameInput) && pwInput.length >= MIN_PASSWORD_LENGTH
+
+  const handleAuth = async () => {
+    if (!canSubmit || busy) return
+    setBusy(true)
+    setAuthError(null)
+    const result = mode === 'register'
+      ? await register(nameInput, pwInput)
+      : await login(nameInput, pwInput)
+    setBusy(false)
+
     if (result === 'ok') {
-      setIdentity({ username: nameInput })
-      onUsernameClaimed(nameInput)
-    } else if (result === 'username_taken') {
-      setClaimError(true)
+      const username = nameInput.trim()
+      setIdentity({ username })
+      setNameInput('')
+      setPwInput('')
+      onUsernameClaimed(username)
+      loadBoards()
+      return
     }
+    setAuthError(
+      result === 'username_taken' ? t.username_taken
+        : result === 'weak_password' ? t.weak_password
+        : result === 'invalid_credentials' ? t.invalid_credentials
+        : t.error
+    )
+  }
+
+  const handleLogout = async () => {
+    await logout()
+    setIdentity(null)
+    loadBoards()
   }
 
   const rows = tab === 'today' ? today : alltime
@@ -58,34 +86,58 @@ export function LeaderboardModal({ isOpen, onClose, onUsernameClaimed, t }: Lead
           <button onClick={onClose} className="text-gray-500 hover:text-gray-900 dark:hover:text-white text-2xl leading-none">×</button>
         </div>
 
-        {!identity && (
+        {identity ? (
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-gray-700 rounded-lg flex items-center justify-between gap-2">
+            <p className="text-sm text-gray-900 dark:text-white truncate">
+              {t.logged_in_as} <strong>{identity.username}</strong>
+            </p>
+            <button onClick={handleLogout} className="btn-secondary text-sm shrink-0">{t.log_out}</button>
+          </div>
+        ) : (
           <div className="mb-4 p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
-            <p className="text-sm font-medium text-gray-900 dark:text-white mb-2">{t.choose_username}</p>
-            <div className="flex gap-2">
+            <p className="text-sm font-medium text-gray-900 dark:text-white mb-2">{t.join_leaderboard}</p>
+            <div className="flex flex-col gap-2">
               <input
                 type="text"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleClaim()}
                 placeholder={t.username_placeholder}
                 maxLength={20}
-                className="input-base flex-1"
+                autoComplete="username"
+                className="input-base"
+              />
+              <input
+                type="password"
+                value={pwInput}
+                onChange={(e) => setPwInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
+                placeholder={t.password_placeholder}
+                autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                className="input-base"
               />
               <button
-                onClick={handleClaim}
-                disabled={!USERNAME_RE.test(nameInput) || claiming}
+                onClick={handleAuth}
+                disabled={!canSubmit || busy}
                 className="btn-primary disabled:opacity-50"
               >
-                {t.save}
+                {mode === 'register' ? t.register : t.log_in}
               </button>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t.username_rules}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              {mode === 'register' ? `${t.username_rules} · ${t.password_rules}` : ''}
+            </p>
+            <button
+              onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setAuthError(null) }}
+              className="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-2"
+            >
+              {mode === 'login' ? t.need_account : t.have_account}
+            </button>
           </div>
         )}
 
-        {claimError && (
+        {authError && (
           <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg text-sm">
-            {t.username_taken}
+            {authError}
           </div>
         )}
 
