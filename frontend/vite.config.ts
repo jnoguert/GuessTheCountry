@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// VITE_BASE is set to '/Redactica/' by the GitHub Pages workflow;
+// VITE_BASE is set to '/' by the GitHub Pages workflow;
 // everywhere else the app is served from the root.
 export default defineConfig({
   base: process.env.VITE_BASE || '/',

@@ -4,7 +4,7 @@
 excerpt of its Wikipedia article — think Wordle, but for geography. Every
 player gets the same secret country each day, in English, Català, or Español.
 
-**▶️ Play now: https://jnoguert.github.io/Redactica/**
+**▶️ Play now: https://redactica.app/**
 
 ## How It Works
 
@@ -77,7 +77,7 @@ its output is committed to the repo.
 
 ### Just play
 
-Open **https://jnoguert.github.io/Redactica/** — nothing to install.
+Open **https://redactica.app/** — nothing to install.
 
 ### Run locally
 

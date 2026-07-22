@@ -13,7 +13,7 @@ export function generateShareText(p: ShareParams): string {
   const hints = `💡 ${p.unlocksUsed}/3`
   const scoreLine = p.isWon ? ` · 🏆 ${p.score} pts${p.easyMode ? ' 🗺️' : ''}` : ''
   const streakLine = p.streak > 0 ? ` · 🔥 ${p.streak}` : ''
-  return `Redactica #${p.puzzleId}\n${outcome} · ${hints}${scoreLine}${streakLine}\n\nhttps://jnoguert.github.io/Redactica/`
+  return `Redactica #${p.puzzleId}\n${outcome} · ${hints}${scoreLine}${streakLine}\n\nhttps://redactica.app/`
 }
 
 export function copyToClipboard(text: string): Promise<void> {
