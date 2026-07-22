@@ -68,5 +68,15 @@
   "map_discarded": "Descartado",
   "map_mode_consider": "Considerar",
   "map_mode_discard": "Descartar",
-  "map_mode_clear": "Desmarcar"
+  "map_mode_clear": "Desmarcar",
+  "leaderboard": "Clasificación",
+  "choose_username": "Elige un nombre de usuario para unirte a la clasificación",
+  "username_placeholder": "Tu nombre de usuario",
+  "username_rules": "3-20 caracteres: letras, números, - y _",
+  "save": "Guardar",
+  "username_taken": "Ese nombre de usuario ya está en uso. Prueba con otro.",
+  "today": "Hoy",
+  "all_time": "Histórico",
+  "leaderboard_empty": "Aún no hay puntuaciones — ¡sé el primero!",
+  "points_abbr": "pts"
 }

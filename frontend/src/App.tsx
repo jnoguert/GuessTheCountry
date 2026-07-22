@@ -18,6 +18,8 @@ import { HintPanel } from './components/HintPanel'
 import { ResultModal } from './components/ResultModal'
 import { InstructionsModal } from './components/InstructionsModal'
 import { EasyModeWarningModal } from './components/EasyModeWarningModal'
+import { LeaderboardModal } from './components/LeaderboardModal'
+import { isLeaderboardAvailable, getIdentity, submitScore } from './lib/leaderboard'
 
 // The map pulls in a ~740KB world topology file; lazy-loaded so it only
 // downloads for players who actually turn on Easy Mode.
@@ -47,6 +49,8 @@ export default function App() {
   const [mapMarks, setMapMarks] = useState<Record<string, MapMarkState>>({})
   const [showEasyModeWarning, setShowEasyModeWarning] = useState(false)
   const [showMap, setShowMap] = useState(false)
+  const [lbAvailable, setLbAvailable] = useState(false)
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
 
   const t = useI18n(lang ?? 'en')
   const gameOver = isWon || isLost
@@ -64,6 +68,27 @@ export default function App() {
   useEffect(() => {
     if (isWon || isLost) setShowResult(true)
   }, [isWon, isLost])
+
+  useEffect(() => {
+    setLbAvailable(isLeaderboardAvailable())
+  }, [])
+
+  const trySubmitScore = async (won: boolean, guessCount: number, unlocks: number, easy: boolean) => {
+    if (!lbAvailable) return
+    const identity = await getIdentity()
+    if (!identity) return // no username claimed yet -> nothing to submit to
+    const result = await submitScore(won, guessCount, unlocks, easy)
+    if (result === 'ok') persist({ submitted: true })
+  }
+
+  const handleUsernameClaimed = (_username: string) => {
+    // If today's game already ended before a username existed, submit the
+    // stored result now instead of waiting for the next game to finish.
+    const saved = getGameState()
+    if (saved && saved.puzzleId === puzzleId && (saved.isWon || saved.isLost) && !saved.submitted) {
+      trySubmitScore(saved.isWon, saved.guesses.length, saved.unlocksUsed ?? 0, saved.easyMode ?? false)
+    }
+  }
 
   useEffect(() => {
     if (!lang) return
@@ -173,6 +198,7 @@ export default function App() {
         setAnswer(result.answer ?? null)
         setStats(recordGameEnd(puzzleId, true, wonScore))
         persist({ guesses: newGuesses, paragraphs: fullText, isWon: true, score: wonScore, answer: result.answer })
+        trySubmitScore(true, newGuesses.length, unlocksUsed, easyMode)
         return
       }
 
@@ -185,6 +211,7 @@ export default function App() {
         setAnswer(result.answer ?? null)
         setStats(recordGameEnd(puzzleId, false, 0))
         persist({ guesses: newGuesses, paragraphs: fullText, isLost: true, score: 0, answer: result.answer })
+        trySubmitScore(false, newGuesses.length, unlocksUsed, easyMode)
       } else {
         persist({ guesses: newGuesses })
       }
@@ -300,6 +327,16 @@ export default function App() {
                 🔥 {stats.currentStreak}
               </span>
             )}
+            {lbAvailable && (
+              <button
+                onClick={() => setShowLeaderboard(true)}
+                className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+                title={t.leaderboard}
+                aria-label={t.leaderboard}
+              >
+                🏆
+              </button>
+            )}
             {easyMode ? (
               <button
                 onClick={() => setShowMap(true)}
@@ -389,6 +426,13 @@ export default function App() {
         <InstructionsModal
           isOpen={showInstructions}
           onClose={() => setShowInstructions(false)}
+          t={t}
+        />
+
+        <LeaderboardModal
+          isOpen={showLeaderboard}
+          onClose={() => setShowLeaderboard(false)}
+          onUsernameClaimed={handleUsernameClaimed}
           t={t}
         />
 

@@ -68,5 +68,15 @@
   "map_discarded": "Descartat",
   "map_mode_consider": "Considera",
   "map_mode_discard": "Descarta",
-  "map_mode_clear": "Desmarca"
+  "map_mode_clear": "Desmarca",
+  "leaderboard": "Classificació",
+  "choose_username": "Tria un nom d'usuari per unir-te a la classificació",
+  "username_placeholder": "El teu nom d'usuari",
+  "username_rules": "3-20 caràcters: lletres, números, - i _",
+  "save": "Desa",
+  "username_taken": "Aquest nom d'usuari ja està agafat. Prova'n un altre.",
+  "today": "Avui",
+  "all_time": "Històric",
+  "leaderboard_empty": "Encara no hi ha puntuacions — sigues el primer!",
+  "points_abbr": "pts"
 }

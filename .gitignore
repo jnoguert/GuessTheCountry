@@ -27,6 +27,8 @@ node_modules/
 frontend/dist/
 frontend/.vite/
 *.tsbuildinfo
+frontend/.env.local
+frontend/.env.*.local
 
 # Backend data: everything committed (final dataset + raw API cache)
 # so cloning the repo never requires re-fetching from Wikipedia/Wikidata.
