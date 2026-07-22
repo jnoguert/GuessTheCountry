@@ -8,7 +8,6 @@ from .wikidata_core import fetch_wikidata_core
 from .wikidata_lexical import fetch_wikidata_lexical, clean_aliases
 from .wikipedia_fetch import fetch_all_wikipedia_articles
 from .censor import censor_all_articles
-from .db_store import write_database
 
 RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
 DATA_DIR = os.path.join(os.path.dirname(__file__), '../data')
@@ -250,10 +249,7 @@ def build_all():
     print("\nStage 5: Building daily rotation order...")
     daily_order = build_daily_order()
 
-    print("\nStage 6: Writing SQLite database...")
-    write_database(countries, daily_order)
-
-    print("\nStage 7: Exporting frontend game.json...")
+    print("\nStage 6: Exporting frontend game.json...")
     build_frontend_game_json(countries, daily_order)
 
     print("\n=== Build complete! ===\n")

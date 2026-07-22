@@ -1,8 +1,5 @@
-fastapi
-uvicorn[standard]
-pydantic
+# Offline data pipeline
 requests
-python-dotenv
+
+# Tests
 pytest
-pytest-asyncio
-httpx

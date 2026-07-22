@@ -46,9 +46,8 @@ covers all of this with the exact numbers.
 - 🏆 **Inverse scoring** + day streak, both saved locally
 - 📖 **Full reveal**: read the uncensored article once the game ends
 - 🎨 **Modern UI** with light/dark theme
-- 📱 **Fully client-side**: no backend required to play — works from a single
-  static bundle, deployable anywhere (GitHub Pages, any static host, or the
-  bundled Docker image)
+- 📱 **Fully client-side**: no backend, no server — the whole game is a single
+  static bundle, deployable to GitHub Pages or any static host
 
 ## Architecture
 
@@ -68,13 +67,11 @@ Wikidata + Wikipedia  →  Python pipeline  →  game.json  →  React app
 - **`backend/pipeline/`** — offline data pipeline: queries Wikidata for
   country metadata (capital, borders, demonyms, languages, currency, highest
   point), fetches Wikipedia article text per language, and censors it with a
-  layered regex/proper-noun engine. Outputs `countries.json`, `countries.db`
-  (SQLite), and `frontend/public/game.json`.
-- **`backend/app/`** — a FastAPI service that serves the same static build
-  and a legacy REST API mirroring the client-side rules. Not required to
-  play the deployed game; useful for local development, the test suite, or
-  self-hosting the exact same static bundle behind a real server (e.g. on a
-  LAN with no internet).
+  layered regex/proper-noun engine. Outputs `countries.json` and the slim
+  `frontend/public/game.json` the app actually ships.
+
+There is no runtime backend — the pipeline runs occasionally and offline, and
+its output is committed to the repo.
 
 ## Getting Started
 
@@ -82,31 +79,9 @@ Wikidata + Wikipedia  →  Python pipeline  →  game.json  →  React app
 
 Open **https://jnoguert.github.io/GuessTheCountry/** — nothing to install.
 
-### Self-host with Docker
+### Run locally
 
-Runs the identical static game behind a small Python server, useful for LAN
-parties, private hosting, or if you don't want to rely on GitHub Pages:
-
-```bash
-git clone https://github.com/jnoguert/GuessTheCountry.git
-cd GuessTheCountry
-docker-compose up --build
-```
-
-Open **http://localhost:8000**.
-
-```bash
-make help          # see all available commands
-make up            # start
-make down          # stop
-make logs          # follow logs
-make rebuild       # rebuild image and restart
-make test          # run the backend test suite inside the container
-```
-
-### Local development (no Docker)
-
-**Frontend only** — this is all you need to work on the game itself, since
+**Frontend** — this is all you need to work on or play the game locally, since
 `game.json` already ships in the repo:
 
 ```bash
@@ -117,23 +92,22 @@ npm run dev
 
 Open http://localhost:5173.
 
-**Backend / pipeline** (optional — only needed to regenerate the dataset or
-run the Python test suite):
+**Pipeline** (optional — only needed to regenerate the dataset or run the
+Python test suite):
 
 ```bash
 cd backend
 python -m venv .venv
 .venv\Scripts\activate      # Windows; use `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
-python -m uvicorn app.main:app --reload   # legacy API + static server, if wanted
 ```
 
 ## Regenerating the Game Data
 
-The repo already ships a complete, built dataset (`backend/data/countries.json`,
-`countries.db`, and `frontend/public/game.json`), so this step is only needed
-if you want to refresh the content (e.g. Wikipedia articles changed) or tweak
-the censorship rules.
+The repo already ships a complete, built dataset (`backend/data/countries.json`
+and `frontend/public/game.json`), so this step is only needed if you want to
+refresh the content (e.g. Wikipedia articles changed) or tweak the censorship
+rules.
 
 ```bash
 cd backend
@@ -153,8 +127,7 @@ This runs, in order:
 5. **Daily order** — a fixed, seeded shuffle of all fully-playable countries,
    so every day serves a different, non-alphabetical answer with no
    short-term repeats
-6. **SQLite export** (`countries.db`) — for the legacy backend API
-7. **`game.json` export** — the slim, client-side dataset the frontend ships;
+6. **`game.json` export** — the slim, client-side dataset the frontend ships;
    unplayable countries keep only their name (for autocomplete), and every
    playable country carries both the censored and original (`plain`) text
 
@@ -237,30 +210,21 @@ gzipped download).
 
 ```
 guess_the_country/
-├── Dockerfile                # Multi-stage: builds frontend, serves it from FastAPI
-├── docker-compose.yml
-├── Makefile
 ├── .github/workflows/
 │   └── deploy-pages.yml      # Builds frontend + game.json, deploys to GitHub Pages
-├── backend/
-│   ├── app/                  # FastAPI app (legacy API + static file server)
-│   │   ├── main.py
-│   │   ├── puzzle.py         # Daily rotation + guess checking (mirrors engine.ts)
-│   │   ├── data_loader.py
-│   │   └── routers/
-│   ├── pipeline/              # Offline data generation
+├── backend/                  # Offline data pipeline (no runtime server)
+│   ├── pipeline/              # Data generation
 │   │   ├── wikidata_core.py
 │   │   ├── wikidata_lexical.py
 │   │   ├── wikipedia_fetch.py
-│   │   ├── censor.py
-│   │   ├── db_store.py
+│   │   ├── censor.py          # Layered censorship + geo_adjectives.py lexicon
 │   │   └── build.py
 │   ├── data/
 │   │   ├── countries.json     # Full dataset (censored + plain text)
-│   │   ├── countries.db       # Same data as SQLite (legacy API)
 │   │   ├── daily_order.json   # Shuffled rotation of playable countries
 │   │   └── raw/               # Cached Wikidata/Wikipedia API responses
-│   └── tests/                 # pytest suite (censorship, rotation, data quality)
+│   ├── tests/                 # pytest suite (censorship, rotation, data quality)
+│   └── requirements.txt
 ├── frontend/
 │   ├── public/
 │   │   └── game.json          # Client-side dataset (generated, bundled at build time)
@@ -289,11 +253,12 @@ cd backend
 python -m pytest tests/ -v
 ```
 
-74 tests covering: censorship edge cases (Niger/Nigeria, Guinea family,
-accents, elision, proper nouns, name-stem matching), daily rotation logic
-(determinism, no repeats, playability simulation across a year), the SQLite
-store, the legacy HTTP API, and data-quality checks against the real built
-dataset.
+The suite covers: censorship edge cases (Niger/Nigeria, Guinea family,
+accents, elision, proper nouns, name-stem matching, geographic-adjective
+scrubbing, phonetic/IPA stripping, lede trimming) and data-quality checks
+against the real built dataset (no name leaks, exactly 4 paragraphs, capitals
+and ISO codes present, a shuffled rotation, and a playable puzzle every day
+for a simulated year).
 
 ```bash
 cd frontend
@@ -306,8 +271,8 @@ npm run build   # type-checks and builds; fails on any TypeScript error
   the frontend (with `game.json` bundled in) and deploys on every push to
   `main`. Requires **Settings → Pages → Source: GitHub Actions** to be set
   once per repo.
-- **Docker**: `docker-compose up --build` serves the identical static build
-  from a FastAPI container on port 8000 — usable anywhere Docker runs.
+- **Any static host**: the built `frontend/dist/` is a plain static bundle —
+  drop it on Netlify, Cloudflare Pages, S3, or a plain web server.
 
 ## Optional Add-ons (branches)
 
@@ -315,8 +280,9 @@ A couple of features were built but are kept off `main` to keep the core
 game simple:
 
 - **`feature/leaderboard`** — usernames, daily scores, and today/all-time
-  rankings backed by the FastAPI service + SQLite. Requires a real hosted
-  backend (not compatible with pure static hosting like GitHub Pages).
+  rankings backed by a FastAPI service + SQLite. Requires a real hosted
+  backend (not compatible with pure static hosting like GitHub Pages), so it
+  reintroduces the server-side code that `main` no longer ships.
 - **`feature/android-apk`** — Capacitor packaging + a CI workflow that
   builds a downloadable, fully offline Android APK from the same frontend.
 

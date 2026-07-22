@@ -1,20 +1,42 @@
-"""Data-quality checks against the real generated database.
+"""Data-quality checks against the real generated dataset.
 
-These tests validate the actual countries.db shipped with the repo.
-They are skipped automatically when the DB hasn't been built yet.
+These validate the actual countries.json / daily_order.json shipped with the
+repo (the same data the frontend's game.json is built from). They are skipped
+automatically when the dataset hasn't been built yet.
 """
+import json
 import os
 import pytest
-from pipeline.db_store import read_database, DB_FILE
+
+LANGUAGES = ('en', 'ca', 'es')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+COUNTRIES_FILE = os.path.join(DATA_DIR, 'countries.json')
+DAILY_ORDER_FILE = os.path.join(DATA_DIR, 'daily_order.json')
 
 pytestmark = pytest.mark.skipif(
-    not os.path.exists(DB_FILE), reason='countries.db not built yet'
+    not os.path.exists(COUNTRIES_FILE), reason='dataset not built yet'
 )
 
 
 @pytest.fixture(scope='module')
 def dataset():
-    return read_database()
+    with open(COUNTRIES_FILE, encoding='utf-8') as f:
+        countries = json.load(f)
+    with open(DAILY_ORDER_FILE, encoding='utf-8') as f:
+        daily_order = json.load(f)
+    return countries, daily_order
+
+
+def _daily_qid(countries, daily_order, day_index):
+    """Mirror of the client-side rotation (engine.ts getDailyCountry): from the
+    day's slot, walk forward to the first country playable in every language."""
+    n = len(daily_order)
+    for offset in range(n):
+        qid = daily_order[(day_index + offset) % n]
+        c = countries.get(qid)
+        if c and all(c['i18n'].get(lang, {}).get('paragraphs') for lang in LANGUAGES):
+            return qid
+    return None
 
 
 def test_has_most_un_countries(dataset):
@@ -134,25 +156,14 @@ def test_daily_order_is_shuffled(dataset):
     assert daily_order != insertion_order
 
 
-def test_consecutive_days_are_varied(dataset, monkeypatch):
+def test_consecutive_days_are_varied(dataset):
     """A window of consecutive days must yield distinct, non-alphabetical
     countries once the dataset is complete."""
-    import app.data_loader as dl
-    from app import puzzle
-
     countries, daily_order = dataset
-    loader = dl.DataLoader.__new__(dl.DataLoader)
-    loader.countries = countries
-    loader.daily_order = daily_order
-    monkeypatch.setattr(dl, '_loader', loader)
-
-    start = puzzle.today_day_index()
-    names = []
-    for day in range(start, start + 30):
-        country = puzzle.get_daily_country(day_index=day)
-        assert country is not None
-        names.append(country['i18n']['en']['name'])
-
+    names = [
+        countries[_daily_qid(countries, daily_order, day)]['i18n']['en']['name']
+        for day in range(30)
+    ]
     # 30 consecutive days: all distinct (rotation only holds playable
     # countries, so the skip-forward never causes back-to-back repeats)
     assert len(set(names)) == 30, f'answers repeat: {names}'
@@ -160,20 +171,12 @@ def test_consecutive_days_are_varied(dataset, monkeypatch):
     assert names != sorted(names)
 
 
-def test_simulate_a_year_of_puzzles(dataset, monkeypatch):
-    """Every day for the next 365 days must produce a playable puzzle."""
-    import app.data_loader as dl
-    from app import puzzle
-
+def test_simulate_a_year_of_puzzles(dataset):
+    """Every day for the next 365 days must resolve to a playable country."""
     countries, daily_order = dataset
-    loader = dl.DataLoader.__new__(dl.DataLoader)
-    loader.countries = countries
-    loader.daily_order = daily_order
-    monkeypatch.setattr(dl, '_loader', loader)
-
-    start = puzzle.today_day_index()
-    for day in range(start, start + 365):
-        for lang in ('en', 'ca', 'es'):
-            p = puzzle.get_todays_puzzle(lang, day_index=day)
-            assert p is not None, f'day {day} ({lang}): no puzzle'
-            assert p['paragraphs'], f'day {day} ({lang}): no paragraphs'
+    for day in range(365):
+        qid = _daily_qid(countries, daily_order, day)
+        assert qid is not None, f'day {day}: no playable country'
+        for lang in LANGUAGES:
+            assert countries[qid]['i18n'][lang]['paragraphs'], \
+                f'day {day} ({lang}): no paragraphs'
