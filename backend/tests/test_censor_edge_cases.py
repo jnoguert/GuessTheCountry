@@ -357,15 +357,20 @@ class TestSentenceSplitting:
 
 
 class TestTrimLede:
-    # Six full sentences, ~360 chars total - longer than LEDE_MAX_CHARS so the
-    # default trim genuinely has to drop the tail.
+    # Eleven full sentences, ~660 chars total - longer than LEDE_MAX_CHARS so
+    # the default trim genuinely has to drop the tail.
     LEDE = (
         "Islàndia és un estat insular situat al nord de l'oceà. "
         'El 2021 tenia una població estimada de 376.000 habitants. '
         'La capital i ciutat més gran concentra dos terços de la població. '
         'És un territori volcànicament i geològicament molt actiu. '
         "Té nombroses glaceres, rius i deserts a l'interior del país. "
-        'El clima és temperat malgrat la seva alta latitud septentrional.'
+        'El clima és temperat malgrat la seva alta latitud septentrional. '
+        "La seva economia depèn de la pesca i de l'energia geotèrmica. "
+        'Els primers pobladors van arribar fa més de mil anys. '
+        'Durant segles va formar part de dues monarquies veïnes. '
+        'Avui és una república amb un alt nivell de desenvolupament humà. '
+        'El paisatge combina fiords, altiplans i grans camps de lava.'
     )
 
     def test_keeps_whole_sentences_within_budget(self):

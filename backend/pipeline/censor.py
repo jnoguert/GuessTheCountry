@@ -11,12 +11,13 @@ from .geo_adjectives import GEO_ADJECTIVES
 RAW_DATA_DIR = os.path.join(os.path.dirname(__file__), '../data/raw')
 
 # The starting clue is Wikipedia's whole intro (lede), often several hundred
-# words - far too long to read as an opening hint. Keep whole sentences up to
-# LEDE_MAX_CHARS (a couple of sentences) instead of a wall of text, but never
-# stop below LEDE_MIN_CHARS: a one-line lede like "Malaysia is a country in
-# Southeast Asia." would otherwise censor down to a uselessly short clue.
-LEDE_MAX_CHARS = 260
-LEDE_MIN_CHARS = 120
+# words - too long to read as an opening hint if kept whole, but it should
+# still give the player a proper paragraph to work with. Keep whole sentences
+# up to LEDE_MAX_CHARS (a few sentences), and never stop below LEDE_MIN_CHARS:
+# a one-line lede like "Malaysia is a country in Southeast Asia." would
+# otherwise censor down to a uselessly short clue.
+LEDE_MAX_CHARS = 520
+LEDE_MIN_CHARS = 320
 
 # Blurring block length: a censored block's size otherwise leaks the exact
 # letter count of the hidden word, which is a huge tell (e.g. a 5-letter
